@@ -104,19 +104,14 @@ Singleton {
 
     function startNextDownload() {
         if (_pendingUrl === "") return;
-        coverArtDownloader.targetUrl = _pendingUrl
-        coverArtDownloader.targetDest = _pendingDest
+        coverArtDownloader.exec(["sh", "-c", '[ -f "$2" ] || curl -sSL "$1" -o "$2"', "sh", _pendingUrl, _pendingDest]);
         _pendingUrl = "" 
-        coverArtDownloader.running = true
     }
 
     Process {
         id: coverArtDownloader
-        property string targetUrl: ""
-        property string targetDest: ""
-        command: [ "bash", "-c", `[ -f '${targetDest}' ] || curl -sSL '${targetUrl}' -o '${targetDest}'` ]
         onExited: (exitCode, exitStatus) => {
-            if (targetDest === root._activeArtPath) {
+            if (root._activeArtPath !== "") {
                 root._cacheBuster = Date.now();
                 root._artDownloaded = true;
             }
