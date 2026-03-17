@@ -44,8 +44,7 @@ Singleton {
     function toggle() {
         if (!available) return;
         const newState = active ? "0" : "1";
-        toggleProc.command = ["pkexec", "bash", "-c", "echo " + newState + " > " + sysPath];
-        toggleProc.running = true;
+        toggleProc.exec(["pkexec", "sh", "-c", 'echo "$1" > "$2"', "sh", newState, sysPath]);
     }
 
     Timer {

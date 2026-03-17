@@ -39,6 +39,7 @@ Singleton {
     }
 
     readonly property string monitorSourceString: monitorSourceToString(monitorSource)
+    readonly property string nandoroidIcon: Directories.home.replace("file://", "") + "/.config/quickshell/nandoroid/assets/icons/NAnDoroid.svg"
     property var recognizedTrack: ({ title:"", subtitle:"", url:""})
     property bool manuallyStopped: false
 
@@ -54,7 +55,7 @@ Singleton {
                 musicRecognizedProc.running = true
             }
         } catch(e) {
-            Quickshell.execDetached(["notify-send", "Couldn't recognize music", "Perhaps what you're listening to is too niche", "-a", "Shell"])
+            Quickshell.execDetached(["notify-send", "-a", "NAnDoroid", "-i", root.nandoroidIcon, "--", "Couldn't recognize music", "Perhaps what you're listening to is too niche"])
         }
     }
 
@@ -75,7 +76,7 @@ Singleton {
         }
         onExited: (exitCode, exitStatus) => {
             if (exitCode === 1) {
-                Quickshell.execDetached(["notify-send", "Couldn't recognize music", "Make sure you have songrec installed", "-a", "Shell"])
+                Quickshell.execDetached(["notify-send", "-a", "NAnDoroid", "-i", root.nandoroidIcon, "--", "Couldn't recognize music", "Make sure you have songrec installed"])
             }
         }
     }
@@ -85,13 +86,15 @@ Singleton {
         running: false
         command: [
             "notify-send",
-            "Music Recognized", 
-            root.recognizedTrack.title + " - " + root.recognizedTrack.subtitle, 
             "-A", "Shazam",
             "-A", "YouTube",
-            "-a", "Shell",
+            "-a", "NAnDoroid",
+            "-i", root.nandoroidIcon,
             "-t", "10000",
-            "-e" // Transient
+            "-e", // Transient
+            "--",
+            "Music Recognized", 
+            root.recognizedTrack.title + " - " + root.recognizedTrack.subtitle
         ]
         stdout: StdioCollector {
             onStreamFinished: {
