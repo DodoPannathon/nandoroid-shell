@@ -45,6 +45,15 @@ RowLayout {
         }
     }
 
+    Repeater {
+        model: mainModel
+        delegate: StatusBarTrayItem {
+            required property SystemTrayItem modelData
+            item: modelData
+            onMenuOpened: (menu) => root.activeMenu = menu
+        }
+    }
+
     // Expand / Collapse Button
     MouseArea {
         id: expandButton
@@ -73,15 +82,6 @@ RowLayout {
         onClicked: {
             updateGlobalPos();
             GlobalStates.trayOverflowOpen = !GlobalStates.trayOverflowOpen
-        }
-    }
-
-    Repeater {
-        model: mainModel
-        delegate: StatusBarTrayItem {
-            required property SystemTrayItem modelData
-            item: modelData
-            onMenuOpened: (menu) => root.activeMenu = menu
         }
     }
 }

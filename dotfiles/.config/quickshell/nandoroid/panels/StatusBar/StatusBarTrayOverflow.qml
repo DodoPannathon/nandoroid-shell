@@ -52,6 +52,12 @@ Variants {
             return items.slice(2);
         }
 
+        onOverflowModelChanged: {
+            if (overflowModel.length === 0 && GlobalStates.trayOverflowOpen) {
+                GlobalStates.trayOverflowOpen = false;
+            }
+        }
+
         Rectangle {
             id: content
             // Position it exactly below the expand arrow
