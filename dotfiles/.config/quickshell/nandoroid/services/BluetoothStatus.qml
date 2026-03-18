@@ -18,7 +18,7 @@ Singleton {
         if (Config.ready && Config.options.system && Bluetooth.defaultAdapter) {
             const shouldBeEnabled = Config.options.system.bluetoothEnabled;
             if (Bluetooth.defaultAdapter.enabled !== shouldBeEnabled) {
-                // Use internal logic to set state without potentially creating a loop if we add more listeners
+
                 if (!shouldBeEnabled) {
                     Bluetooth.devices.values.forEach(d => {
                         if (d.connected) d.disconnect();
@@ -29,6 +29,16 @@ Singleton {
         }
     }
 
+    // Periodically re-enforce preference to handle system overrides (like waking from sleep)
+    Timer {
+        id: persistenceTimer
+        interval: 5000 // Check every 5 seconds
+        repeat: true
+        running: true
+        triggeredOnStart: true
+        onTriggered: root.enforcePreference()
+    }
+
     Connections {
         target: Config
         function onReadyChanged() { root.enforcePreference(); }
@@ -36,7 +46,17 @@ Singleton {
 
     Connections {
         target: Bluetooth
-        function onDefaultAdapterChanged() { root.enforcePreference(); }
+        function onDefaultAdapterChanged() { 
+            // Delay slightly to allow the adapter to initialize after sleep/resume
+            enforceTimer.restart();
+        }
+    }
+
+    Timer {
+        id: enforceTimer
+        interval: 1000
+        repeat: false
+        onTriggered: root.enforcePreference()
     }
 
     signal deviceConnected(var device)

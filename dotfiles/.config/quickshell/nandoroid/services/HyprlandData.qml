@@ -50,9 +50,11 @@ Singleton {
         id: layoutProc
     }
 
+    readonly property string persistencePath: "~/.config/hypr/nandoroid/user_persistence.conf"
+
     function cycleLayout(forward = true) {
         const layouts = ["dwindle", "master", "scrolling"];
-        const current = root.activeWorkspace?.tiledLayout || "dwindle";
+        const current = root.activeWorkspace?.tiledLayout || GlobalStates.hyprlandLayout || "dwindle";
         let index = layouts.indexOf(current);
         if (index === -1) index = 0;
         
@@ -63,13 +65,43 @@ Singleton {
         }
         
         const nextLayout = layouts[index];
+        
+        // Apply immediately
         layoutProc.exec(["hyprctl", "keyword", "general:layout", nextLayout]);
+        
+        // Persist to file
+        const cmd = `sed -i '/general:layout/d' ${root.persistencePath} 2>/dev/null || true; echo "general:layout = ${nextLayout}" >> ${root.persistencePath}`;
+        Quickshell.execDetached(["bash", "-c", cmd]);
+        
         GlobalStates.hyprlandLayout = nextLayout;
         root.layoutChanged();
         refreshTimer.restart(); // Refresh data with a small delay
     }
+
+    function fetchInitialLayout() {
+        fetchLayoutProc.running = true;
+    }
+
+    Process {
+        id: fetchLayoutProc
+        command: ["hyprctl", "getoption", "general:layout", "-j"]
+        onExited: (code) => {
+            if (code === 0) {
+                try {
+                    const data = JSON.parse(stdout.readAll());
+                    if (data && data.str) {
+                        GlobalStates.hyprlandLayout = data.str;
+                    }
+                } catch(e) {}
+            }
+        }
+    }
     
-    Component.onCompleted: updateAll()
+    Component.onCompleted: {
+        updateAll();
+        fetchInitialLayout();
+    }
+    
     Component.onDestruction: {
         getClients.terminate();
         getMonitors.terminate();

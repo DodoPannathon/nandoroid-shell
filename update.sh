@@ -70,4 +70,15 @@ else
     exit 1
 fi
 
+# Migration / Config Injection
+HYPR_CONF="$HOME/.config/hypr/hyprland.conf"
+if [ -f "$HYPR_CONF" ]; then
+    if ! grep -q "user_persistence.conf" "$HYPR_CONF"; then
+        echo "Injecting user_persistence.conf into hyprland.conf..."
+        echo "source = ~/.config/hypr/nandoroid/user_persistence.conf" >> "$HYPR_CONF"
+    fi
+fi
+mkdir -p "$HOME/.config/hypr/nandoroid"
+touch "$HOME/.config/hypr/nandoroid/user_persistence.conf"
+
 echo "Update successful!"

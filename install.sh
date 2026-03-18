@@ -328,13 +328,20 @@ if [[ "$INJECT_CHOICE" =~ ^[Yy] ]]; then
     # Hyprland
     mkdir -p "$HOME/.config/hypr"
     touch "$HOME/.config/hypr/hyprland.conf"
-    if ! grep -q "nandoroid" "$HOME/.config/hypr/hyprland.conf"; then
+    if ! grep -q "nandoroid.conf" "$HOME/.config/hypr/hyprland.conf"; then
         echo "" >> "$HOME/.config/hypr/hyprland.conf"
         echo 'source = ~/.config/hypr/nandoroid/nandoroid.conf' >> "$HOME/.config/hypr/hyprland.conf"
         substep "Injected nandoroid config into hyprland."
-    else
-        substep "Hyprland already injected."
     fi
+    
+    if ! grep -q "user_persistence.conf" "$HOME/.config/hypr/hyprland.conf"; then
+        echo 'source = ~/.config/hypr/nandoroid/user_persistence.conf' >> "$HOME/.config/hypr/hyprland.conf"
+        substep "Injected user persistence config into hyprland."
+    fi
+
+    # Ensure persistence directory and file exist
+    mkdir -p "$HOME/.config/hypr/nandoroid"
+    touch "$HOME/.config/hypr/nandoroid/user_persistence.conf"
 
     success "Injection complete."
 else
