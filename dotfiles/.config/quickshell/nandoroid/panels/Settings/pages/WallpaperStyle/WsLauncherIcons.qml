@@ -12,6 +12,12 @@ import Quickshell.Io
 ColumnLayout {
     Layout.fillWidth: true
     spacing: 0
+
+    SearchHandler {
+        searchString: "Launcher Icon Shapes"
+        aliases: ["Icon Style", "Icon Shape", "Shape Selection", "Adaptive Icons"]
+    }
+
             // ── Launcher Icons Section ──
             ColumnLayout {
                 id: launcherIconsSection

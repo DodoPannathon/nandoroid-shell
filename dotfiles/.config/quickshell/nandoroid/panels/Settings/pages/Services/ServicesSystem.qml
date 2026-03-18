@@ -13,7 +13,10 @@ import Quickshell
                 spacing: 4
                 Layout.topMargin: 16
 
-                SearchHandler { searchString: "System Data" }
+                SearchHandler { 
+                    searchString: "System Interface"
+                    aliases: ["Distro Icon", "Notification Counter", "Privacy Indicators", "Window Snapping", "Region Selector"]
+                }
 
                 RowLayout {
 
