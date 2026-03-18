@@ -1,6 +1,7 @@
 import "../../core"
 import "../../services"
 import "../../widgets"
+import "../../core/functions" as Functions
 import QtQuick
 import QtQuick.Layouts
 import QtQuick.Controls
@@ -10,12 +11,14 @@ import Quickshell.Io
 
 /**
  * High-Fidelity Settings-Style Wallpaper Selector.
- * Mirrors the main Settings UI with a unified sidebar-menubar background, 
- * a rounded colLayer1 content card, and segmented breadcrumbs.
+ * Robust Scoping Fix (Phase 5) - Reliable ID referencing and cursor behavior.
  */
 Item {
-    id: root
+    id: mainSelector
     
+    // Explicit reference for child components to avoid ReferenceError
+    readonly property Item selectorItem: mainSelector
+
     // Responsive sizing
     width: Math.min(1100, (parent ? parent.width : 1200) * 0.9)
     height: Math.min(800, (parent ? parent.height : 900) * 0.85)
@@ -29,10 +32,21 @@ Item {
     signal closed()
     
     property bool favMode: false
+    property bool wallhavenMode: false
     property alias searchFilter: headerSearch.text
-    onSearchFilterChanged: Wallpapers.searchQuery = searchFilter
+    
+    onSearchFilterChanged: {
+        if (wallhavenMode) {
+            if (searchFilter.startsWith("wallhaven-")) {
+                const id = searchFilter.substring(10).trim();
+                if (id !== "" && id.length > 3) WallhavenService.search(id, true);
+            }
+        } else {
+            Wallpapers.searchQuery = searchFilter
+        }
+    }
 
-    function close() { root.closed() }
+    function close() { mainSelector.closed() }
 
     function selectWallpaper(path) {
         if (GlobalStates.wallpaperSelectorTarget === "desktop") {
@@ -40,7 +54,14 @@ Item {
         } else {
             Wallpapers.selectForLockscreen(path)
         }
-        root.closed()
+        mainSelector.close()
+    }
+
+    function normalizePath(p) {
+        let s = p.toString();
+        if (s.startsWith("file://")) s = s.substring(7);
+        if (s.endsWith("/")) s = s.substring(0, s.length - 1);
+        return s;
     }
 
     // ── Main UI Frame ──
@@ -53,7 +74,6 @@ Item {
         border.color: Appearance.colors.colOutlineVariant
         clip: true
 
-        // Trap clicks inside to prevent reaching the outside-click MouseArea
         TapHandler {}
 
         ColumnLayout {
@@ -61,7 +81,7 @@ Item {
             anchors.margins: 12
             spacing: 0
 
-            // ── Header (Menubar Area) ──
+            // ── Header ──
             Item {
                 Layout.fillWidth: true
                 Layout.preferredHeight: 64
@@ -83,7 +103,7 @@ Item {
 
                     Item { Layout.fillWidth: true }
 
-                    // Header Search Pill (Centered and Matched with Settings)
+                    // Header Search Pill
                     Rectangle {
                         Layout.preferredWidth: 360
                         Layout.preferredHeight: 44
@@ -107,11 +127,28 @@ Item {
                                 verticalAlignment: TextInput.AlignVCenter
                                 clip: true
                                 
-                                onTextChanged: Wallpapers.searchQuery = text
+                                onTextChanged: {
+                                    if (!mainSelector.wallhavenMode) {
+                                        Wallpapers.searchQuery = text
+                                    } else if (text === "") {
+                                        WallhavenService.search("");
+                                    }
+                                }
+                                
+                                onAccepted: {
+                                    if (mainSelector.wallhavenMode) {
+                                        if (text.startsWith("wallhaven-")) {
+                                            const id = text.substring(10).trim();
+                                            WallhavenService.search(id, true);
+                                        } else {
+                                            WallhavenService.search(text);
+                                        }
+                                    }
+                                }
 
                                 StyledText {
                                     visible: !headerSearch.text && !headerSearch.activeFocus
-                                    text: "Search wallpapers..."
+                                    text: mainSelector.wallhavenMode ? "Search Wallhaven..." : "Search wallpapers..."
                                     font.pixelSize: headerSearch.font.pixelSize
                                     color: Appearance.colors.colSubtext
                                     anchors.verticalCenter: parent.verticalCenter
@@ -125,13 +162,13 @@ Item {
                     RippleButton {
                         implicitWidth: 36; implicitHeight: 36; buttonRadius: 18
                         colBackground: "transparent"
-                        onClicked: root.closed()
+                        onClicked: mainSelector.close()
                         MaterialSymbol { anchors.centerIn: parent; text: "close"; iconSize: 22; color: Appearance.colors.colSubtext }
                     }
                 }
             }
 
-            // ── Main Body (Sidebar + Card) ──
+            // ── Main Body ──
             RowLayout {
                 Layout.fillWidth: true
                 Layout.fillHeight: true
@@ -146,6 +183,39 @@ Item {
                         anchors.margins: 8
                         spacing: 4
 
+                        // --- Top Special Button (Wallhaven - Online) ---
+                        RippleButton {
+                            id: wallhavenSideBtn
+                            Layout.fillWidth: true
+                            implicitHeight: 52
+                            buttonRadius: 16
+                            toggled: mainSelector.wallhavenMode
+                            colBackground: toggled ? Appearance.colors.colPrimary : Appearance.colors.colLayer1
+                            colBackgroundHover: toggled ? Appearance.colors.colPrimaryHover : Appearance.colors.colLayer1Hover
+                            
+                            onClicked: {
+                                mainSelector.wallhavenMode = true;
+                                mainSelector.favMode = false;
+                                if (WallhavenService.results.count === 0) WallhavenService.search("");
+                            }
+
+                            RowLayout {
+                                anchors.fill: parent; anchors.leftMargin: 20; spacing: 16
+                                MaterialSymbol { 
+                                    text: "travel_explore"; iconSize: 22
+                                    color: wallhavenSideBtn.toggled ? Appearance.colors.colOnPrimary : Appearance.colors.colPrimary
+                                }
+                                StyledText { 
+                                    text: "Wallhaven"; Layout.fillWidth: true; 
+                                    font.weight: wallhavenSideBtn.toggled ? Font.Bold : Font.Normal
+                                    color: wallhavenSideBtn.toggled ? Appearance.colors.colOnPrimary : Appearance.colors.colOnLayer0
+                                }
+                            }
+                        }
+
+                        Item { Layout.preferredHeight: 12 } // Gap separator
+
+                        // --- Local Group (Folders & Favourites) ---
                         Repeater {
                             model: [
                                 { icon: "home", name: "Home", path: Directories.home },
@@ -154,23 +224,29 @@ Item {
                                 { icon: "favorite", name: "Favourites", path: "FAV_MODE" }
                             ]
                             delegate: RippleButton {
+                                id: folderBtn
                                 Layout.fillWidth: true
                                 implicitHeight: 52
                                 buttonRadius: 26
                                 
-                                readonly property bool isFav: modelData.path === "FAV_MODE"
-                                readonly property bool isActive: isFav ? root.favMode : (!root.favMode && Wallpapers.directory.toString() === "file://" + modelData.path)
+                                readonly property bool isFavBtn: modelData.path === "FAV_MODE"
+                                readonly property bool isActive: {
+                                    if (mainSelector.wallhavenMode) return false;
+                                    if (isFavBtn) return mainSelector.favMode;
+                                    return !mainSelector.favMode && mainSelector.normalizePath(Wallpapers.directory) === mainSelector.normalizePath(modelData.path);
+                                }
                                 
                                 toggled: isActive
                                 colBackground: "transparent"
                                 colBackgroundToggled: Appearance.m3colors.m3primaryContainer
                                 
                                 onClicked: {
-                                    if (isFav) {
-                                        root.favMode = true;
+                                    mainSelector.wallhavenMode = false;
+                                    if (isFavBtn) {
+                                        mainSelector.favMode = true;
                                     } else {
-                                        root.favMode = false;
-                                        Wallpapers.directory = "file://" + modelData.path;
+                                        mainSelector.favMode = false;
+                                        Wallpapers.directory = "file://" + mainSelector.normalizePath(modelData.path);
                                     }
                                 }
                                 
@@ -178,12 +254,12 @@ Item {
                                     anchors.fill: parent; anchors.leftMargin: 20; spacing: 16
                                     MaterialSymbol { 
                                         text: modelData.icon; iconSize: 22
-                                        color: parent.parent.toggled ? Appearance.m3colors.m3onPrimaryContainer : Appearance.colors.colOnLayer0
+                                        color: folderBtn.toggled ? Appearance.m3colors.m3onPrimaryContainer : Appearance.colors.colOnLayer0
                                     }
                                     StyledText { 
                                         text: modelData.name; Layout.fillWidth: true; 
-                                        font.weight: parent.parent.toggled ? Font.Bold : Font.Normal
-                                        color: parent.parent.toggled ? Appearance.m3colors.m3onPrimaryContainer : Appearance.colors.colOnLayer0
+                                        font.weight: folderBtn.toggled ? Font.Bold : Font.Normal
+                                        color: folderBtn.toggled ? Appearance.m3colors.m3onPrimaryContainer : Appearance.colors.colOnLayer0
                                     }
                                 }
                             }
@@ -191,73 +267,50 @@ Item {
                         
                         Item { Layout.fillHeight: true }
 
-                        // Mode Switcher (Desktop / Lockscreen)
+                        // Mode Switcher
                         Row {
                             Layout.fillWidth: true
                             Layout.preferredHeight: 48
                             Layout.margins: 4
                             spacing: 4
-                            
                             SegmentedButton {
-                                width: (parent.width - 4) / 2
-                                height: parent.height
-                                
-                                buttonText: "Desktop"
-                                isHighlighted: GlobalStates.wallpaperSelectorTarget === "desktop"
-                                colInactive: Appearance.colors.colLayer2
-                                colActive: Appearance.m3colors.m3primary
-                                colActiveText: Appearance.m3colors.m3onPrimary
-                                colInactiveText: Appearance.colors.colOnLayer0
-                                
+                                width: (parent.width - 4) / 2; height: parent.height
+                                buttonText: "Desktop"; isHighlighted: GlobalStates.wallpaperSelectorTarget === "desktop"
+                                colInactive: Appearance.colors.colLayer2; colActive: Appearance.m3colors.m3primary
                                 onClicked: GlobalStates.wallpaperSelectorTarget = "desktop"
                             }
-                            
                             SegmentedButton {
-                                width: (parent.width - 4) / 2
-                                height: parent.height
-                                
-                                buttonText: "Lock"
-                                // Disable if "Use same wallpaper" is on
+                                width: (parent.width - 4) / 2; height: parent.height
+                                buttonText: "Lock"; isHighlighted: GlobalStates.wallpaperSelectorTarget === "lock"
                                 enabled: Config.ready && (Config.options.lock ? Config.options.lock.useSeparateWallpaper : true)
-                                opacity: enabled ? 1 : 0.4
-                                
-                                isHighlighted: GlobalStates.wallpaperSelectorTarget === "lock"
-                                colInactive: Appearance.colors.colLayer2
-                                colActive: Appearance.m3colors.m3primary
-                                colActiveText: Appearance.m3colors.m3onPrimary
-                                colInactiveText: Appearance.colors.colOnLayer0
-                                
+                                opacity: enabled ? 1 : 0.4; colInactive: Appearance.colors.colLayer2; colActive: Appearance.m3colors.m3primary
                                 onClicked: GlobalStates.wallpaperSelectorTarget = "lock"
                             }
                         }
                     }
                 }
 
-                // Main Content Card (L1)
+                // Main Content Card
                 Rectangle {
-                    Layout.fillWidth: true
-                    Layout.fillHeight: true
-                    Layout.margins: 12
-                    color: Appearance.colors.colLayer1
-                    radius: 28
-                    clip: true
-                    
-                    // border.width: 1
-                    // border.color: Appearance.colors.colOutlineVariant
-                    opacity: 0.98
+                    Layout.fillWidth: true; Layout.fillHeight: true; Layout.margins: 12
+                    color: Appearance.colors.colLayer1; radius: 28; clip: true; opacity: 0.98
 
                     GridView {
                         id: grid
-                        anchors.fill: parent
-                        anchors.margins: 20
-                        cellWidth: width / 3
-                        cellHeight: cellWidth * 9/16 + 40 // True 16:9 + space for label
-                        clip: true
-                        interactive: true
+                        anchors.fill: parent; anchors.margins: 20
+                        cellWidth: width / 3; cellHeight: cellWidth * 9/16 + 40
+                        clip: true; interactive: true
                         
-                        // Use a custom model for favorites, otherwise use folder model
-                        model: root.favMode ? favModel : Wallpapers.folderModel
+                        model: mainSelector.wallhavenMode ? WallhavenService.results : (mainSelector.favMode ? favModel : Wallpapers.folderModel)
                         
+                        onContentYChanged: {
+                            if (mainSelector.wallhavenMode && !WallhavenService.loading && contentY > contentHeight - height - 400) {
+                                if (WallhavenService.results.count < WallhavenService.totalResults) {
+                                    WallhavenService.search(WallhavenService.lastQuery, false, WallhavenService.currentPage + 1);
+                                }
+                            }
+                        }
+
                         ListModel {
                             id: favModel
                             function refresh() {
@@ -283,8 +336,28 @@ Item {
                             id: delegateRoot
                             width: grid.cellWidth; height: grid.cellHeight
                             
-                            readonly property string currentFilePath: root.favMode ? model.filePath : filePath
-                            readonly property string currentFileName: root.favMode ? model.fileName : fileName
+                            // EXPLICIT PROXY PROPERTIES TO FIX REFERENCE ERRORS
+                            readonly property Item selector: mainSelector.selectorItem
+                            readonly property bool inWallhavenMode: delegateRoot.selector.wallhavenMode
+                            readonly property bool inFavMode: delegateRoot.selector.favMode
+                            
+                            readonly property string currentFilePath: delegateRoot.inWallhavenMode ? (model.full || "") : (delegateRoot.inFavMode ? (model.filePath || "") : (filePath || ""))
+                            readonly property string currentFileName: delegateRoot.inWallhavenMode ? ("wallhaven-" + (model.id || "")) : (delegateRoot.inFavMode ? (model.fileName || "") : (fileName || ""))
+                            readonly property string previewPath: delegateRoot.inWallhavenMode ? (model.preview || "") : ("file://" + currentFilePath)
+                            
+                            readonly property string wallhavenId: {
+                                if (delegateRoot.inWallhavenMode) return model.id || "";
+                                // Robust detection from local filename (e.g. wallhaven-XXXXX.jpg)
+                                let name = delegateRoot.currentFileName.toLowerCase();
+                                if (name.startsWith("wallhaven-")) {
+                                    let parts = name.split("-");
+                                    if (parts.length > 1) {
+                                        let idWithExt = parts[1];
+                                        return idWithExt.split(".")[0];
+                                    }
+                                }
+                                return "";
+                            }
 
                             ColumnLayout {
                                 anchors.fill: parent; anchors.margins: 12; spacing: 8
@@ -302,16 +375,24 @@ Item {
                                         HoverHandler { id: imgHover }
 
                                         ThumbnailImage {
-                                            anchors.fill: parent; sourcePath: "file://" + currentFilePath
+                                            anchors.fill: parent
+                                            sourcePath: currentFilePath 
+                                            visible: !delegateRoot.inWallhavenMode && currentFilePath !== ""
                                         }
 
-                                        // Lightweight Gradient Overlay for better icon legibility (Focused on bottom-right)
+                                        Image {
+                                            anchors.fill: parent; source: delegateRoot.inWallhavenMode ? previewPath : ""
+                                            fillMode: Image.PreserveAspectCrop
+                                            visible: delegateRoot.inWallhavenMode && source != ""
+                                            asynchronous: true; cache: true
+                                        }
+
                                         Rectangle {
                                             anchors.fill: parent
                                             gradient: Gradient {
                                                 GradientStop { position: 0.0; color: Qt.rgba(0,0,0, 0.0) } 
-                                                GradientStop { position: 0.6; color: Qt.rgba(0,0,0, 0.15) } // Start darkening
-                                                GradientStop { position: 1.0; color: Qt.rgba(0,0,0, 0.45) } // Darkest at bottom
+                                                GradientStop { position: 0.6; color: Qt.rgba(0,0,0, 0.15) } 
+                                                GradientStop { position: 1.0; color: Qt.rgba(0,0,0, 0.45) } 
                                             }
                                         }
                                         
@@ -321,54 +402,110 @@ Item {
                                         }
                                         
                                         MouseArea {
-                                            id: mArea; anchors.fill: parent; hoverEnabled: true; cursorShape: Qt.PointingHandCursor
-                                            onClicked: root.selectWallpaper("file://" + currentFilePath)
+                                            id: mArea; anchors.fill: parent; hoverEnabled: true
+                                            // Arrow cursor in wallhaven mode as requested
+                                            cursorShape: delegateRoot.inWallhavenMode ? Qt.ArrowCursor : Qt.PointingHandCursor
+                                            enabled: !delegateRoot.inWallhavenMode
+                                            onClicked: {
+                                                if (currentFilePath !== "") {
+                                                    delegateRoot.selector.selectWallpaper("file://" + currentFilePath)
+                                                }
+                                            }
                                         }
                                         
-                                        // Clean Favorite Button (Moved to Bottom-Right)
-                                        RippleButton {
-                                            id: favBtn
-                                            anchors.bottom: parent.bottom
-                                            anchors.right: parent.right
-                                            anchors.margins: 4 // More tucked into the corner
-                                            implicitWidth: 40; implicitHeight: 40; buttonRadius: 20
-                                            colBackground: "transparent"
-                                            
-                                            readonly property bool isFav: Wallpapers.isFavorite(currentFilePath)
-                                            
-                                            MaterialSymbol {
-                                                anchors.centerIn: parent
-                                                text: "favorite"
-                                                iconSize: 22
-                                                // 1 (solid) when active or when the button itself is hovered
-                                                fill: (favBtn.isFav || favBtn.hovered) ? 1 : 0
-                                                // Red when active, pure white when inactive
-                                                color: favBtn.isFav ? "#ff4081" : "#FFFFFF"
-                                                
-                                                Behavior on color { ColorAnimation { duration: 200 } }
+                                        RowLayout {
+                                            anchors.bottom: parent.bottom; anchors.right: parent.right; anchors.margins: 4; spacing: 2
+
+                                            RippleButton {
+                                                id: similarBtn
+                                                visible: delegateRoot.wallhavenId !== ""
+                                                implicitWidth: 36; implicitHeight: 36; buttonRadius: 18; colBackground: "transparent"
+                                                MaterialSymbol {
+                                                    anchors.centerIn: parent; text: "auto_awesome"; iconSize: 20; color: "white"
+                                                    fill: parent.hovered ? 1 : 0
+                                                }
+                                                onClicked: {
+                                                    let s = delegateRoot.selector;
+                                                    s.wallhavenMode = true;
+                                                    s.favMode = false;
+                                                    s.searchFilter = "wallhaven-" + delegateRoot.wallhavenId;
+                                                    WallhavenService.search(delegateRoot.wallhavenId, true);
+                                                }
+                                                StyledToolTip { text: "Search similar on Wallhaven" }
                                             }
-                                            
-                                            onClicked: Wallpapers.toggleFavorite(currentFilePath)
+
+                                            RippleButton {
+                                                id: favBtn
+                                                visible: !delegateRoot.inWallhavenMode && currentFilePath !== ""
+                                                implicitWidth: 36; implicitHeight: 36; buttonRadius: 18; colBackground: "transparent"
+                                                readonly property bool isFav: currentFilePath !== "" && Wallpapers.isFavorite(currentFilePath)
+                                                MaterialSymbol {
+                                                    anchors.centerIn: parent; text: "favorite"; iconSize: 20
+                                                    fill: (favBtn.isFav || favBtn.hovered) ? 1 : 0
+                                                    color: favBtn.isFav ? "#ff4081" : "#FFFFFF"
+                                                    Behavior on color { ColorAnimation { duration: 200 } }
+                                                }
+                                                onClicked: Wallpapers.toggleFavorite(currentFilePath)
+                                                StyledToolTip { text: favBtn.isFav ? "Remove from favorites" : "Add to favorites" }
+                                            }
+
+                                            RippleButton {
+                                                id: downloadOnlyBtn
+                                                visible: delegateRoot.inWallhavenMode && (model.full || "") !== ""
+                                                implicitWidth: 36; implicitHeight: 36; buttonRadius: 18; colBackground: "transparent"
+                                                MaterialSymbol {
+                                                    anchors.centerIn: parent; text: "download"; iconSize: 20; color: "white"
+                                                    fill: parent.hovered ? 1 : 0
+                                                }
+                                                onClicked: WallhavenService.download(model.full, model.id, model.file_type, false)
+                                                StyledToolTip { text: "Download to folder" }
+                                            }
+
+                                            RippleButton {
+                                                id: downloadApplyBtn
+                                                visible: delegateRoot.inWallhavenMode && (model.full || "") !== ""
+                                                implicitWidth: 36; implicitHeight: 36; buttonRadius: 18; colBackground: "transparent"
+                                                MaterialSymbol {
+                                                    anchors.centerIn: parent; text: "wallpaper"; iconSize: 20; color: "white"
+                                                    fill: parent.hovered ? 1 : 0
+                                                }
+                                                onClicked: WallhavenService.download(model.full, model.id, model.file_type, true)
+                                                StyledToolTip { text: "Download and Apply" }
+                                            }
+                                        }
+
+                                        Rectangle {
+                                            visible: delegateRoot.inWallhavenMode && (model.resolution || "") !== ""
+                                            anchors.top: parent.top; anchors.left: parent.left; anchors.margins: 8
+                                            width: resText.implicitWidth + 12; height: 20; radius: 10; color: Qt.rgba(0,0,0, 0.5)
+                                            StyledText {
+                                                id: resText; anchors.centerIn: parent; text: model.resolution || ""
+                                                font.pixelSize: 10; font.weight: Font.Bold; color: "white"
+                                            }
                                         }
                                     }
                                 }
-                                
                                 StyledText {
                                     Layout.fillWidth: true; text: currentFileName; horizontalAlignment: Text.AlignHCenter
-                                    font.pixelSize: Appearance.font.pixelSize.smallest; elide: Text.ElideRight; color: Appearance.colors.colOnLayer1
-                                    opacity: 0.7
+                                    font.pixelSize: Appearance.font.pixelSize.smallest; elide: Text.ElideRight; color: Appearance.colors.colOnLayer1; opacity: 0.7
                                 }
                             }
                         }
                         
                         ScrollBar.vertical: StyledScrollBar {}
 
-                        // Empty State if no wallpapers found
-                        StyledText {
-                            visible: grid.count === 0
-                            anchors.centerIn: parent
-                            text: root.favMode ? "No favorite wallpapers" : "No wallpapers found"
-                            color: Appearance.colors.colSubtext
+                        ColumnLayout {
+                            anchors.centerIn: parent; visible: grid.count === 0; spacing: 12
+                            MaterialSymbol {
+                                visible: mainSelector.wallhavenMode && WallhavenService.loading
+                                text: "progress_activity"; iconSize: 32; color: Appearance.colors.colPrimary
+                                Layout.alignment: Qt.AlignHCenter
+                                RotationAnimation on rotation { from: 0; to: 360; duration: 1000; loops: Animation.Infinite; running: parent.visible }
+                            }
+                            StyledText {
+                                text: WallhavenService.loading ? "Searching Wallhaven..." : (mainSelector.favMode ? "No favorite wallpapers" : "No wallpapers found")
+                                color: Appearance.colors.colSubtext; Layout.alignment: Qt.AlignHCenter
+                            }
                         }
                     }
                 }
