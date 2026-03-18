@@ -2,12 +2,16 @@ pragma Singleton
 
 import QtQuick
 import Quickshell
+import Quickshell.Io
 
 /**
  * Service for managing monitor configurations via hyprctl.
+ * Persists monitor settings to ~/.config/hypr/nandoroid/user_persistence.conf
  */
 Singleton {
     id: root
+
+    readonly property string persistencePath: "~/.config/hypr/nandoroid/user_persistence.conf"
 
     function setResolution(monitorName, resolution, refreshRate) {
         applyMonitorSettings({
@@ -49,8 +53,9 @@ Singleton {
         
         // Handle Mirroring
         if (opts.mirror) {
-
-            Quickshell.execDetached(["hyprctl", "keyword", "monitor", `${name},preferred,auto,1,mirror,${opts.mirror}`]);
+            const mirrorCmd = `${name},preferred,auto,1,mirror,${opts.mirror}`;
+            Quickshell.execDetached(["hyprctl", "keyword", "monitor", mirrorCmd]);
+            persistMonitor(name, mirrorCmd);
             return;
         }
 
@@ -70,20 +75,24 @@ Singleton {
         const transform = opts.transform !== undefined ? opts.transform : (target ? target.transform : 0);
         
         // Syntax: name,res@refresh,pos,scale
-        // Transform and other args must use the form `,keyword,value`
         let cmd = `${name},${resCmd},${pos},${scale.toFixed(2)}`;
         if (transform !== 0) {
             cmd += `,transform,${transform}`;
         }
         
-
-        
         // Use full path or ensuring environment
         Quickshell.execDetached(["hyprctl", "keyword", "monitor", cmd]);
+        persistMonitor(name, cmd);
+    }
+
+    function persistMonitor(monitorName, configString) {
+        // Persist to file: remove existing monitor config for this name and add new one
+        // We use a specific pattern to match the monitor name at the start of the line
+        const cmd = `sed -i "/^monitor = ${monitorName},/d" ${root.persistencePath} 2>/dev/null || true; echo "monitor = ${configString}" >> ${root.persistencePath}`;
+        Quickshell.execDetached(["bash", "-c", cmd]);
     }
 
     function batchApply(allChanges) {
-
         for (const name in allChanges) {
             const opts = allChanges[name];
             opts.name = name;
