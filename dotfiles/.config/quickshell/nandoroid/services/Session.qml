@@ -8,7 +8,11 @@ Singleton {
     id: root
 
     function lock() {
-        Quickshell.execDetached(["loginctl", "lock-session"]);
+        if (Config.options.lock.useHyprlock) {
+            Quickshell.execDetached(["bash", "-c", "pidof hyprlock || hyprlock"]);
+            return;
+        }
+        GlobalStates.screenLocked = true;
     }
 
     function suspend() {
