@@ -66,6 +66,16 @@ Scope {
                 }
             }
 
+            // Auto-fallback if battery is removed/unavailable
+            Connections {
+                target: Battery
+                function onAvailableChanged() {
+                    if (!Battery.available && GlobalStates.systemMonitorIndex === 1) {
+                        GlobalStates.systemMonitorIndex = 0;
+                    }
+                }
+            }
+
             ColumnLayout {
                 anchors.fill: parent
                 anchors.margins: 12
@@ -137,23 +147,24 @@ Scope {
                                 
                                 Repeater {
                                     model: [
-                                        { name: "Performance", icon: "monitoring" },
-                                        { name: "Battery", icon: "battery_charging_full" },
-                                        { name: "Processes", icon: "list" }
+                                        { name: "Performance", icon: "monitoring", stackIndex: 0 },
+                                        { name: "Battery", icon: "battery_charging_full", stackIndex: 1, visible: Battery.available },
+                                        { name: "Processes", icon: "list", stackIndex: 2 }
                                     ]
                                     
                                     delegate: RippleButton {
+                                        visible: modelData.visible !== false
                                         Layout.fillWidth: true
-                                        implicitHeight: 48
+                                        implicitHeight: visible ? 48 : 0
                                         buttonRadius: 16
-                                        colBackground: GlobalStates.systemMonitorIndex === index 
+                                        colBackground: GlobalStates.systemMonitorIndex === modelData.stackIndex 
                                             ? Functions.ColorUtils.transparentize(Appearance.colors.colPrimary, 0.88) 
                                             : "transparent"
-                                        colBackgroundHover: GlobalStates.systemMonitorIndex === index 
+                                        colBackgroundHover: GlobalStates.systemMonitorIndex === modelData.stackIndex 
                                             ? colBackground 
                                             : Appearance.colors.colLayer0Hover
                                         
-                                        onClicked: GlobalStates.systemMonitorIndex = index
+                                        onClicked: GlobalStates.systemMonitorIndex = modelData.stackIndex
                                         
                                         RowLayout {
                                             anchors.fill: parent
@@ -163,7 +174,7 @@ Scope {
                                             MaterialSymbol {
                                                 text: modelData.icon
                                                 iconSize: 24
-                                                color: GlobalStates.systemMonitorIndex === index 
+                                                color: GlobalStates.systemMonitorIndex === modelData.stackIndex 
                                                     ? Appearance.colors.colPrimary 
                                                     : Appearance.colors.colSubtext
                                             }
@@ -171,8 +182,8 @@ Scope {
                                             StyledText {
                                                 text: modelData.name
                                                 font.pixelSize: Appearance.font.pixelSize.normal
-                                                font.weight: GlobalStates.systemMonitorIndex === index ? Font.Medium : Font.Normal
-                                                color: GlobalStates.systemMonitorIndex === index 
+                                                font.weight: GlobalStates.systemMonitorIndex === modelData.stackIndex ? Font.Medium : Font.Normal
+                                                color: GlobalStates.systemMonitorIndex === modelData.stackIndex 
                                                     ? Appearance.colors.colPrimary 
                                                     : Appearance.colors.colOnLayer0
                                             }
@@ -203,7 +214,7 @@ Scope {
                         currentIndex: GlobalStates.systemMonitorIndex
                         
                         PerformancePage {}
-                        BatteryPage {}
+                        BatteryPage { visible: Battery.available }
                         ProcessesPage {}
                     } // End contentContainer Loader
                 } // End Main Content RowLayout
