@@ -96,14 +96,12 @@ PopupWindow {
             delegate: Rectangle {
                 width: ListView.view.width
                 height: 36
-                color: itemMouseArea.containsMouse ? Appearance.colors.colLayer1 : "transparent"
+                color: "transparent"
                 radius: Appearance.rounding.verysmall
-                Behavior on color { ColorAnimation { duration: 100 } }
 
                 MouseArea {
                     id: itemMouseArea
                     anchors.fill: parent
-                    hoverEnabled: true
                     onClicked: {
                         modelData.activate();
                         root.close();
@@ -119,17 +117,23 @@ PopupWindow {
                         color: Appearance.colors.colOnLayer0
                         elide: Text.ElideRight
                         Layout.fillWidth: true
+                        Layout.alignment: Qt.AlignVCenter
                     }
 
                     RippleButton {
                         Layout.preferredWidth: 28; Layout.preferredHeight: 28
+                        Layout.alignment: Qt.AlignVCenter
+                        padding: 0
                         buttonRadius: Appearance.rounding.verysmall
                         colBackground: hovered ? Appearance.colors.colErrorContainer : "transparent"
                         onClicked: modelData.close()
 
-                        contentItem: MaterialSymbol {
-                            text: "close"; iconSize: 16
-                            color: parent.hovered ? Appearance.colors.colOnErrorContainer : Appearance.colors.colOnLayer0
+                        contentItem: Item {
+                            MaterialSymbol {
+                                anchors.centerIn: parent
+                                text: "close"; iconSize: 16
+                                color: parent.parent.hovered ? Appearance.colors.colOnErrorContainer : Appearance.colors.colOnLayer0
+                            }
                         }
                     }
                 }
