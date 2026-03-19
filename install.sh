@@ -279,6 +279,12 @@ info "Copying configuration files..."
 substep "Copying dotfiles to ~/.config..."
 mkdir -p "$HOME/.config"
 cp -r dotfiles/.config/* "$HOME/.config/"
+
+# Ensure shell versioning is correctly initialized from project root
+substep "Setting up version metadata..."
+mkdir -p "$HOME/.config/quickshell/nandoroid"
+cp version.json "$HOME/.config/quickshell/nandoroid/version.json"
+
 success "Configuration files copied."
 
 # 5. Nandoroid CLI Installation (Optional)

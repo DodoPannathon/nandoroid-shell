@@ -70,6 +70,11 @@ else
     exit 1
 fi
 
+# Ensure version.json is always copied as a real file from project root
+echo "Updating shell version metadata..."
+mkdir -p "$HOME/.config/quickshell/nandoroid"
+cp version.json "$HOME/.config/quickshell/nandoroid/version.json"
+
 # Migration / Config Injection
 HYPR_CONF="$HOME/.config/hypr/hyprland.conf"
 if [ -f "$HYPR_CONF" ]; then
