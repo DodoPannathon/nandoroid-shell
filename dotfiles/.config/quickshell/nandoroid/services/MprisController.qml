@@ -78,6 +78,9 @@ Singleton {
         if (!activePlayer || !activePlayer.trackArtUrl || activePlayer.trackArtUrl === "") {
             _artDownloaded = false
             _activeArtPath = ""
+            // Clear pending downloads too
+            _pendingUrl = ""
+            _pendingDest = ""
             return;
         }
 

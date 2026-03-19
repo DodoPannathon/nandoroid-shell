@@ -37,16 +37,18 @@ Item {
         }
     }
 
+    readonly property real maxWidth: root.parent && root.parent.Layout ? root.parent.Layout.maximumWidth : 400
+
     ColumnLayout {
         id: titleColumn
         anchors.verticalCenter: parent.verticalCenter
         spacing: -2
-        width: root.width
+        width: Math.min(implicitWidth, root.maxWidth)
 
         StyledText {
             id: classText
             Layout.fillWidth: true
-            Layout.maximumWidth: root.Layout.maximumWidth
+            Layout.maximumWidth: root.maxWidth
             font.pixelSize: Appearance.font.pixelSize.smallest
             color: root.subtextColor
             elide: Text.ElideRight
@@ -56,7 +58,7 @@ Item {
         StyledText {
             id: titleText
             Layout.fillWidth: true
-            Layout.maximumWidth: root.Layout.maximumWidth
+            Layout.maximumWidth: root.maxWidth
             font.pixelSize: Appearance.font.pixelSize.smaller
             color: root.color
             elide: Text.ElideRight

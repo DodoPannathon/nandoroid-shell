@@ -353,6 +353,9 @@ Singleton {
                 property string iconShape: "Square"
                 property bool enableGrouping: false
                 property bool enableUsageTracking: true
+                property JsonObject imageSearch: JsonObject {
+                    property string imageSearchEngineBaseUrl: "https://lens.google.com/uploadbyurl?url="
+                }
             }
 
             // --- Lock ---

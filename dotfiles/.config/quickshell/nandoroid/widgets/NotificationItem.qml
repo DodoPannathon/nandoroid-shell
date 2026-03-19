@@ -199,7 +199,7 @@ Item { // Notification item area
                     Layout.fillWidth: true
                     font.pixelSize: root.fontSize
                     color: Appearance.colors.colSubtext
-                    wrapMode: Text.Wrap
+                    wrapMode: Text.WrapAnywhere
                     elide: Text.ElideRight
                     textFormat: Text.RichText
                     text: {

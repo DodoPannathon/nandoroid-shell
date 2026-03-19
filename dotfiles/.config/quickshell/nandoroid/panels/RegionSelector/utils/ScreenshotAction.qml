@@ -21,7 +21,7 @@ Singleton {
         RecordFullscreenWithSound
     }
 
-    property string imageSearchEngineBaseUrl: Config.ready ? Config.options.search.imageSearch.imageSearchEngineBaseUrl : "https://lens.google.com/uploadbyurl?url="
+    property string imageSearchEngineBaseUrl: (Config.ready && Config.options?.search?.imageSearch?.imageSearchEngineBaseUrl) ? Config.options.search.imageSearch.imageSearchEngineBaseUrl : "https://lens.google.com/uploadbyurl?url="
     property string fileUploadApiEndpoint: "https://uguu.se/upload"
 
     function getCommand(x, y, width, height, screenshotPath, action, saveDir = "") {
@@ -71,9 +71,8 @@ Singleton {
                 return ["bash", "-c", `${cropToStdout} | ${annotationCommand} && ${cleanup}`]
                 
             case ScreenshotAction.Action.Search:
-                const lensUrl = "https://lens.google.com/uploadbyurl?url=";
-                const uploadCmd = `curl -sF "files[]=@${screenshotPath}" https://uguu.se/upload | jq -r '.files[0].url'`;
-                return ["bash", "-c", `${cropInPlace} && IMG_LINK=$(${uploadCmd}) && [ -n "$IMG_LINK" ] && xdg-open "${lensUrl}$IMG_LINK" && ${cleanup}`]
+                const uploadCmd = uploadAndGetUrl(screenshotPath);
+                return ["bash", "-c", `${cropInPlace} && IMG_LINK=$(${uploadCmd}) && [ -n "$IMG_LINK" ] && xdg-open "${root.imageSearchEngineBaseUrl}$IMG_LINK" && ${cleanup}`]
                 
             case ScreenshotAction.Action.CharRecognition:
                 return ["bash", "-c", `${cropInPlace} && tesseract '${shellEscape(screenshotPath)}' stdout -l $(tesseract --list-langs | awk 'NR>1{print $1}' | tr '\\n' '+' | sed 's/\\+$/\\n/') | wl-copy && ${cleanup}`]
