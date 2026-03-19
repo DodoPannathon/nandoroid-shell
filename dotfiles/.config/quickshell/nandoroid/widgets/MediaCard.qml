@@ -122,118 +122,144 @@ Rectangle {
             }
         }
 
-        // Right: Large Play/Pause
-        RippleButton {
-            id: playPauseButton
-            anchors.right: parent.right
-            anchors.verticalCenter: parent.verticalCenter
-            width: 64
-            height: 64
-            buttonRadius: MprisController.isPlaying ? Appearance.rounding.large : 32
-            
-            colBackground: MprisController.isPlaying ? MprisController.dynPrimary : MprisController.dynSecondaryContainer
-            colBackgroundHover: MprisController.isPlaying ? MprisController.dynPrimaryHover : MprisController.dynSecondaryContainerHover
-            colRipple: MprisController.isPlaying ? MprisController.dynPrimaryActive : MprisController.dynSecondaryContainerActive
-            
-            onClicked: MprisController.togglePlaying()
-            
-            MaterialSymbol {
-                anchors.centerIn: parent
-                text: MprisController.isPlaying ? "pause" : "play_arrow"
-                iconSize: 32
-                fill: 1
-                color: MprisController.isPlaying ? MprisController.dynOnPrimary : MprisController.dynOnSecondaryContainer
-            }
-        }
-
-        // Center: Track info & Progressive bar
+        // Main Content Area (Right of Art)
         ColumnLayout {
-            id: infoLayout
             anchors.left: artShape.right
-            anchors.right: playPauseButton.left
-            anchors.verticalCenter: parent.verticalCenter
-            anchors.leftMargin: 12
-            anchors.rightMargin: 12
-            height: 94
+            anchors.right: parent.right
+            anchors.top: artShape.top
+            anchors.bottom: artShape.bottom
+            anchors.leftMargin: 16
             spacing: 0
 
-            ColumnLayout {
+            // Top Row: Track Info + Play/Pause
+            RowLayout {
                 Layout.fillWidth: true
-                spacing: 0
+                Layout.preferredHeight: 52
+                spacing: 8
 
-                MouseArea {
+                ColumnLayout {
                     Layout.fillWidth: true
-                    implicitHeight: trackTitleText.implicitHeight + trackArtistText.implicitHeight
-                    acceptedButtons: Qt.LeftButton | Qt.RightButton
-                    onClicked: (mouse) => {
-                        if (mouse.button === Qt.RightButton) {
-                            MprisController.cyclePlayer()
-                        } else {
-                            MprisController.raisePlayer()
-                        }
-                    }
+                    Layout.alignment: Qt.AlignTop
+                    spacing: 0
 
-                    ColumnLayout {
-                        anchors.fill: parent
-                        spacing: 0
-                        StyledText {
-                            id: trackTitleText
-                            Layout.fillWidth: true
-                            text: Functions.StringUtils.cleanMusicTitle(MprisController.trackTitle) || "No media"
-                            font.pixelSize: Appearance.font.pixelSize.normal
-                            font.weight: Font.Bold
-                            color: MprisController.dynOnLayer0
-                            elide: Text.ElideRight
+                    MouseArea {
+                        Layout.fillWidth: true
+                        implicitHeight: trackTitleText.implicitHeight + trackArtistText.implicitHeight
+                        acceptedButtons: Qt.LeftButton | Qt.RightButton
+                        onClicked: (mouse) => {
+                            if (mouse.button === Qt.RightButton) {
+                                MprisController.cyclePlayer()
+                            } else {
+                                MprisController.raisePlayer()
+                            }
                         }
-                        StyledText {
-                            id: trackArtistText
-                            Layout.fillWidth: true
-                            text: MprisController.trackArtist || "Unknown Artist"
-                            font.pixelSize: Appearance.font.pixelSize.smaller
-                            color: MprisController.dynSubtext
-                            elide: Text.ElideRight
+
+                        ColumnLayout {
+                            anchors.fill: parent
+                            spacing: 0
+                            StyledText {
+                                id: trackTitleText
+                                Layout.fillWidth: true
+                                text: Functions.StringUtils.cleanMusicTitle(MprisController.trackTitle) || "No media"
+                                font.pixelSize: Appearance.font.pixelSize.normal
+                                font.weight: Font.Bold
+                                color: MprisController.dynOnLayer0
+                                elide: Text.ElideRight
+                                verticalAlignment: Text.AlignTop
+                            }
+                            StyledText {
+                                id: trackArtistText
+                                Layout.fillWidth: true
+                                text: MprisController.trackArtist || "Unknown Artist"
+                                font.pixelSize: Appearance.font.pixelSize.smaller
+                                color: MprisController.dynSubtext
+                                elide: Text.ElideRight
+                                verticalAlignment: Text.AlignTop
+                            }
                         }
                     }
                 }
-            }
 
-            Item { Layout.fillHeight: true }
-
-            StyledText {
-                Layout.topMargin: 8
-                text: `${Functions.StringUtils.friendlyTimeForSeconds(MprisController.position)} / ${Functions.StringUtils.friendlyTimeForSeconds(MprisController.length)}`
-                font.pixelSize: Appearance.font.pixelSize.small
-                color: MprisController.dynSubtext
-            }
-
-            RowLayout {
-                Layout.alignment: Qt.AlignLeft
-                spacing: 4
-
+                // Play/Pause Button
                 RippleButton {
-                    implicitWidth: 32; implicitHeight: 32
-                    buttonRadius: 16
-                    colBackground: "transparent"
-                    colBackgroundHover: MprisController.dynSecondaryContainer
-                    colRipple: MprisController.dynSecondaryContainerActive
-                    enabled: MprisController.canGoPrevious
-                    onClicked: MprisController.previous()
+                    id: playPauseButton
+                    padding: 0
+                    implicitWidth: 52
+                    implicitHeight: 52
+                    Layout.preferredWidth: 52
+                    Layout.preferredHeight: 52
+                    Layout.alignment: Qt.AlignTop
+                    buttonRadius: MprisController.isPlaying ? Appearance.rounding.large : Appearance.rounding.normal
+                    
+                    colBackground: MprisController.isPlaying ? MprisController.dynPrimary : MprisController.dynSecondaryContainer
+                    colBackgroundHover: MprisController.isPlaying ? MprisController.dynPrimaryHover : MprisController.dynSecondaryContainerHover
+                    colRipple: MprisController.isPlaying ? MprisController.dynPrimaryActive : MprisController.dynSecondaryContainerActive
+                    
+                    onClicked: MprisController.togglePlaying()
+                    
                     MaterialSymbol {
                         anchors.centerIn: parent
-                        text: "skip_previous"
-                        iconSize: 20
+                        text: MprisController.isPlaying ? "pause" : "play_arrow"
+                        iconSize: 28
                         fill: 1
-                        color: MprisController.dynOnSecondaryContainer
+                        color: MprisController.isPlaying ? MprisController.dynOnPrimary : MprisController.dynOnSecondaryContainer
+                    }
+                }
+            }
+
+            // Fill space between top and bottom
+            Item { Layout.fillHeight: true }
+
+            // Bottom Row: Full Width Playback Controls
+            RowLayout {
+                Layout.fillWidth: true
+                Layout.preferredHeight: 24
+                spacing: 0 // Experimental: Remove base spacing
+
+                // Skip Previous
+                RippleButton {
+                    id: prevBtn
+                    padding: 0
+                    implicitWidth: 24; implicitHeight: 24; buttonRadius: 12
+                    colBackground: "transparent"
+                    colBackgroundHover: "transparent"
+                    colText: "transparent"
+                    rippleEnabled: false
+                    enabled: MprisController.canGoPrevious
+                    onClicked: MprisController.previous()
+                    
+                    MaterialSymbol {
+                        anchors.centerIn: parent
+                        text: "skip_previous"; iconSize: 18; fill: 1
+                        color: prevBtn.hovered ? MprisController.dynPrimary : MprisController.dynOnSecondaryContainer
+                        Behavior on color { ColorAnimation { duration: 150 } }
                     }
                 }
 
+                // Current Time
+                StyledText {
+                    id: currentTimeText
+                    text: Functions.StringUtils.friendlyTimeForSeconds(MprisController.position)
+                    font.pixelSize: 10
+                    font.family: Appearance.font.family.monospace
+                    font.weight: Font.Medium
+                    color: MprisController.dynSubtext
+                    Layout.alignment: Qt.AlignVCenter
+                    verticalAlignment: Text.AlignVCenter
+                    Layout.leftMargin: 0 // Menempel ke arrow
+                    Layout.rightMargin: 10 // Menjauh dari slider
+                }
+
+                // Slider
                 StyledSlider {
                     id: progressSlider
-                    Layout.preferredWidth: 120
+                    Layout.fillWidth: true
+                    Layout.preferredHeight: 14
+                    handleMargins: 0 
                     configuration: StyledSlider.Configuration.Wavy
                     stopIndicatorValues: []
                     animateValue: false
-                    value: MprisController.length > 0 ? (MprisController.position / MprisController.length) : 0
+                    value: (MprisController.length > 0 ? (MprisController.position / MprisController.length) : 0) || 0
                     wavy: MprisController.isPlaying
                     highlightColor: MprisController.dynPrimary
                     trackColor: MprisController.dynSecondaryContainer
@@ -249,26 +275,43 @@ Rectangle {
                         target: MprisController
                         function onPositionChanged() {
                             if (!progressSlider.pressed) {
-                                progressSlider.value = MprisController.length > 0 ? (MprisController.position / MprisController.length) : 0;
+                                progressSlider.value = (MprisController.length > 0 ? (MprisController.position / MprisController.length) : 0) || 0;
                             }
                         }
                     }
                 }
 
+                // Total Time
+                StyledText {
+                    id: totalTimeText
+                    text: Functions.StringUtils.friendlyTimeForSeconds(MprisController.length)
+                    font.pixelSize: 10
+                    font.family: Appearance.font.family.monospace
+                    font.weight: Font.Medium
+                    color: MprisController.dynSubtext
+                    Layout.alignment: Qt.AlignVCenter
+                    verticalAlignment: Text.AlignVCenter
+                    Layout.leftMargin: 10 // Menjauh dari slider
+                    Layout.rightMargin: 0 // Menempel ke arrow
+                }
+
+                // Skip Next
                 RippleButton {
-                    implicitWidth: 32; implicitHeight: 32
-                    buttonRadius: 16
+                    id: nextBtn
+                    padding: 0
+                    implicitWidth: 24; implicitHeight: 24; buttonRadius: 12
                     colBackground: "transparent"
-                    colBackgroundHover: MprisController.dynSecondaryContainer
-                    colRipple: MprisController.dynSecondaryContainerActive
+                    colBackgroundHover: "transparent"
+                    colText: "transparent"
+                    rippleEnabled: false
                     enabled: MprisController.canGoNext
                     onClicked: MprisController.next()
+
                     MaterialSymbol {
                         anchors.centerIn: parent
-                        text: "skip_next"
-                        iconSize: 20
-                        fill: 1
-                        color: MprisController.dynOnSecondaryContainer
+                        text: "skip_next"; iconSize: 18; fill: 1
+                        color: nextBtn.hovered ? MprisController.dynPrimary : MprisController.dynOnSecondaryContainer
+                        Behavior on color { ColorAnimation { duration: 150 } }
                     }
                 }
             }
