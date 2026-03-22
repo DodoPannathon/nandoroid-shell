@@ -11,7 +11,7 @@ import "../../widgets"
 Rectangle {
     id: root
     Layout.fillWidth: true
-    implicitHeight: mainLayout.implicitHeight + 24
+    implicitHeight: mainLayout.implicitHeight + (24 * Appearance.effectiveScale)
     radius: Appearance.rounding.normal
     color: Appearance.colors.colLayer1
 
@@ -19,14 +19,14 @@ Rectangle {
         id: mainLayout
         anchors {
             fill: parent
-            margins: 12
+            margins: 12 * Appearance.effectiveScale
         }
-        spacing: 12
+        spacing: 12 * Appearance.effectiveScale
 
         // Top Row: 4 key metrics with background pills
         RowLayout {
             Layout.fillWidth: true
-            spacing: 8
+            spacing: 8 * Appearance.effectiveScale
 
             StatItem {
                 statIcon: "monitoring"
@@ -81,14 +81,14 @@ Rectangle {
         // Bottom Section: Multiple Disk monitors
         ColumnLayout {
             Layout.fillWidth: true
-            spacing: 8
+            spacing: 8 * Appearance.effectiveScale
 
             Repeater {
                 model: SystemData.diskStats
                 delegate: RippleButton {
                     Layout.fillWidth: true
-                    implicitHeight: 60
-                    buttonRadius: 12
+                    implicitHeight: 60 * Appearance.effectiveScale
+                    buttonRadius: 12 * Appearance.effectiveScale
                     colBackground: "transparent"
                     colBackgroundHover: Appearance.colors.colLayer2
                     
@@ -100,26 +100,26 @@ Rectangle {
 
                     contentItem: ColumnLayout {
                         anchors.fill: parent
-                        anchors.margins: 4
-                        spacing: 4
+                        anchors.margins: 4 * Appearance.effectiveScale
+                        spacing: 4 * Appearance.effectiveScale
 
                         RowLayout {
                             Layout.fillWidth: true
                             MaterialSymbol {
                                 text: "storage"
-                                iconSize: 14
+                                iconSize: 14 * Appearance.effectiveScale
                                 color: Appearance.m3colors.m3primary
                             }
                             StyledText {
                                 text: modelData.hasAlias ? `${modelData.label} DISK USAGE` : `"${modelData.label}" DISK USAGE`
-                                font.pixelSize: 10
+                                font.pixelSize: 10 * Appearance.effectiveScale
                                 font.weight: Font.Bold
                                 color: Appearance.m3colors.m3outline
                             }
                             Item { Layout.fillWidth: true }
                             StyledText {
                                 text: `${Math.round(modelData.usage * 100)}%`
-                                font.pixelSize: 10
+                                font.pixelSize: 10 * Appearance.effectiveScale
                                 font.weight: Font.Bold
                                 color: Appearance.m3colors.m3onSurface
                             }
@@ -128,15 +128,15 @@ Rectangle {
                         // Large Disk Bar
                         Rectangle {
                             Layout.fillWidth: true
-                            implicitHeight: 8
-                            radius: 4
+                            implicitHeight: 8 * Appearance.effectiveScale
+                            radius: 4 * Appearance.effectiveScale
                             color: Appearance.colors.colLayer2
                             clip: true
 
                             Rectangle {
                                 width: parent.width * Math.max(0, Math.min(1, modelData.usage))
                                 height: parent.height
-                                radius: 4
+                                radius: 4 * Appearance.effectiveScale
                                 color: Appearance.m3colors.m3primary
                                 visible: modelData.usage > 0
 
@@ -159,25 +159,25 @@ Rectangle {
         property real value: 0
         property bool isTemperature: false
         
-        implicitHeight: 64
-        buttonRadius: 16
+        implicitHeight: 64 * Appearance.effectiveScale
+        buttonRadius: 16 * Appearance.effectiveScale
         colBackground: "transparent"
         colBackgroundHover: Appearance.colors.colLayer2
         
         contentItem: ColumnLayout {
-            spacing: 6
+            spacing: 6 * Appearance.effectiveScale
 
             RowLayout {
                 Layout.alignment: Qt.AlignHCenter
-                spacing: 4
+                spacing: 4 * Appearance.effectiveScale
                 MaterialSymbol {
                     text: statItem.statIcon
-                    iconSize: 14
+                    iconSize: 14 * Appearance.effectiveScale
                     color: Appearance.m3colors.m3primary
                 }
                 StyledText {
                     text: statItem.label
-                    font.pixelSize: 10
+                    font.pixelSize: 10 * Appearance.effectiveScale
                     font.weight: Font.Bold
                     color: Appearance.m3colors.m3outline
                 }
@@ -185,14 +185,14 @@ Rectangle {
 
             Rectangle {
                 Layout.fillWidth: true
-                implicitHeight: 20
-                radius: 10
+                implicitHeight: 20 * Appearance.effectiveScale
+                radius: 10 * Appearance.effectiveScale
                 color: Appearance.colors.colLayer2
 
                 StyledText {
                     anchors.centerIn: parent
                     text: statItem.isTemperature ? (statItem.value > 0 ? `${Math.round(statItem.value)}°C` : "--") : `${Math.round(statItem.value * 100)}%`
-                    font.pixelSize: 10
+                    font.pixelSize: 10 * Appearance.effectiveScale
                     font.weight: Font.Black
                     color: Appearance.m3colors.m3onSurface
                 }

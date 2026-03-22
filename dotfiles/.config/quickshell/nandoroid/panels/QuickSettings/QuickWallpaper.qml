@@ -44,10 +44,10 @@ Scope {
         // Modal Container
         Rectangle {
             id: modalContainer
-            width: Math.min(1100, panelWindow.screen.width * 0.85)
-            height: Math.min(800, panelWindow.screen.height * 0.8)
+            width: Math.min(1100 * Appearance.effectiveScale, panelWindow.screen.width * 0.85)
+            height: Math.min(800 * Appearance.effectiveScale, panelWindow.screen.height * 0.8)
             anchors.centerIn: parent
-            radius: 28
+            radius: 28 * Appearance.effectiveScale
             color: Appearance.colors.colLayer0
             clip: true
             border.width: 0

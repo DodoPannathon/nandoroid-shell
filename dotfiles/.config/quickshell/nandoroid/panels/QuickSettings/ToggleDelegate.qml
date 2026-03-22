@@ -46,7 +46,7 @@ RippleButton {
 
     visible: toggleData !== null && (editMode || (toggleData?.available ?? true))
     enabled: (toggleData?.available ?? true) || editMode
-    padding: 6
+    padding: 6 * Appearance.effectiveScale
 
     // Styling
     toggled: hasMenu ? false : isToggled
@@ -55,7 +55,7 @@ RippleButton {
     colBackgroundToggled: (hasMenu) ? Appearance.colors.colLayer2 : Appearance.colors.colPrimary
     colBackgroundToggledHover: (hasMenu) ? Appearance.colors.colLayer2Hover : Appearance.colors.colPrimary
     
-    buttonRadius: isToggled ? 16 : height / 2
+    buttonRadius: isToggled ? 16 * Appearance.effectiveScale : height / 2
 
     property color colText: (isToggled && !hasMenu && enabled) ? Appearance.colors.colOnPrimary : Functions.ColorUtils.transparentize(Appearance.colors.colOnLayer2, enabled ? 0 : 0.7)
     property color colIcon: expandedSize ? (isToggled ? Appearance.colors.colOnPrimary : Appearance.colors.colOnLayer3) : colText
@@ -83,7 +83,7 @@ RippleButton {
             anchors.fill: parent
             anchors.leftMargin: root.padding
             anchors.rightMargin: root.padding
-            spacing: 6
+            spacing: 6 * Appearance.effectiveScale
             
             // Spacers for 1x centering
             Item { Layout.fillWidth: true; visible: !root.expandedSize }
@@ -95,8 +95,8 @@ RippleButton {
                 propagateComposedEvents: true
                 acceptedButtons: (root.hasMenu) ? Qt.LeftButton : Qt.NoButton
                 Layout.alignment: Qt.AlignVCenter
-                Layout.preferredHeight: 36
-                Layout.preferredWidth: 36
+                Layout.preferredHeight: 36 * Appearance.effectiveScale
+                Layout.preferredWidth: 36 * Appearance.effectiveScale
                 cursorShape: Qt.PointingHandCursor
 
                 onClicked: {
@@ -108,7 +108,7 @@ RippleButton {
                     anchors.centerIn: parent
                     width: parent.width
                     height: parent.height
-                    radius: (root.hasMenu && root.isToggled) ? 12 : width / 2
+                    radius: (root.hasMenu && root.isToggled) ? 12 * Appearance.effectiveScale : width / 2
                     color: {
                         const isActive = root.isToggled
                         const baseColor = isActive ? Appearance.colors.colPrimary : Appearance.colors.colLayer3
@@ -121,7 +121,7 @@ RippleButton {
                     MaterialSymbol {
                         anchors.centerIn: parent
                         fill: root.isToggled ? 1 : 0
-                        iconSize: root.expandedSize ? 20 : 22
+                        iconSize: root.expandedSize ? 20 * Appearance.effectiveScale : 22 * Appearance.effectiveScale
                         color: root.colIcon
                         text: root.isToggled 
                             ? (root.toggleData?.icon ?? "check") 
@@ -147,7 +147,7 @@ RippleButton {
                 Layout.alignment: Qt.AlignVCenter
                 Layout.fillWidth: true
                 visible: root.expandedSize
-                spacing: -2
+                spacing: -2 * Appearance.effectiveScale
 
                 StyledText {
                     Layout.fillWidth: true
@@ -262,10 +262,10 @@ RippleButton {
         MaterialSymbol {
             anchors.top: parent.top
             anchors.right: parent.right
-            anchors.margins: 4
+            anchors.margins: 4 * Appearance.effectiveScale
             text: parent.isActive ? "remove_circle" : "add_circle"
             color: parent.isActive ? Appearance.m3colors.m3error : Appearance.colors.colPrimary
-            iconSize: 18
+            iconSize: 18 * Appearance.effectiveScale
             fill: 1
         }
         // Size indicator — only for active toggles
@@ -273,7 +273,7 @@ RippleButton {
             visible: parent.isActive
             anchors.bottom: parent.bottom
             anchors.right: parent.right
-            anchors.margins: 6
+            anchors.margins: 6 * Appearance.effectiveScale
             text: root.cellSize === 1 ? "1×" : "2×"
             font.pixelSize: Appearance.font.pixelSize.smaller
             font.weight: Font.Bold
@@ -307,7 +307,7 @@ RippleButton {
 
         background: Rectangle {
             color: Appearance.m3colors.m3surfaceContainerHigh
-            radius: 8
+            radius: 8 * Appearance.effectiveScale
             border.color: Appearance.m3colors.m3outlineVariant
             border.width: 1
         }
