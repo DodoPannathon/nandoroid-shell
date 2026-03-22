@@ -170,7 +170,7 @@ Rectangle {
                 // Section: Applications
                 ColumnLayout {
                     Layout.fillWidth: true
-                    spacing: 8
+                    spacing: 8 * Appearance.effectiveScale
                     visible: (root.isSink ? Audio.streamNodes.length : Audio.micStreamNodes.length) > 0
                     
                     StyledText {
@@ -178,12 +178,12 @@ Rectangle {
                         font.pixelSize: Appearance.font.pixelSize.smaller
                         font.weight: Font.Medium
                         color: Appearance.m3colors.m3outline
-                        Layout.leftMargin: 4
+                        Layout.leftMargin: 4 * Appearance.effectiveScale
                     }
 
                     Column {
                         Layout.fillWidth: true
-                        spacing: 8
+                        spacing: 8 * Appearance.effectiveScale
                         Repeater {
                             model: root.isSink ? Audio.streamNodes : Audio.micStreamNodes
                             delegate: Rectangle {
@@ -234,7 +234,7 @@ Rectangle {
                                         }
                                         StyledText {
                                             text: Math.round(streamItem.modelData.audio.volume * 100) + "%"
-                                            font.pixelSize: 10
+                                            font.pixelSize: 10 * Appearance.effectiveScale
                                             color: Appearance.colors.colSubtext
                                         }
                                     }
@@ -271,7 +271,7 @@ Rectangle {
             RippleButton {
                 implicitWidth: audioDoneText.implicitWidth + (24 * Appearance.effectiveScale)
                 implicitHeight: 36 * Appearance.effectiveScale
-                buttonRadius: 18
+                buttonRadius: 18 * Appearance.effectiveScale
                 colBackground: Appearance.colors.colPrimary
                 colBackgroundHover: Qt.darker(Appearance.colors.colPrimary, 1.12)
                 onClicked: root.dismiss()
