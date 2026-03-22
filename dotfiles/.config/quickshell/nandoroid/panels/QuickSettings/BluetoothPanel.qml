@@ -27,24 +27,24 @@ Rectangle {
 
     ColumnLayout {
         anchors.fill: parent
-        anchors.margins: 14
-        spacing: 12
+        anchors.margins: 14 * Appearance.effectiveScale
+        spacing: 12 * Appearance.effectiveScale
 
         // Header
         RowLayout {
             Layout.fillWidth: true
-            spacing: 12
+            spacing: 12 * Appearance.effectiveScale
 
             RippleButton {
-                implicitWidth: 36
-                implicitHeight: 36
-                buttonRadius: 18
+                implicitWidth: 36 * Appearance.effectiveScale
+                implicitHeight: 36 * Appearance.effectiveScale
+                buttonRadius: 18 * Appearance.effectiveScale
                 colBackground: Appearance.colors.colLayer2
                 onClicked: root.dismiss()
                 MaterialSymbol {
                     anchors.centerIn: parent
                     text: "arrow_back"
-                    iconSize: 20
+                    iconSize: 20 * Appearance.effectiveScale
                     color: Appearance.m3colors.m3onSurface
                 }
             }
@@ -59,9 +59,9 @@ Rectangle {
 
             // Bluetooth power toggle
             RippleButton {
-                implicitWidth: 56
-                implicitHeight: 36
-                buttonRadius: 18
+                implicitWidth: 56 * Appearance.effectiveScale
+                implicitHeight: 36 * Appearance.effectiveScale
+                buttonRadius: 18 * Appearance.effectiveScale
                 colBackground: BluetoothStatus.enabled ? Appearance.colors.colPrimary : Appearance.colors.colLayer2
                 colBackgroundHover: BluetoothStatus.enabled ? Qt.darker(Appearance.colors.colPrimary, 1.12) : Appearance.colors.colLayer2Hover
                 onClicked: {
@@ -72,7 +72,7 @@ Rectangle {
                 MaterialSymbol {
                     anchors.centerIn: parent
                     text: BluetoothStatus.enabled ? "bluetooth" : "bluetooth_disabled"
-                    iconSize: 20
+                    iconSize: 20 * Appearance.effectiveScale
                     color: BluetoothStatus.enabled ? Appearance.colors.colOnPrimary : Appearance.m3colors.m3onSurface
                 }
             }
@@ -88,16 +88,16 @@ Rectangle {
         Rectangle {
             Layout.fillWidth: true
             Layout.fillHeight: true
-            radius: 16
+            radius: 16 * Appearance.effectiveScale
             color: Appearance.colors.colLayer0
             clip: true
 
             ListView {
                 id: deviceList
                 anchors.fill: parent
-                anchors.margins: 4
+                anchors.margins: 4 * Appearance.effectiveScale
                 clip: true
-                spacing: 2
+                spacing: 2 * Appearance.effectiveScale
                 model: BluetoothStatus.enabled ? [...BluetoothStatus.connectedDevices, ...BluetoothStatus.pairedButNotConnectedDevices] : []
 
                 delegate: Item {
@@ -116,17 +116,17 @@ Rectangle {
 
                         RippleButton {
                             Layout.fillWidth: true
-                            implicitHeight: 56
-                            buttonRadius: 16
+                            implicitHeight: 56 * Appearance.effectiveScale
+                            buttonRadius: 16 * Appearance.effectiveScale
                             colBackground: deviceItem.modelData.connected ? Functions.ColorUtils.mix(Appearance.colors.colLayer0, Appearance.colors.colPrimary, 0.92) : "transparent"
                             colBackgroundHover: deviceItem.modelData.connected ? colBackground : Appearance.colors.colLayer0Hover
                             onClicked: deviceItem.expanded = !deviceItem.expanded
 
                             contentItem: RowLayout {
                                 anchors.fill: parent
-                                anchors.leftMargin: 12
-                                anchors.rightMargin: 12
-                                spacing: 12
+                                anchors.leftMargin: 12 * Appearance.effectiveScale
+                                anchors.rightMargin: 12 * Appearance.effectiveScale
+                                spacing: 12 * Appearance.effectiveScale
 
                                 MaterialSymbol {
                                     text: {
@@ -137,7 +137,7 @@ Rectangle {
                                         if (devClass === BluetoothDevice.Phone) return "smartphone"
                                         return "bluetooth"
                                     }
-                                    iconSize: 22
+                                    iconSize: 22 * Appearance.effectiveScale
                                     color: deviceItem.modelData.connected ? Appearance.colors.colPrimary : Appearance.colors.colSubtext
                                 }
 
@@ -166,7 +166,7 @@ Rectangle {
 
                                 MaterialSymbol {
                                     text: "keyboard_arrow_down"
-                                    iconSize: 20
+                                    iconSize: 20 * Appearance.effectiveScale
                                     color: Appearance.colors.colSubtext
                                     rotation: deviceItem.expanded ? 180 : 0
                                     Behavior on rotation { NumberAnimation { duration: 200 } }
@@ -177,19 +177,19 @@ Rectangle {
                         // Expanded actions
                         RowLayout {
                             Layout.fillWidth: true
-                            Layout.leftMargin: 48
-                            Layout.rightMargin: 12
-                            Layout.bottomMargin: 8
+                            Layout.leftMargin: 48 * Appearance.effectiveScale
+                            Layout.rightMargin: 12 * Appearance.effectiveScale
+                            Layout.bottomMargin: 8 * Appearance.effectiveScale
                             visible: deviceItem.expanded
-                            spacing: 8
+                            spacing: 8 * Appearance.effectiveScale
 
                             Item { Layout.fillWidth: true }
 
                             // Connect/Disconnect
                             RippleButton {
-                                implicitWidth: connectBtnText.implicitWidth + 24
-                                implicitHeight: 32
-                                buttonRadius: 16
+                                implicitWidth: connectBtnText.implicitWidth + (24 * Appearance.effectiveScale)
+                                implicitHeight: 32 * Appearance.effectiveScale
+                                buttonRadius: 16 * Appearance.effectiveScale
                                 colBackground: deviceItem.modelData.connected ? Appearance.colors.colLayer2 : Appearance.colors.colPrimary
                                 onClicked: {
                                     if (deviceItem.modelData.connected) {
@@ -211,9 +211,9 @@ Rectangle {
                             // Forget (Unpair)
                             RippleButton {
                                 visible: deviceItem.modelData.paired
-                                implicitWidth: forgetBtnText.implicitWidth + 24
-                                implicitHeight: 32
-                                buttonRadius: 16
+                                implicitWidth: forgetBtnText.implicitWidth + (24 * Appearance.effectiveScale)
+                                implicitHeight: 32 * Appearance.effectiveScale
+                                buttonRadius: 16 * Appearance.effectiveScale
                                 colBackground: Appearance.m3colors.m3error
                                 onClicked: {
                                     deviceItem.modelData.unpair();
@@ -241,12 +241,12 @@ Rectangle {
 
         RowLayout {
             Layout.fillWidth: true
-            spacing: 8
+            spacing: 8 * Appearance.effectiveScale
 
             RippleButton {
                 visible: BluetoothStatus.enabled
-                implicitWidth: btPairText.implicitWidth + 24
-                implicitHeight: 36
+                implicitWidth: btPairText.implicitWidth + (24 * Appearance.effectiveScale)
+                implicitHeight: 36 * Appearance.effectiveScale
                 buttonRadius: height / 2
                 colBackground: Appearance.colors.colLayer1
                 colBackgroundHover: Appearance.colors.colLayer1Hover
@@ -267,8 +267,8 @@ Rectangle {
             Item { Layout.fillWidth: true }
 
             RippleButton {
-                implicitWidth: btDoneText.implicitWidth + 24
-                implicitHeight: 36
+                implicitWidth: btDoneText.implicitWidth + (24 * Appearance.effectiveScale)
+                implicitHeight: 36 * Appearance.effectiveScale
                 buttonRadius: height / 2
                 colBackground: Appearance.colors.colPrimary
                 colBackgroundHover: Qt.darker(Appearance.colors.colPrimary, 1.1)

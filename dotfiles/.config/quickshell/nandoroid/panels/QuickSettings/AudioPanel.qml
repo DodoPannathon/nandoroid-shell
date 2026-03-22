@@ -32,24 +32,24 @@ Rectangle {
 
     ColumnLayout {
         anchors.fill: parent
-        anchors.margins: 16
-        spacing: 12
+        anchors.margins: 16 * Appearance.effectiveScale
+        spacing: 12 * Appearance.effectiveScale
 
         // Header
         RowLayout {
             Layout.fillWidth: true
-            spacing: 12
+            spacing: 12 * Appearance.effectiveScale
 
             RippleButton {
-                implicitWidth: 36
-                implicitHeight: 36
-                buttonRadius: 18
+                implicitWidth: 36 * Appearance.effectiveScale
+                implicitHeight: 36 * Appearance.effectiveScale
+                buttonRadius: 18 * Appearance.effectiveScale
                 colBackground: Appearance.colors.colLayer2
                 onClicked: root.dismiss()
                 MaterialSymbol {
                     anchors.centerIn: parent
                     text: "arrow_back"
-                    iconSize: 20
+                    iconSize: 20 * Appearance.effectiveScale
                     color: Appearance.m3colors.m3onSurface
                 }
             }
@@ -64,7 +64,7 @@ Rectangle {
 
             MaterialSymbol {
                 text: root.panelIcon
-                iconSize: 22
+                iconSize: 22 * Appearance.effectiveScale
                 color: Appearance.colors.colPrimary
             }
         }
@@ -88,31 +88,31 @@ Rectangle {
             ColumnLayout {
                 id: audioContentCol
                 width: audioFlick.width
-                spacing: 20
+                spacing: 20 * Appearance.effectiveScale
 
                 // Section: Devices
                 ColumnLayout {
                     Layout.fillWidth: true
-                    spacing: 8
+                    spacing: 8 * Appearance.effectiveScale
                     
                     StyledText {
                         text: "Devices"
                         font.pixelSize: Appearance.font.pixelSize.smaller
                         font.weight: Font.Medium
                         color: Appearance.m3colors.m3outline
-                        Layout.leftMargin: 4
+                        Layout.leftMargin: 4 * Appearance.effectiveScale
                     }
 
                     Column {
                         Layout.fillWidth: true
-                        spacing: 2
+                        spacing: 2 * Appearance.effectiveScale
                         Repeater {
                             model: root.isSink ? Audio.outputDevices : Audio.inputDevices
                             delegate: RippleButton {
                                 id: audioDeviceItem
                                 required property var modelData
                                 width: audioFlick.width
-                                implicitHeight: 52
+                                implicitHeight: 52 * Appearance.effectiveScale
                                 buttonRadius: Appearance.rounding.small
                                 
                                 readonly property bool isActive: root.isSink 
@@ -129,9 +129,9 @@ Rectangle {
 
                                 contentItem: RowLayout {
                                     anchors.fill: parent
-                                    anchors.leftMargin: 12
-                                    anchors.rightMargin: 12
-                                    spacing: 12
+                                    anchors.leftMargin: 12 * Appearance.effectiveScale
+                                    anchors.rightMargin: 12 * Appearance.effectiveScale
+                                    spacing: 12 * Appearance.effectiveScale
 
                                     MaterialSymbol {
                                         text: {
@@ -141,7 +141,7 @@ Rectangle {
                                             if (desc.includes("hdmi") || desc.includes("tv")) return "tv"
                                             return "speaker"
                                         }
-                                        iconSize: 20
+                                        iconSize: 20 * Appearance.effectiveScale
                                         fill: audioDeviceItem.isActive ? 1 : 0
                                         color: audioDeviceItem.isActive ? Appearance.colors.colPrimary : Appearance.m3colors.m3onSurfaceVariant
                                     }
@@ -157,7 +157,7 @@ Rectangle {
                                     MaterialSymbol {
                                         visible: audioDeviceItem.isActive
                                         text: "check_circle"
-                                        iconSize: 18
+                                        iconSize: 18 * Appearance.effectiveScale
                                         fill: 1
                                         color: Appearance.colors.colPrimary
                                     }
@@ -190,23 +190,23 @@ Rectangle {
                                 id: streamItem
                                 required property var modelData
                                 width: audioFlick.width
-                                implicitHeight: streamLayout.implicitHeight + 20 // Dynamic height + margins
+                                implicitHeight: streamLayout.implicitHeight + (20 * Appearance.effectiveScale) // Dynamic height + margins
                                 color: Appearance.colors.colLayer1
                                 radius: Appearance.rounding.small
 
                                 ColumnLayout {
                                     id: streamLayout
                                     anchors.fill: parent
-                                    anchors.margins: 10
-                                    spacing: 4
+                                    anchors.margins: 10 * Appearance.effectiveScale
+                                    spacing: 4 * Appearance.effectiveScale
 
                                     RowLayout {
                                         Layout.fillWidth: true
-                                        spacing: 8
+                                        spacing: 8 * Appearance.effectiveScale
                                         
                                         Item {
-                                            width: 22
-                                            height: 22
+                                            width: 22 * Appearance.effectiveScale
+                                            height: 22 * Appearance.effectiveScale
                                             
                                             IconImage {
                                                 id: appIcon
@@ -218,7 +218,7 @@ Rectangle {
                                             MaterialSymbol {
                                                 anchors.centerIn: parent
                                                 text: "settings_input_component"
-                                                iconSize: 18
+                                                iconSize: 18 * Appearance.effectiveScale
                                                 color: Appearance.m3colors.m3primary
                                                 visible: appIcon.status !== Image.Ready
                                             }
@@ -253,7 +253,7 @@ Rectangle {
                 }
 
                 // Bottom spacer for better scrolling
-                Item { Layout.preferredHeight: 12 }
+                Item { Layout.preferredHeight: 12 * Appearance.effectiveScale }
             }
         }
 
@@ -269,8 +269,8 @@ Rectangle {
             Item { Layout.fillWidth: true }
 
             RippleButton {
-                implicitWidth: audioDoneText.implicitWidth + 24
-                implicitHeight: 36
+                implicitWidth: audioDoneText.implicitWidth + (24 * Appearance.effectiveScale)
+                implicitHeight: 36 * Appearance.effectiveScale
                 buttonRadius: 18
                 colBackground: Appearance.colors.colPrimary
                 colBackgroundHover: Qt.darker(Appearance.colors.colPrimary, 1.12)
