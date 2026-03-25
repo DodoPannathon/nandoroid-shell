@@ -31,13 +31,31 @@ FocusScope {
     property int currentIndex: 0
     property int totalItems: 11
     
-    // Animated stretch-highlight properties (Dashboard style)
+    // Animated stretch-highlight properties
     property int idx1: 0
     property int idx2: 0
     
     onCurrentIndexChanged: {
         idx1 = currentIndex
         Qt.callLater(() => { idx2 = currentIndex })
+    }
+    
+    onIdx1Changed: tabHighlight.updatePositions()
+    onIdx2Changed: tabHighlight.updatePositions()
+
+    function reset() {
+        currentIndex = 0;
+        idx1 = 0;
+        idx2 = 0;
+        syncTimer.restart();
+    }
+    
+    Timer {
+        id: syncTimer
+        interval: 50
+        onTriggered: {
+            tabHighlight.updatePositions(false); // Snap without animation
+        }
     }
 
     focus: true
@@ -171,42 +189,27 @@ FocusScope {
             
             readonly property real buttonWidth: 44 * Appearance.effectiveScale
             readonly property real buttonHeight: 44 * Appearance.effectiveScale
-            readonly property real spacing: 8 * Appearance.effectiveScale
-            readonly property real separatorWidth: 1 * Appearance.effectiveScale
-            readonly property real separatorTotalMargin: 12 * Appearance.effectiveScale
             
-            function getXForIndex(i) {
-                // Calculation based on layout spacing and fixed widths
-                // items 0, 1, 2
-                // separator (idx 2.5)
-                // items 3, 4, 5, 6
-                // separator (idx 6.5)
-                // items 7, 8, 9, 10
-                
-                let x = 20 * Appearance.effectiveScale // Starting margin
-                
-                for (let j = 0; indexCounter < i; indexCounter++) {
-                    // Logic needs to account for separators
-                }
-                
-                // Simpler: rely on Item positioning from the layout
-                const targetBtn = layout.children[i >= 7 ? i + 2 : (i >= 3 ? i + 1 : i)]
-                if (targetBtn) {
-                    const pos = targetBtn.mapToItem(backgroundRect, 0, 0)
-                    return pos.x
-                }
-                return 0
-            }
-            
-            // To make the mapToItem work reliably, we'll use properties mapped from the actual buttons
             property real animX1: 0
             property real animX2: 0
             
-            readonly property Item targetBtn1: layout.children[idx1 >= 7 ? idx1 + 2 : (idx1 >= 3 ? idx1 + 1 : idx1)]
-            readonly property Item targetBtn2: layout.children[idx2 >= 7 ? idx2 + 2 : (idx2 >= 3 ? idx2 + 1 : idx2)]
-            
-            onTargetBtn1Changed: if (targetBtn1) animX1 = targetBtn1.x + layout.x
-            onTargetBtn2Changed: if (targetBtn2) animX2 = targetBtn2.x + layout.x
+            function updatePositions(animate = true) {
+                const t1 = layout.children[idx1 >= 7 ? idx1 + 2 : (idx1 >= 3 ? idx1 + 1 : idx1)];
+                const t2 = layout.children[idx2 >= 7 ? idx2 + 2 : (idx2 >= 3 ? idx2 + 1 : idx2)];
+                
+                if (!animate) {
+                    animX1Behavior.enabled = false;
+                    animX2Behavior.enabled = false;
+                }
+                
+                if (t1) animX1 = t1.x + layout.x;
+                if (t2) animX2 = t2.x + layout.x;
+                
+                if (!animate) {
+                    animX1Behavior.enabled = true;
+                    animX2Behavior.enabled = true;
+                }
+            }
             
             x: Math.min(animX1, animX2)
             width: Math.abs(animX2 - animX1) + buttonWidth
@@ -218,8 +221,8 @@ FocusScope {
             color: Appearance.m3colors.darkmode ? Appearance.colors.colNotchPrimary : Appearance.colors.colPrimaryContainer
             visible: root.focus
             
-            Behavior on animX1 { NumberAnimation { duration: 120; easing.type: Easing.OutSine } }
-            Behavior on animX2 { NumberAnimation { duration: 380; easing.type: Easing.OutCubic } }
+            Behavior on animX1 { id: animX1Behavior; NumberAnimation { duration: 120; easing.type: Easing.OutSine } }
+            Behavior on animX2 { id: animX2Behavior; NumberAnimation { duration: 380; easing.type: Easing.OutCubic } }
         }
 
         // --- Content Layout ---
@@ -228,6 +231,8 @@ FocusScope {
             anchors.centerIn: parent
             anchors.verticalCenterOffset: -2 * Appearance.effectiveScale
             spacing: 8 * Appearance.effectiveScale
+            
+            onXChanged: tabHighlight.updatePositions(false)
             
             ToolButton { idx: 0; iconName: "fullscreen"; tooltip: "Full Screenshot"; onClicked: executeItem(0) }
             ToolButton { idx: 1; iconName: "screenshot_region"; tooltip: "Region Screenshot"; onClicked: executeItem(1) }
@@ -274,15 +279,18 @@ FocusScope {
         buttonRadius: 22 * Appearance.effectiveScale
         iconSize: 24 * Appearance.effectiveScale
         
-        // Manual color handling: highlighted recording buttons stay colored
-        // Focused button gets dark text regardless of recording state
         readonly property bool isFocused: root.currentIndex === idx && root.focus
-        
         readonly property color activeColor: Appearance.m3colors.darkmode ? Appearance.colors.colNotchPrimary : Appearance.colors.colPrimaryContainer
         
         colBackground: isHighlighted ? activeColor : "transparent"
         color: (isFocused || isHighlighted) ? "#1E1E1E" : Qt.rgba(1, 1, 1, 0.7)
         isM3Highlighted: false
+        
+        onHoveredChanged: {
+            if (hovered) {
+                root.currentIndex = idx;
+            }
+        }
         
         StyledToolTip {
             text: btn.tooltip

@@ -85,6 +85,7 @@ Variants {
                 target: GlobalStates
                 function onQuickActionsOpenChanged() {
                     if (GlobalStates.quickActionsOpen && isActive) {
+                        content.reset();
                         content.forceActiveFocus();
                     }
                 }
