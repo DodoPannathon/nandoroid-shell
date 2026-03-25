@@ -16,8 +16,8 @@ MouseArea {
     acceptedButtons: Qt.LeftButton | Qt.RightButton
     cursorShape: Qt.PointingHandCursor
     
-    implicitWidth: 16
-    implicitHeight: 16
+    implicitWidth: 16 * Appearance.effectiveScale
+    implicitHeight: 16 * Appearance.effectiveScale
 
     onPressed: (event) => {
         if (event.button === Qt.LeftButton) {
@@ -33,8 +33,8 @@ MouseArea {
         source: (root.item && root.item.icon) ? root.item.icon : ""
         visible: source !== ""
         anchors.centerIn: parent
-        width: 16
-        height: 16
+        width: 16 * Appearance.effectiveScale
+        height: 16 * Appearance.effectiveScale
         asynchronous: true
     }
 
@@ -51,7 +51,7 @@ MouseArea {
                 window: root.QsWindow.window
                 rect: {
                     var pos = root.mapToItem(null, 0, 0); 
-                    return Qt.rect(pos.x, pos.y + root.height + 4, root.width, root.height);
+                    return Qt.rect(pos.x, pos.y + root.height + (4 * Appearance.effectiveScale), root.width, root.height);
                 }
                 edges: Edges.Top | Edges.Center
                 gravity: Edges.Bottom

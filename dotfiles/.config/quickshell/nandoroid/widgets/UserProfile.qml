@@ -12,20 +12,23 @@ import Qt5Compat.GraphicalEffects
 Rectangle {
     id: root
     implicitWidth: parent.width
-    implicitHeight: 72
+    implicitHeight: 72 * Appearance.effectiveScale
     color: "transparent"
     
     property bool compact: false
 
     RowLayout {
         anchors.fill: parent
-        anchors.margins: 4
-        spacing: 14
+        anchors.margins: 4 * Appearance.effectiveScale
+        spacing: 14 * Appearance.effectiveScale
         
         // Circular Avatar
         Item {
             id: avatarContainer
-            width: 44; height: 44
+            width: 44 * Appearance.effectiveScale; height: 44 * Appearance.effectiveScale
+            Layout.preferredWidth: width
+            Layout.preferredHeight: height
+            Layout.alignment: Qt.AlignVCenter
             
             Image {
                 id: avatarImage
@@ -37,6 +40,8 @@ Rectangle {
                     if (!sysPath || sysPath.includes("/var/lib/AccountsService/icons/")) return "";
                     return `file://${sysPath}`;
                 }
+                // CRITICAL: sourceSize ensures the image buffer itself is scaled
+                sourceSize: Qt.size(width, height)
                 fillMode: Image.PreserveAspectCrop
                 visible: false // Hidden, shown via MultiEffect/OpacityMask
             }
@@ -44,7 +49,7 @@ Rectangle {
             Rectangle {
                 id: maskRect
                 anchors.fill: parent
-                radius: 22
+                radius: width / 2
                 visible: false
             }
 
@@ -59,30 +64,32 @@ Rectangle {
                 anchors.centerIn: parent
                 visible: avatarImage.status !== Image.Ready
                 text: "person"
-                iconSize: 22
+                iconSize: 22 * Appearance.effectiveScale
                 color: Appearance.m3colors.m3onPrimaryContainer
             }
         }
         
         ColumnLayout {
             visible: !root.compact
-            spacing: -2
+            spacing: -2 * Appearance.effectiveScale
             Layout.fillWidth: true
 
             StyledText {
                 text: SystemInfo.hostname
-                font.pixelSize: Appearance.font.pixelSize.normal
+                font.pixelSize: Appearance.font.pixelSize.small
                 font.weight: Font.Medium
                 color: Appearance.m3colors.m3onSurface
                 elide: Text.ElideRight
                 Layout.fillWidth: true
+                horizontalAlignment: Text.AlignLeft
             }
             StyledText {
                 text: SystemInfo.distroName || "Linux System"
-                font.pixelSize: Appearance.font.pixelSize.smaller
+                font.pixelSize: 11 * Appearance.effectiveScale
                 color: Appearance.colors.colSubtext
                 elide: Text.ElideRight
                 Layout.fillWidth: true
+                horizontalAlignment: Text.AlignLeft
             }
         }
     }

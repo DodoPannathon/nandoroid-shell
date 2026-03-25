@@ -13,12 +13,12 @@ Item {
 
     ColumnLayout {
         anchors.fill: parent
-        anchors.margins: 20
-        spacing: 20
+        anchors.margins: 20 * Appearance.effectiveScale
+        spacing: 20 * Appearance.effectiveScale
 
         StyledText {
             text: "GPU Performance"
-            font.pixelSize: 24
+            font.pixelSize: Appearance.font.pixelSize.huge
             font.weight: Font.Bold
         }
 
@@ -26,38 +26,38 @@ Item {
             model: SystemData.hasValidGpuData ? SystemData.availableGpus : []
             delegate: Rectangle {
                 Layout.fillWidth: true
-                implicitHeight: 180
+                Layout.preferredHeight: 180 * Appearance.effectiveScale
                 color: Appearance.colors.colLayer2
-                radius: 16
+                radius: 16 * Appearance.effectiveScale
                 border.width: 0
                 
                 ColumnLayout {
                     anchors.fill: parent
-                    anchors.margins: 20
-                    spacing: 12
+                    anchors.margins: 20 * Appearance.effectiveScale
+                    spacing: 12 * Appearance.effectiveScale
                     
                     RowLayout {
                         Layout.fillWidth: true
                         ColumnLayout {
-                            StyledText { text: modelData.name; font.pixelSize: 18; font.weight: Font.Bold; color: Appearance.m3colors.m3primaryContainer }
-                            StyledText { text: modelData.vendor; color: Appearance.m3colors.m3onSurfaceVariant }
+                            StyledText { text: modelData.name; font.pixelSize: Appearance.font.pixelSize.large; font.weight: Font.Bold; color: Appearance.m3colors.m3primaryContainer }
+                            StyledText { text: modelData.vendor; color: Appearance.m3colors.m3onSurfaceVariant; font.pixelSize: Appearance.font.pixelSize.smaller }
                         }
                         Item { Layout.fillWidth: true }
                         ColumnLayout {
                             Layout.alignment: Qt.AlignRight
                             StyledText { 
                                 text: modelData.temp > 0 ? modelData.temp + "°C" : "--°C"
-                                font.pixelSize: 24
+                                font.pixelSize: Appearance.font.pixelSize.huge
                                 font.weight: Font.Black
                                 color: modelData.temp > 80 ? Appearance.m3colors.m3error : Appearance.m3colors.m3onSurface
                             }
-                            StyledText { text: "Temperature"; font.pixelSize: 10; color: Appearance.m3colors.m3onSurfaceVariant; horizontalAlignment: Text.AlignRight }
+                            StyledText { text: "Temperature"; font.pixelSize: Appearance.font.pixelSize.smallest; color: Appearance.m3colors.m3onSurfaceVariant; horizontalAlignment: Text.AlignRight }
                         }
                     }
                     
                     StyledText {
                         text: "PCI ID: " + modelData.pciId
-                        font.pixelSize: 10
+                        font.pixelSize: Appearance.font.pixelSize.smallest
                         color: Appearance.m3colors.m3onSurfaceVariant
                     }
                     
@@ -65,7 +65,7 @@ Item {
                     
                     StyledText {
                         text: (modelData.driver && modelData.driver !== "undefined") ? "System is using " + modelData.driver + " driver." : "System GPU driver loaded."
-                        font.pixelSize: 12
+                        font.pixelSize: Appearance.font.pixelSize.smaller
                         color: Appearance.m3colors.m3onSurface
                         font.italic: true
                     }
@@ -79,29 +79,29 @@ Item {
             Layout.fillWidth: true
             Layout.fillHeight: true
             color: Appearance.colors.colLayer2
-            radius: 16
+            radius: 16 * Appearance.effectiveScale
             border.width: 0
 
             ColumnLayout {
                 anchors.centerIn: parent
-                width: parent.width * 0.8
-                spacing: 12
+                Layout.preferredWidth: parent.width * 0.8
+                spacing: 12 * Appearance.effectiveScale
                 MaterialSymbol {
                     text: "videogame_asset_off"
-                    iconSize: 48
+                    iconSize: 48 * Appearance.effectiveScale
                     color: Appearance.m3colors.m3outline
                     Layout.alignment: Qt.AlignCenter
                 }
                 StyledText {
                     text: "GPU performance data not available"
-                    font.pixelSize: 16
+                    font.pixelSize: Appearance.font.pixelSize.normal
                     font.weight: Font.Medium
                     color: Appearance.m3colors.m3onSurface
                     Layout.alignment: Qt.AlignCenter
                 }
                 StyledText {
                     text: "Your GPU (likely integrated) does not report usage or temperature data to the system sensors."
-                    font.pixelSize: 12
+                    font.pixelSize: Appearance.font.pixelSize.smaller
                     color: Appearance.m3colors.m3onSurfaceVariant
                     Layout.alignment: Qt.AlignCenter
                     horizontalAlignment: Text.AlignHCenter

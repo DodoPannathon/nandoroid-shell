@@ -12,12 +12,7 @@ import Quickshell.Hyprland
 
 /**
  * Full-width top status bar panel.
- * Android 16 tablet style: left cluster (notifications), center (clock), right cluster (quick settings).
- *
- * backgroundStyle:
- *   0 = None      – fully transparent (wallpaper shows through)
- *   1 = Always    – solid colLayer0 background with rounded bottom corners
- *   2 = Adaptive  – solid background only when a non-floating window occupies the workspace
+ * Refactored for global scaling with edge gap fixes.
  */
 Scope {
     id: root
@@ -69,6 +64,20 @@ Scope {
             color: "transparent"
             implicitHeight: Appearance.sizes.statusBarHeight
                 + (showBackground ? cornerRadius : 0)
+            height: implicitHeight
+
+            // Define clickable area mask
+            mask: Region {
+                item: maskItem
+            }
+
+            Item {
+                id: maskItem
+                anchors.left: parent.left
+                anchors.right: parent.right
+                anchors.top: parent.top
+                height: (autoHide && !mustShow) ? 3 * Appearance.effectiveScale : parent.height
+            }
 
             // ── Hover Detection Infrastructure ──────────────────
             HoverHandler {
@@ -81,31 +90,26 @@ Scope {
                 anchors.top: parent.top
                 anchors.left: parent.left
                 anchors.right: parent.right
-                height: 3
+                height: 3 * Appearance.effectiveScale
                 hoverEnabled: true
                 propagateComposedEvents: true
                 onEntered: forceShowByHover = true
                 onPressed: (mouse) => { mouse.accepted = false; }
                 cursorShape: Qt.ArrowCursor
-                z: 100 // Ensure trigger is accessible
+                z: 100 
             }
 
             // ── Background visibility ──────────────────────────────────
             readonly property int bgStyle: Config.ready && Config.options.statusBar
                 ? (Config.options.statusBar.backgroundStyle ?? 0) : 0
-            readonly property int cornerRadius: Config.ready && Config.options.statusBar
-                ? (Config.options.statusBar.backgroundCornerRadius ?? 20) : 20
+            readonly property int cornerRadius: Math.round((Config.ready && Config.options.statusBar
+                ? (Config.options.statusBar.backgroundCornerRadius ?? 20) : 20) * Appearance.effectiveScale)
 
-            // Track tiled windows for adaptive style
-            readonly property int activeWorkspaceId: Hyprland.monitorFor(modelData)?.activeWorkspace?.id ?? -1
-            
             readonly property bool hasTiledWindows: {
-                if (bgStyle !== 2 || activeWorkspaceId === -1) return false;
-                // Filter windows that are on this monitor's active workspace and NOT floating
+                if (bgStyle !== 2 || (Hyprland.monitorFor(modelData)?.activeWorkspace?.id ?? -1) === -1) return false;
+                const wsId = Hyprland.monitorFor(modelData).activeWorkspace.id;
                 return HyprlandData.windowList.some(w => 
-                    w.workspace.id === activeWorkspaceId && 
-                    !w.floating && 
-                    w.monitor === monitorIndex
+                    w.workspace.id === wsId && !w.floating && w.monitor === monitorIndex
                 );
             }
 
@@ -116,13 +120,13 @@ Scope {
             }
 
             readonly property bool isCentered: (Config.ready && Config.options.statusBar) ? Config.options.statusBar.layoutStyle === "centered" : false
-            readonly property real centeredWidth: (Config.ready && Config.options.statusBar) ? Config.options.statusBar.centeredWidth : 1200
+            readonly property real centeredWidth: Math.round((Config.ready && Config.options.statusBar ? Config.options.statusBar.centeredWidth : 1200) * Appearance.effectiveScale)
 
             // ── Main Content Container (Animated) ──
             Item {
                 id: mainContainer
                 anchors.fill: parent
-                anchors.topMargin: (autoHide && !mustShow) ? -Appearance.sizes.statusBarHeight - (showBackground ? cornerRadius : 5) : 0
+                anchors.topMargin: (autoHide && !mustShow) ? -Appearance.sizes.statusBarHeight - (showBackground ? cornerRadius : 5 * Appearance.effectiveScale) : 0
                 
                 Behavior on anchors.topMargin {
                     NumberAnimation {
@@ -131,7 +135,7 @@ Scope {
                     }
                 }
 
-                // ── Background Layer (Full area to prevent shadow clipping) ──
+                // ── Background Layer ──
                 Item {
                     id: barBackgroundLayer
                     anchors.fill: parent
@@ -141,26 +145,30 @@ Scope {
                     layer.enabled: true
                     layer.effect: DropShadow {
                         horizontalOffset: 0
-                        verticalOffset: 2
-                        radius: 24
+                        verticalOffset: 2 * Appearance.effectiveScale
+                        radius: 24 * Appearance.effectiveScale
                         samples: 32
                         color: Functions.ColorUtils.applyAlpha(Appearance.colors.colShadow, 0.12)
                         transparentBorder: true
                     }
 
-                    // ── Solid background rectangle ─────────────────────────────
                     Rectangle {
                         id: barBg
                         
                         readonly property real targetHeight: Appearance.sizes.statusBarHeight + (barWindow.isCentered ? barWindow.cornerRadius : 0)
                         readonly property real targetY: barWindow.showBackground 
                             ? (barWindow.isCentered ? -barWindow.cornerRadius : 0)
-                            : -targetHeight - 10
+                            : -targetHeight - (10 * Appearance.effectiveScale)
 
                         y: targetY
                         anchors.horizontalCenter: parent.horizontalCenter
                         
-                        width: barWindow.isCentered ? Math.min(barWindow.centeredWidth, parent.width - 40) : parent.width
+                        // Overlap logic: In standard mode, make it 2px wider to eliminate screen edge gaps
+                        readonly property real overlap: 1.0
+                        width: barWindow.isCentered 
+                            ? Math.min(barWindow.centeredWidth, parent.width - (40 * Appearance.effectiveScale)) 
+                            : parent.width + (overlap * 2)
+                        
                         height: targetHeight
                         color: Appearance.colors.colStatusBarSolid
                         
@@ -171,61 +179,40 @@ Scope {
                         Behavior on height { NumberAnimation { duration: 450; easing.type: Easing.OutQuint } }
                         Behavior on radius { NumberAnimation { duration: 400; easing.type: Easing.OutQuint } }
 
-                        // ── Standard Mode Corners (Bottom) ──
+                        // Standard Mode Corners (Bottom) - Pull OUT and UP
                         RoundCorner {
                             id: stdLeftCorner
-                            anchors.top: parent.bottom
-                            anchors.left: parent.left
-                            implicitSize: barWindow.cornerRadius
-                            color: parent.color
-                            corner: RoundCorner.CornerEnum.TopLeft
-                            opacity: !barWindow.isCentered && barWindow.showBackground ? 1.0 : 0.0
-                            visible: opacity > 0
-                            Behavior on opacity { NumberAnimation { duration: 300 } }
+                            anchors.top: parent.bottom; anchors.left: parent.left
+                            anchors.topMargin: -barBg.overlap; anchors.leftMargin: -barBg.overlap
+                            implicitSize: barWindow.cornerRadius; color: parent.color; corner: RoundCorner.CornerEnum.TopLeft
+                            opacity: !barWindow.isCentered && barWindow.showBackground ? 1.0 : 0.0; visible: opacity > 0
                         }
-
                         RoundCorner {
                             id: stdRightCorner
-                            anchors.top: parent.bottom
-                            anchors.right: parent.right
-                            implicitSize: barWindow.cornerRadius
-                            color: parent.color
-                            corner: RoundCorner.CornerEnum.TopRight
-                            opacity: !barWindow.isCentered && barWindow.showBackground ? 1.0 : 0.0
-                            visible: opacity > 0
-                            Behavior on opacity { NumberAnimation { duration: 300 } }
+                            anchors.top: parent.bottom; anchors.right: parent.right
+                            anchors.topMargin: -barBg.overlap; anchors.rightMargin: -barBg.overlap
+                            implicitSize: barWindow.cornerRadius; color: parent.color; corner: RoundCorner.CornerEnum.TopRight
+                            opacity: !barWindow.isCentered && barWindow.showBackground ? 1.0 : 0.0; visible: opacity > 0
                         }
-
-                        // ── HUD Mode Corners (Top sides of the pill) ──
+                        // HUD Mode Corners (Top sides) - Pull IN and UP
                         RoundCorner {
                             id: hudLeftCorner
-                            anchors.top: parent.top
-                            anchors.topMargin: barWindow.cornerRadius
-                            anchors.right: parent.left
-                            implicitSize: barWindow.cornerRadius
-                            color: parent.color
-                            corner: RoundCorner.CornerEnum.TopRight
-                            opacity: barWindow.isCentered && barWindow.showBackground ? 1.0 : 0.0
-                            visible: opacity > 0
-                            Behavior on opacity { NumberAnimation { duration: 300 } }
+                            anchors.top: parent.top; anchors.topMargin: barWindow.cornerRadius - barBg.overlap; anchors.right: parent.left
+                            anchors.rightMargin: -barBg.overlap
+                            implicitSize: barWindow.cornerRadius; color: parent.color; corner: RoundCorner.CornerEnum.TopRight
+                            opacity: barWindow.isCentered && barWindow.showBackground ? 1.0 : 0.0; visible: opacity > 0
                         }
-
                         RoundCorner {
                             id: hudRightCorner
-                            anchors.top: parent.top
-                            anchors.topMargin: barWindow.cornerRadius
-                            anchors.left: parent.right
-                            implicitSize: barWindow.cornerRadius
-                            color: parent.color
-                            corner: RoundCorner.CornerEnum.TopLeft
-                            opacity: barWindow.isCentered && barWindow.showBackground ? 1.0 : 0.0
-                            visible: opacity > 0
-                            Behavior on opacity { NumberAnimation { duration: 300 } }
+                            anchors.top: parent.top; anchors.topMargin: barWindow.cornerRadius - barBg.overlap; anchors.left: parent.right
+                            anchors.leftMargin: -barBg.overlap
+                            implicitSize: barWindow.cornerRadius; color: parent.color; corner: RoundCorner.CornerEnum.TopLeft
+                            opacity: barWindow.isCentered && barWindow.showBackground ? 1.0 : 0.0; visible: opacity > 0
                         }
                     }
                 }
 
-                // ── Gradient overlay (Always full width) ─────────
+                // ── Gradient overlay ──
                 Rectangle {
                     anchors {
                         left: parent.left
@@ -239,11 +226,9 @@ Scope {
                         GradientStop { position: 0.0; color: Appearance.colors.colStatusBarGradientStart }
                         GradientStop { position: 1.0; color: Appearance.colors.colStatusBarGradientEnd }
                     }
-                    
-                    Behavior on opacity { NumberAnimation { duration: 300 } }
                 }
 
-                // ── Content ────────────────────────────────────────────────
+                // ── Content ──
                 StatusBarContent {
                     anchors {
                         left: parent.left
@@ -253,7 +238,7 @@ Scope {
                     height: Appearance.sizes.statusBarHeight
                     monitorIndex: barWindow.monitorIndex
                 }
-            } // End mainContainer
+            }
         }
     }
 }

@@ -33,14 +33,14 @@ Item {
         z: 6
         anchors.centerIn: parent
         // Visually offset for non-symmetrical shapes (like Pentagon)
-        anchors.verticalCenterOffset: root.isMonth ? 0 : 3 
+        anchors.verticalCenterOffset: root.isMonth ? 0 : 3 * Appearance.effectiveScale
         horizontalAlignment: Text.AlignHCenter
         verticalAlignment: Text.AlignVCenter
         renderType: Text.NativeRendering
         color: root.isMonth ? Appearance.colors.colOnSecondaryContainer : Appearance.colors.colOnTertiaryContainer
         font {
             family: Appearance.font.family.expressive
-            pixelSize: 30
+            pixelSize: 30 * Appearance.effectiveScale
             weight: Font.Black
             variableAxes: Appearance.font.variableAxes.expressive
         }

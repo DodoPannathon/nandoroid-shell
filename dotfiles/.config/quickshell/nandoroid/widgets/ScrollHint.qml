@@ -47,20 +47,20 @@ Revealer { // Scroll hint
             anchors {
                 fill: parent
             }
-            spacing: -6
+            spacing: -6 * Appearance.effectiveScale
             MaterialSymbol {
                 text: "keyboard_arrow_up"
-                iconSize: 12
+                iconSize: 12 * Appearance.effectiveScale
                 color: root.color
             }
             MaterialSymbol {
                 text: root.icon
-                iconSize: 12
+                iconSize: 12 * Appearance.effectiveScale
                 color: root.color
             }
             MaterialSymbol {
                 text: "keyboard_arrow_down"
-                iconSize: 12
+                iconSize: 12 * Appearance.effectiveScale
                 color: root.color
             }
         }

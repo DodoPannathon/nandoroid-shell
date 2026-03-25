@@ -25,7 +25,7 @@ MaterialShape { // App icon
     property real appIconSize: implicitSize * appIconScale
     property real smallAppIconSize: implicitSize * smallAppIconScale
 
-    implicitSize: 38
+    implicitSize: 38 * Appearance.effectiveScale
     property list<var> urgentShapes: [
         MaterialShape.Shape.VerySunny,
         MaterialShape.Shape.SoftBurst,

@@ -6,8 +6,8 @@ import ".."
 
 Item {
     id: root
-    property real implicitSize: 12
-    property real margins: 10
+    property real implicitSize: 12 * Appearance.effectiveScale
+    property real margins: 10 * Appearance.effectiveScale
     property color color: Appearance.colors.colOnSecondaryContainer
 
     Repeater {

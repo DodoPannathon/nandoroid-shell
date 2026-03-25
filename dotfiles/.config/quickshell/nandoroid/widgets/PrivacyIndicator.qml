@@ -5,12 +5,12 @@ import "../services"
 
 /**
  * Android-style Privacy Indicator.
- * Shows a green pill with icons when active, then shrinks to a dot.
+ * Refactored for global scaling.
  */
 Item {
     id: root
     implicitWidth: active ? mainContainer.width : 0
-    implicitHeight: 24
+    implicitHeight: 24 * Appearance.effectiveScale
 
     readonly property bool active: (Config.ready && Config.options.privacy && Config.options.privacy.enable) ? Privacy.anyActive : false
     readonly property bool mic: Privacy.microphoneActive
@@ -42,8 +42,8 @@ Item {
     Rectangle {
         id: mainContainer
         anchors.verticalCenter: parent.verticalCenter
-        height: root.expanded ? 20 : 8
-        width: root.expanded ? contentLayout.implicitWidth + 12 : 8
+        height: root.expanded ? 20 * Appearance.effectiveScale : 8 * Appearance.effectiveScale
+        width: root.expanded ? contentLayout.implicitWidth + (12 * Appearance.effectiveScale) : 8 * Appearance.effectiveScale
         radius: height / 2
         color: Appearance.m3colors.m3primary
         clip: true
@@ -58,7 +58,7 @@ Item {
         RowLayout {
             id: contentLayout
             anchors.centerIn: parent
-            spacing: 4
+            spacing: 4 * Appearance.effectiveScale
             opacity: root.expanded ? 1 : 0
             
             Behavior on opacity {
@@ -68,7 +68,7 @@ Item {
             MaterialSymbol {
                 visible: root.mic
                 text: "mic"
-                iconSize: 14
+                iconSize: 14 * Appearance.effectiveScale
                 color: Appearance.m3colors.m3onPrimary
                 fill: 1
             }
@@ -76,7 +76,7 @@ Item {
             MaterialSymbol {
                 visible: root.cam
                 text: "videocam"
-                iconSize: 14
+                iconSize: 14 * Appearance.effectiveScale
                 color: Appearance.m3colors.m3onPrimary
                 fill: 1
             }
@@ -84,7 +84,7 @@ Item {
             MaterialSymbol {
                 visible: root.screen
                 text: "screen_share"
-                iconSize: 14
+                iconSize: 14 * Appearance.effectiveScale
                 color: Appearance.m3colors.m3onPrimary
                 fill: 1
             }

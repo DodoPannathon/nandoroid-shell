@@ -15,12 +15,12 @@ SegmentedWrapper {
     // ── Input Properties ──
     property bool checked: false // Use a dedicated property instead of aliasing to internal button.toggled
     property string iconName: ""
-    property int iconSize: 24
+    property int iconSize: 24 * Appearance.effectiveScale
     property string buttonText: ""
     property bool isHighlighted: false
-    property real leftPadding: 16
-    property real rightPadding: 16
-    property real spacing: 8
+    property real leftPadding: 16 * Appearance.effectiveScale
+    property real rightPadding: 16 * Appearance.effectiveScale
+    property real spacing: 8 * Appearance.effectiveScale
     readonly property bool hovered: button.realHovered
     
     property color colActive: Appearance.m3colors.m3primary
@@ -34,7 +34,7 @@ SegmentedWrapper {
     active: isHighlighted || checked
     
     implicitWidth: contentRow.implicitWidth + leftPadding + rightPadding
-    implicitHeight: 40
+    implicitHeight: 40 * Appearance.effectiveScale
 
     M3IconButton {
         id: button
@@ -81,7 +81,7 @@ SegmentedWrapper {
                     visible: root.buttonText !== ""
                     anchors.verticalCenter: parent.verticalCenter
                     text: root.buttonText
-                    font.pixelSize: 12
+                    font.pixelSize: 12 * Appearance.effectiveScale
                     font.weight: Font.Medium
                     color: root.active ? root.colActiveText : root.colInactiveText
                 }

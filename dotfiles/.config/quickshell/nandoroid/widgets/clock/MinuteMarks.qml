@@ -16,12 +16,12 @@ Item {
         id: dotsLoader
         anchors {
             fill: parent
-            margins: 10
+            margins: 10 * Appearance.effectiveScale
         }
         shown: root.style === "dots"
         sourceComponent: Dots {
             color: root.color
-            margins: 46 - dotsLoader.opacity * 34
+            margins: (46 * Appearance.effectiveScale) - dotsLoader.opacity * (34 * Appearance.effectiveScale)
         }
     }
 
@@ -31,9 +31,9 @@ Item {
         anchors.fill: parent
         shown: root.style === "numbers"
         sourceComponent: BigHourNumbers {
-            numberSize: 80
+            numberSize: 80 * Appearance.effectiveScale
             color: root.color
-            margins: 20 - 10 * bigHourNumbersLoader.opacity
+            margins: (20 * Appearance.effectiveScale) - (10 * Appearance.effectiveScale) * bigHourNumbersLoader.opacity
         }
     }
 
@@ -42,12 +42,12 @@ Item {
         id: linesLoader
         anchors {
             fill: parent
-            margins: 10
+            margins: 10 * Appearance.effectiveScale
         }
         shown: root.style === "full"
         sourceComponent: Lines {
             color: root.color
-            margins: 46 - linesLoader.opacity * 34
+            margins: (46 * Appearance.effectiveScale) - linesLoader.opacity * (34 * Appearance.effectiveScale)
         }
     }
     

@@ -29,14 +29,14 @@ Item {
     property color color: "transparent"
     property var maxRadius: undefined
     property real fullRadius: {
-        let r = (height > 0 ? height : (implicitHeight > 0 ? implicitHeight : 40)) / 2
+        let r = (height > 0 ? height : (implicitHeight > 0 ? implicitHeight : 40 * Appearance.effectiveScale)) / 2
         if (maxRadius !== undefined) return Math.min(r, maxRadius);
         return r
     }
-    property real smallRadius: Appearance.rounding.unsharpenmore || 6
+    property real smallRadius: (Appearance.rounding.unsharpenmore || 6) * Appearance.effectiveScale
     
-    implicitWidth: 40
-    implicitHeight: 40
+    implicitWidth: 40 * Appearance.effectiveScale
+    implicitHeight: 40 * Appearance.effectiveScale
     
     // ── Auto-Detection Logic ──
     readonly property var visibleSiblings: {

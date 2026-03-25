@@ -37,12 +37,12 @@ Item {
         }
     }
 
-    readonly property real maxWidth: root.parent && root.parent.Layout ? root.parent.Layout.maximumWidth : 400
+    readonly property real maxWidth: root.parent && root.parent.Layout ? root.parent.Layout.maximumWidth : 400 * Appearance.effectiveScale
 
     ColumnLayout {
         id: titleColumn
         anchors.verticalCenter: parent.verticalCenter
-        spacing: -2
+        spacing: -2 * Appearance.effectiveScale
         width: Math.min(implicitWidth, root.maxWidth)
 
         StyledText {

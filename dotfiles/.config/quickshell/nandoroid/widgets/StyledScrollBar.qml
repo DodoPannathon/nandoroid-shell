@@ -11,7 +11,7 @@ ScrollBar {
     active: hovered || pressed
 
     contentItem: Rectangle {
-        implicitWidth: 4
+        implicitWidth: 4 * Appearance.effectiveScale
         implicitHeight: root.visualSize
         radius: width / 2
         color: Appearance.m3colors.m3onSurfaceVariant // Adapted color

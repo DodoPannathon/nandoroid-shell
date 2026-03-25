@@ -34,13 +34,13 @@ Item {
         // Horizontal Tab Bar
         Rectangle {
             Layout.fillWidth: true
-            implicitHeight: 60
+            implicitHeight: 60 * Appearance.effectiveScale
             color: "transparent"
             
             RowLayout {
                 anchors.horizontalCenter: parent.horizontalCenter
                 anchors.verticalCenter: parent.verticalCenter
-                spacing: 8
+                spacing: 8 * Appearance.effectiveScale
                 
                 Repeater {
                     model: [
@@ -53,9 +53,9 @@ Item {
                     ]
                     
                     delegate: RippleButton {
-                        implicitWidth: 120
-                        implicitHeight: 40
-                        buttonRadius: 20
+                        implicitWidth: 120 * Appearance.effectiveScale
+                        implicitHeight: 40 * Appearance.effectiveScale
+                        buttonRadius: 20 * Appearance.effectiveScale
                         colBackground: GlobalStates.performanceSubIndex === index 
                             ? Functions.ColorUtils.transparentize(Appearance.colors.colPrimary, 0.8) 
                             : "transparent"
@@ -67,15 +67,15 @@ Item {
                         
                         RowLayout {
                             anchors.centerIn: parent
-                            spacing: 8
+                            spacing: 8 * Appearance.effectiveScale
                             MaterialSymbol {
                                 text: modelData.icon
-                                iconSize: 18
+                                iconSize: 18 * Appearance.effectiveScale
                                 color: GlobalStates.performanceSubIndex === index ? Appearance.colors.colPrimary : Appearance.colors.colSubtext
                             }
                             StyledText {
                                 text: modelData.name
-                                font.pixelSize: 13
+                                font.pixelSize: 13 * Appearance.effectiveScale
                                 font.weight: GlobalStates.performanceSubIndex === index ? Font.Bold : Font.Medium
                                 color: GlobalStates.performanceSubIndex === index ? Appearance.colors.colPrimary : Appearance.colors.colOnLayer0
                             }
@@ -88,7 +88,7 @@ Item {
             Rectangle {
                 anchors.bottom: parent.bottom
                 width: parent.width
-                height: 1
+                height: 1 * Appearance.effectiveScale
                 color: Appearance.colors.colLayer2
             }
         }

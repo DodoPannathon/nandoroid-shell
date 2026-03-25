@@ -12,7 +12,7 @@ import "../../../widgets"
  */
 Flickable {
     id: root
-    contentHeight: mainCol.implicitHeight + 100
+    contentHeight: mainCol.implicitHeight + (100 * Appearance.effectiveScale)
     clip: true
     
     // Smooth value for battery bar
@@ -21,30 +21,34 @@ Flickable {
 
     ColumnLayout {
         id: mainCol
-        width: parent.width - 64
+        width: parent.width - (64 * Appearance.effectiveScale)
         anchors.horizontalCenter: parent.horizontalCenter
         anchors.top: parent.top
-        anchors.topMargin: 32
-        spacing: 32
+        anchors.topMargin: 32 * Appearance.effectiveScale
+        spacing: 32 * Appearance.effectiveScale
 
         // ── 1. Hero Battery Visual ──
         RowLayout {
             Layout.fillWidth: true
-            spacing: 32
+            spacing: 32 * Appearance.effectiveScale
 
             // Large Android-style Battery Icon (Matching Status Bar style)
             Item {
-                width: 100
-                height: 160
+                id: batteryIconItem
+                width: 100 * Appearance.effectiveScale
+                height: 160 * Appearance.effectiveScale
+                Layout.preferredWidth: width
+                Layout.preferredHeight: height
                 Layout.alignment: Qt.AlignVCenter
 
                 // Main body
                 Rectangle {
+                    id: bodyRect
                     anchors.fill: parent
-                    anchors.bottomMargin: 8
-                    radius: 16
+                    anchors.bottomMargin: 8 * Appearance.effectiveScale
+                    radius: 16 * Appearance.effectiveScale
                     color: Appearance.colors.colLayer2
-                    border.width: 2
+                    border.width: 2 * Appearance.effectiveScale
                     border.color: Functions.ColorUtils.applyAlpha(Appearance.colors.colOnLayer1, 0.1)
 
                     // Fill level
@@ -52,9 +56,9 @@ Flickable {
                         anchors.bottom: parent.bottom
                         anchors.left: parent.left
                         anchors.right: parent.right
-                        anchors.margins: 6
-                        height: (parent.height - 12) * root.displayPercentage
-                        radius: 10
+                        anchors.margins: 6 * Appearance.effectiveScale
+                        height: (parent.height - (12 * Appearance.effectiveScale)) * root.displayPercentage
+                        radius: 10 * Appearance.effectiveScale
                         color: {
                             if (Battery.isCritical && !Battery.isCharging) return Appearance.colors.colError;
                             if (Battery.isLow && !Battery.isCharging) return Appearance.colors.colWarning;
@@ -68,9 +72,9 @@ Flickable {
                     MaterialSymbol {
                         anchors.centerIn: parent
                         text: "bolt"
-                        iconSize: 40
+                        iconSize: 40 * Appearance.effectiveScale
                         fill: 1
-                        color: Appearance.colors.colOnLayer0 // Corrected from colOnPrimary
+                        color: Appearance.colors.colOnLayer0
                         visible: Battery.isCharging
                         opacity: 0.9
                     }
@@ -78,25 +82,25 @@ Flickable {
 
                 // Battery Tip
                 Rectangle {
-                    anchors.horizontalCenter: parent.horizontalCenter
-                    anchors.bottom: parent.top
-                    anchors.bottomMargin: -4
-                    width: 32
-                    height: 8
-                    radius: 3
+                    anchors.horizontalCenter: bodyRect.horizontalCenter
+                    anchors.bottom: bodyRect.top
+                    anchors.bottomMargin: -6 * Appearance.effectiveScale
+                    width: 32 * Appearance.effectiveScale
+                    height: 8 * Appearance.effectiveScale
+                    radius: 3 * Appearance.effectiveScale
                     color: Appearance.colors.colLayer2
-                    border.width: 2
+                    border.width: 2 * Appearance.effectiveScale
                     border.color: Functions.ColorUtils.applyAlpha(Appearance.colors.colOnLayer1, 0.1)
                 }
             }
 
             ColumnLayout {
                 Layout.fillWidth: true
-                spacing: 4
+                spacing: 4 * Appearance.effectiveScale
                 
                 StyledText {
                     text: Math.round(root.displayPercentage * 100) + "%"
-                    font.pixelSize: 64
+                    font.pixelSize: 64 * Appearance.effectiveScale // Keep this large and scaled
                     font.weight: Font.Black
                     color: Appearance.colors.colOnLayer0
                 }
@@ -124,8 +128,8 @@ Flickable {
         GridLayout {
             Layout.fillWidth: true
             columns: 4
-            columnSpacing: 16
-            rowSpacing: 16
+            columnSpacing: 16 * Appearance.effectiveScale
+            rowSpacing: 16 * Appearance.effectiveScale
 
             StatCard {
                 Layout.fillWidth: true
@@ -167,14 +171,14 @@ Flickable {
         // ── 3. Technical Specifications ──
         ColumnLayout {
             Layout.fillWidth: true
-            spacing: 12
+            spacing: 12 * Appearance.effectiveScale
 
             RowLayout {
-                spacing: 8
-                Layout.leftMargin: 4
+                spacing: 8 * Appearance.effectiveScale
+                Layout.leftMargin: 4 * Appearance.effectiveScale
                 MaterialSymbol {
                     text: "info"
-                    iconSize: 18
+                    iconSize: 18 * Appearance.effectiveScale
                     color: Appearance.colors.colPrimary
                 }
                 StyledText {
@@ -187,19 +191,19 @@ Flickable {
 
             Rectangle {
                 Layout.fillWidth: true
-                implicitHeight: techGrid.implicitHeight + 40
-                radius: 24
+                implicitHeight: techGrid.implicitHeight + (40 * Appearance.effectiveScale)
+                radius: 24 * Appearance.effectiveScale
                 color: Appearance.m3colors.m3surfaceContainerHigh
-                border.width: 1
+                border.width: 1 * Appearance.effectiveScale
                 border.color: Functions.ColorUtils.applyAlpha(Appearance.colors.colOnLayer1, 0.05)
 
                 GridLayout {
                     id: techGrid
                     anchors.fill: parent
-                    anchors.margins: 24
+                    anchors.margins: 24 * Appearance.effectiveScale
                     columns: 2
-                    rowSpacing: 20
-                    columnSpacing: 40
+                    rowSpacing: 20 * Appearance.effectiveScale
+                    columnSpacing: 40 * Appearance.effectiveScale
 
                     TechInfo { label: "Vendor"; value: Battery.vendor || "Unknown" }
                     TechInfo { label: "Model"; value: Battery.model || "Generic Battery" }
@@ -211,7 +215,7 @@ Flickable {
             }
         }
 
-        Item { Layout.preferredHeight: 20 }
+        Item { Layout.preferredHeight: 20 * Appearance.effectiveScale }
     }
 
     // ── Internal Components ──
@@ -224,19 +228,25 @@ Flickable {
         property string icon
         property color iconColor: Appearance.colors.colPrimary
         
-        implicitHeight: 120
-        radius: 24
+        implicitHeight: 120 * Appearance.effectiveScale
+        radius: 24 * Appearance.effectiveScale
         color: Appearance.colors.colLayer1
         
         ColumnLayout {
             anchors.fill: parent
-            anchors.margins: 16
-            spacing: 2
+            anchors.margins: 16 * Appearance.effectiveScale
+            spacing: 4 * Appearance.effectiveScale
 
             RowLayout {
-                spacing: 8
-                MaterialSymbol { text: cardRoot.icon; iconSize: 18; color: cardRoot.iconColor }
-                StyledText { text: cardRoot.title; font.pixelSize: 11; font.weight: Font.Medium; color: Appearance.colors.colSubtext }
+                spacing: 8 * Appearance.effectiveScale
+                MaterialSymbol { text: cardRoot.icon; iconSize: 18 * Appearance.effectiveScale; color: cardRoot.iconColor }
+                StyledText { 
+                    text: cardRoot.title
+                    font.pixelSize: Appearance.font.pixelSize.smallest
+                    font.weight: Font.Medium
+                    color: Appearance.colors.colSubtext
+                    Layout.fillWidth: true
+                }
             }
 
             Item { Layout.fillHeight: true }
@@ -246,13 +256,17 @@ Flickable {
                 font.pixelSize: Appearance.font.pixelSize.huge
                 font.weight: Font.Bold
                 color: Appearance.colors.colOnLayer0
+                elide: Text.ElideRight
+                Layout.fillWidth: true
             }
 
             StyledText {
                 text: cardRoot.subtitle
-                font.pixelSize: 10
+                font.pixelSize: Appearance.font.pixelSize.smallest
                 color: Appearance.colors.colSubtext
                 opacity: 0.7
+                elide: Text.ElideRight
+                Layout.fillWidth: true
             }
         }
     }
@@ -261,18 +275,18 @@ Flickable {
         id: infoRoot
         property string label
         property string value
-        spacing: 2
+        spacing: 2 * Appearance.effectiveScale
         Layout.fillWidth: true
 
         StyledText {
             text: infoRoot.label
-            font.pixelSize: 10
+            font.pixelSize: Appearance.font.pixelSize.smallest
             font.weight: Font.Medium
             color: Appearance.colors.colSubtext
         }
         StyledText {
             text: infoRoot.value
-            font.pixelSize: 12
+            font.pixelSize: Appearance.font.pixelSize.smaller
             font.weight: Font.DemiBold
             color: Appearance.colors.colOnLayer0
             elide: Text.ElideRight

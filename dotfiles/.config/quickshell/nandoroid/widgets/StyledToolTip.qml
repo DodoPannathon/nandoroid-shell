@@ -18,9 +18,9 @@ ToolTip {
     
     background: Rectangle {
         color: Appearance.m3colors.m3surfaceContainerHigh
-        radius: 8
+        radius: 8 * Appearance.effectiveScale
         border.color: Appearance.m3colors.m3outlineVariant
-        border.width: 1
+        border.width: Math.max(1, 1 * Appearance.effectiveScale)
     }
     
     font {

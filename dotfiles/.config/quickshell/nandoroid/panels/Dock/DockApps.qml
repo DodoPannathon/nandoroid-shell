@@ -13,8 +13,8 @@ import "../../widgets"
  */
 Item {
     id: root
-    property real buttonPadding: 5
-    property real spacing: 8 
+    property real buttonPadding: 5 * Appearance.effectiveScale
+    property real spacing: 8 * Appearance.effectiveScale
     property int backgroundStyle: 1
 
     property Item lastHoveredButton
@@ -38,10 +38,10 @@ Item {
             width: root.width; height: root.height
             start: Qt.point(0, 0); end: Qt.point(width, 0)
             gradient: Gradient {
-                GradientStop { position: 0.0; color: (listView.contentX > 5) ? "transparent" : "black" }
+                GradientStop { position: 0.0; color: (listView.contentX > 5 * Appearance.effectiveScale) ? "transparent" : "black" }
                 GradientStop { position: 0.1; color: "black" }
                 GradientStop { position: 0.9; color: "black" }
-                GradientStop { position: 1.0; color: (listView.contentX < listView.contentWidth - listView.width - 5) ? "transparent" : "black" }
+                GradientStop { position: 1.0; color: (listView.contentX < listView.contentWidth - listView.width - 5 * Appearance.effectiveScale) ? "transparent" : "black" }
             }
         }
     }

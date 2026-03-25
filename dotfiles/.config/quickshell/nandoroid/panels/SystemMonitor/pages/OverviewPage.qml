@@ -17,7 +17,7 @@ Item {
 
     Flickable {
         anchors.fill: parent
-        contentHeight: mainLayout.implicitHeight + 40
+        contentHeight: mainLayout.implicitHeight + (40 * Appearance.effectiveScale)
         clip: true
         
         ScrollBar.vertical: StyledScrollBar {}
@@ -28,13 +28,13 @@ Item {
                 left: parent.left
                 right: parent.right
                 top: parent.top
-                margins: 20
+                margins: 20 * Appearance.effectiveScale
             }
-            spacing: 24
+            spacing: 24 * Appearance.effectiveScale
 
             StyledText {
                 text: "System Overview"
-                font.pixelSize: 24
+                font.pixelSize: Appearance.font.pixelSize.huge
                 font.weight: Font.Bold
                 color: Appearance.m3colors.m3onSurface
             }
@@ -42,24 +42,24 @@ Item {
             // --- System Information Header ---
             RowLayout {
                 Layout.fillWidth: true
-                spacing: 24
+                spacing: 24 * Appearance.effectiveScale
                 
                 ColumnLayout {
                     spacing: 0
-                    StyledText { text: "UPTIME"; font.pixelSize: 10; font.weight: Font.Bold; color: Appearance.m3colors.m3outline }
-                    StyledText { text: SystemData.uptime || "--"; font.pixelSize: 14; font.weight: Font.Medium; color: Appearance.m3colors.m3onSurface }
+                    StyledText { text: "UPTIME"; font.pixelSize: Appearance.font.pixelSize.smallest; font.weight: Font.Bold; color: Appearance.m3colors.m3outline }
+                    StyledText { text: SystemData.uptime || "--"; font.pixelSize: Appearance.font.pixelSize.small; font.weight: Font.Medium; color: Appearance.m3colors.m3onSurface }
                 }
                 
                 ColumnLayout {
                     spacing: 0
-                    StyledText { text: "LOAD AVG"; font.pixelSize: 10; font.weight: Font.Bold; color: Appearance.m3colors.m3outline }
-                    StyledText { text: SystemData.loadAverage || "--"; font.pixelSize: 14; font.weight: Font.Medium; color: Appearance.m3colors.m3onSurface }
+                    StyledText { text: "LOAD AVG"; font.pixelSize: Appearance.font.pixelSize.smallest; font.weight: Font.Bold; color: Appearance.m3colors.m3outline }
+                    StyledText { text: SystemData.loadAverage || "--"; font.pixelSize: Appearance.font.pixelSize.small; font.weight: Font.Medium; color: Appearance.m3colors.m3onSurface }
                 }
                 
                 ColumnLayout {
                     spacing: 0
-                    StyledText { text: "PROCESSES"; font.pixelSize: 10; font.weight: Font.Bold; color: Appearance.m3colors.m3outline }
-                    StyledText { text: `${SystemData.processCount} (${SystemData.threadCount} threads)`; font.pixelSize: 14; font.weight: Font.Medium; color: Appearance.m3colors.m3onSurface }
+                    StyledText { text: "PROCESSES"; font.pixelSize: Appearance.font.pixelSize.smallest; font.weight: Font.Bold; color: Appearance.m3colors.m3outline }
+                    StyledText { text: `${SystemData.processCount} (${SystemData.threadCount} threads)`; font.pixelSize: Appearance.font.pixelSize.small; font.weight: Font.Medium; color: Appearance.m3colors.m3onSurface }
                 }
                 
                 Item { Layout.fillWidth: true }
@@ -69,8 +69,8 @@ Item {
             GridLayout {
                 columns: 2
                 Layout.fillWidth: true
-                columnSpacing: 16
-                rowSpacing: 16
+                columnSpacing: 16 * Appearance.effectiveScale
+                rowSpacing: 16 * Appearance.effectiveScale
 
                 GraphCard {
                     title: "CPU Usage"
@@ -84,8 +84,8 @@ Item {
                 // GPU card — always visible; shows a placeholder when no data
                 Rectangle {
                     Layout.fillWidth: true
-                    implicitHeight: 180
-                    radius: 16
+                    implicitHeight: 180 * Appearance.effectiveScale
+                    radius: 16 * Appearance.effectiveScale
                     color: Appearance.colors.colLayer2
                     border.color: Functions.ColorUtils.applyAlpha(
                         SystemData.availableGpus.length > 0
@@ -93,13 +93,13 @@ Item {
                             : Appearance.colors.colSubtext,
                         Appearance.m3colors.darkmode ? 0.35 : 0.55
                     )
-                    border.width: 2
+                    border.width: 2 * Appearance.effectiveScale
 
                     // ── Real GPU content ──────────────────────────────────
                     ColumnLayout {
                         anchors.fill: parent
-                        anchors.margins: 16
-                        spacing: 8
+                        anchors.margins: 16 * Appearance.effectiveScale
+                        spacing: 8 * Appearance.effectiveScale
                         visible: SystemData.hasValidGpuData
 
                         RowLayout {
@@ -107,7 +107,7 @@ Item {
 
                             StyledText {
                                 text: "GPU"
-                                font.pixelSize: 14
+                                font.pixelSize: Appearance.font.pixelSize.small
                                 font.weight: Font.Medium
                                 color: Appearance.m3colors.m3onSurfaceVariant
                             }
@@ -118,7 +118,7 @@ Item {
                                         ? SystemData.availableGpus[0].temp + "°C"
                                         : "Ready")
                                     : "--"
-                                font.pixelSize: 18
+                                font.pixelSize: Appearance.font.pixelSize.large
                                 font.weight: Font.Black
                                 color: Appearance.m3colors.m3onSurface
                             }
@@ -137,27 +137,27 @@ Item {
                     // ── Fallback placeholder ──────────────────────────────
                     ColumnLayout {
                         anchors.centerIn: parent
-                        spacing: 8
+                        spacing: 8 * Appearance.effectiveScale
                         visible: !SystemData.hasValidGpuData
 
                         MaterialSymbol {
 
                             Layout.alignment: Qt.AlignHCenter
                             text: "videogame_asset_off"
-                            iconSize: 28
+                            iconSize: 28 * Appearance.effectiveScale
                             color: Appearance.colors.colSubtext
                         }
                         StyledText {
                             Layout.alignment: Qt.AlignHCenter
                             text: "GPU"
-                            font.pixelSize: 14
+                            font.pixelSize: Appearance.font.pixelSize.small
                             font.weight: Font.Medium
                             color: Appearance.m3colors.m3onSurfaceVariant
                         }
                         StyledText {
                             Layout.alignment: Qt.AlignHCenter
                             text: "No GPU data found"
-                            font.pixelSize: 12
+                            font.pixelSize: Appearance.font.pixelSize.smaller
                             color: Appearance.colors.colSubtext
                         }
                     }
@@ -200,7 +200,7 @@ Item {
                                 
                                 Rectangle {
                                     Layout.fillWidth: true
-                                    height: 2
+                                    Layout.preferredHeight: 2 * Appearance.effectiveScale
                                     color: Appearance.m3colors.m3primary
                                     opacity: 0.5
                                     z: 10
@@ -229,7 +229,7 @@ Item {
                     accentColor: Appearance.m3colors.m3error
                     Layout.fillWidth: true
                     Layout.columnSpan: 2
-                    implicitHeight: 140
+                    Layout.preferredHeight: 140 * Appearance.effectiveScale
                 }
             }
             
@@ -247,32 +247,32 @@ Item {
         property color accentColor
         property Component customGraph: null
         
-        implicitHeight: 180
-        radius: 16
+        Layout.preferredHeight: 180 * Appearance.effectiveScale
+        radius: 16 * Appearance.effectiveScale
         color: Appearance.colors.colLayer2
         border.color: Functions.ColorUtils.applyAlpha(card.accentColor, Appearance.m3colors.darkmode ? 0.45 : 0.75)
-        border.width: 2
+        border.width: 2 * Appearance.effectiveScale
         
         ColumnLayout {
             anchors.fill: parent
-            anchors.margins: 16
+            anchors.margins: 16 * Appearance.effectiveScale
             spacing: 0
             
             RowLayout {
                 Layout.fillWidth: true
-                Layout.bottomMargin: 12
+                Layout.bottomMargin: 12 * Appearance.effectiveScale
                 ColumnLayout {
-                    spacing: -2
+                    spacing: -2 * Appearance.effectiveScale
                     StyledText {
                         text: card.title
-                        font.pixelSize: 14
+                        font.pixelSize: Appearance.font.pixelSize.small
                         font.weight: Font.Medium
                         color: Appearance.m3colors.m3onSurfaceVariant
                     }
                     StyledText {
                         visible: card.subValue !== ""
                         text: card.subValue
-                        font.pixelSize: 10
+                        font.pixelSize: Appearance.font.pixelSize.smallest
                         font.weight: Font.Bold
                         color: Appearance.colors.colSubtext
                     }
@@ -280,7 +280,7 @@ Item {
                 Item { Layout.fillWidth: true }
                 StyledText {
                     text: card.value
-                    font.pixelSize: 18
+                    font.pixelSize: Appearance.font.pixelSize.large
                     font.weight: Font.Black
                     color: Appearance.m3colors.m3onSurface
                 }

@@ -14,7 +14,7 @@ Item {
     id: root
     signal closed()
     implicitWidth: Appearance.sizes.notificationCenterWidth
-    implicitHeight: contentColumn.implicitHeight + 24 // Padding for bottom
+    implicitHeight: contentColumn.implicitHeight + 24 * Appearance.effectiveScale // Padding for bottom
 
     focus: true
     Keys.onEscapePressed: close()
@@ -47,7 +47,7 @@ Item {
         radius: Appearance.rounding.panel
         
         // MD3 Outline Style
-        border.width: 1
+        border.width: Math.max(1, 1 * Appearance.effectiveScale)
         border.color: Functions.ColorUtils.applyAlpha(Appearance.m3colors.m3onSurface, 0.12)
     }
 
@@ -57,10 +57,10 @@ Item {
             left: parent.left
             right: parent.right
             top: parent.top
-            margins: 12
-            topMargin: 12
+            margins: 12 * Appearance.effectiveScale
+            topMargin: 12 * Appearance.effectiveScale
         }
-        spacing: 12
+        spacing: 12 * Appearance.effectiveScale
 
         // ── Media Card ──
         MediaCard {
@@ -85,8 +85,8 @@ Item {
             ColumnLayout {
                 id: islandColumn
                 anchors.fill: parent
-                anchors.margins: 12
-                spacing: 8
+                anchors.margins: 12 * Appearance.effectiveScale
+                spacing: 8 * Appearance.effectiveScale
 
                 // ── Main Content (List or Placeholder) ──
                 Item {
@@ -108,8 +108,8 @@ Item {
                         
                         MaterialShape { 
                             Layout.alignment: Qt.AlignCenter
-                            implicitWidth: 100
-                            implicitHeight: 100
+                            implicitWidth: 100 * Appearance.effectiveScale
+                            implicitHeight: 100 * Appearance.effectiveScale
                             color: Appearance.m3colors.m3surfaceContainerHigh
                             shape: MaterialShape.Shape.Ghostish 
                             
@@ -117,7 +117,7 @@ Item {
                                 id: bellIcon
                                 anchors.centerIn: parent
                                 text: "notifications"
-                                iconSize: 56
+                                iconSize: 56 * Appearance.effectiveScale
                                 color: Appearance.m3colors.m3onSurfaceVariant 
                                 
                                 transform: Rotation { origin.x: bellIcon.width / 2; origin.y: 0; angle: 0; id: bellRotation }
@@ -163,16 +163,16 @@ Item {
                 RowLayout {
                     Layout.fillWidth: true
                     Layout.alignment: Qt.AlignHCenter
-                    spacing: 4
+                    spacing: 4 * Appearance.effectiveScale
                     visible: true 
 
                     SegmentedButton {
                         isHighlighted: Notifications.silent
                         forcePill: true
-                        implicitWidth: 56
-                        implicitHeight: 40
+                        implicitWidth: 56 * Appearance.effectiveScale
+                        implicitHeight: 40 * Appearance.effectiveScale
                         iconName: Notifications.silent ? "notifications_off" : "notifications_active"
-                        iconSize: 20
+                        iconSize: 20 * Appearance.effectiveScale
                         
                         colActive: Appearance.m3colors.m3primaryContainer
                         colActiveText: Appearance.m3colors.m3onPrimaryContainer
@@ -185,9 +185,9 @@ Item {
                     // Notification Count Wrapper
                     SegmentedWrapper {
                         Layout.fillWidth: true
-                        Layout.preferredHeight: 40
+                        Layout.preferredHeight: 40 * Appearance.effectiveScale
                         forcePill: true
-                        smallRadius: 4
+                        smallRadius: 4 * Appearance.effectiveScale
                         color: Appearance.m3colors.m3surfaceContainerHigh
                         
                         StyledText {
@@ -199,11 +199,11 @@ Item {
                     }
 
                     SegmentedButton {
-                        implicitWidth: 56
-                        implicitHeight: 40
+                        implicitWidth: 56 * Appearance.effectiveScale
+                        implicitHeight: 40 * Appearance.effectiveScale
                         forcePill: true
                         iconName: "delete_sweep"
-                        iconSize: 20
+                        iconSize: 20 * Appearance.effectiveScale
                         enabled: Notifications.list.length > 0
                         opacity: enabled ? 1 : 0.5
                         

@@ -6,12 +6,12 @@ import ".."
 
 Item {
     id: root
-    property real implicitSize: 135
-    property real markLength: 12
-    property real markWidth: 4
+    property real implicitSize: 135 * Appearance.effectiveScale
+    property real markLength: 12 * Appearance.effectiveScale
+    property real markWidth: 4 * Appearance.effectiveScale
     property color color: Appearance.colors.colOnSecondaryContainer
     property color colOnBackground: Appearance.colors.colSecondaryContainer
-    property real padding: 8
+    property real padding: 8 * Appearance.effectiveScale
 
     Rectangle {
         color: root.color

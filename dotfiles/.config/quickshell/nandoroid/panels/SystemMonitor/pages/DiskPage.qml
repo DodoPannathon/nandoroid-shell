@@ -13,7 +13,7 @@ Item {
 
     Flickable {
         anchors.fill: parent
-        contentHeight: contentColumn.implicitHeight + 40
+        contentHeight: contentColumn.implicitHeight + (40 * Appearance.effectiveScale)
         clip: true
         interactive: true
         flickableDirection: Flickable.VerticalFlick
@@ -22,35 +22,35 @@ Item {
             id: contentColumn
             anchors.left: parent.left
             anchors.right: parent.right
-            anchors.margins: 20
-            spacing: 20
+            anchors.margins: 20 * Appearance.effectiveScale
+            spacing: 20 * Appearance.effectiveScale
 
         StyledText {
             text: "Disk Performance"
-            font.pixelSize: 24
+            font.pixelSize: Appearance.font.pixelSize.huge
             font.weight: Font.Bold
         }
 
         // Real-time Disk I/O Card
         Rectangle {
             Layout.fillWidth: true
-            implicitHeight: 140
+            Layout.preferredHeight: 140 * Appearance.effectiveScale
             color: Appearance.colors.colLayer2
-            radius: 16
+            radius: 16 * Appearance.effectiveScale
             border.width: 0
 
             ColumnLayout {
                 anchors.fill: parent
-                anchors.margins: 20
-                spacing: 16
+                anchors.margins: 20 * Appearance.effectiveScale
+                spacing: 16 * Appearance.effectiveScale
 
                 RowLayout {
                     Layout.fillWidth: true
                     ColumnLayout {
-                        StyledText { text: "Total Throughput"; font.pixelSize: 14; color: Appearance.m3colors.m3onSurfaceVariant }
+                        StyledText { text: "Total Throughput"; font.pixelSize: Appearance.font.pixelSize.small; color: Appearance.m3colors.m3onSurfaceVariant }
                         StyledText { 
                             text: ((SystemData.diskReadRate + SystemData.diskWriteRate) / (1024 * 1024)).toFixed(2) + " MB/s"
-                            font.pixelSize: 24
+                            font.pixelSize: Appearance.font.pixelSize.huge
                             font.weight: Font.Black
                             color: Appearance.m3colors.m3onSurface
                         }
@@ -58,34 +58,34 @@ Item {
                     Item { Layout.fillWidth: true }
                     MaterialSymbol {
                         text: "speed"
-                        iconSize: 32
+                        iconSize: 32 * Appearance.effectiveScale
                         color: Appearance.m3colors.m3error
                     }
                 }
 
                 RowLayout {
                     Layout.fillWidth: true
-                    spacing: 24
+                    spacing: 24 * Appearance.effectiveScale
                     
                     ColumnLayout {
-                        spacing: 2
-                        StyledText { text: "READ"; font.pixelSize: 10; font.weight: Font.Bold; color: Appearance.m3colors.m3outline }
+                        spacing: 2 * Appearance.effectiveScale
+                        StyledText { text: "READ"; font.pixelSize: Appearance.font.pixelSize.smallest; font.weight: Font.Bold; color: Appearance.m3colors.m3outline }
                         StyledText { 
                             text: (SystemData.diskReadRate / (1024 * 1024)).toFixed(2) + " MB/s"
-                            font.pixelSize: 14
+                            font.pixelSize: Appearance.font.pixelSize.small
                             font.weight: Font.Bold
                             color: Appearance.m3colors.m3onSurface
                         }
                     }
                     
-                    Rectangle { width: 1; Layout.fillHeight: true; color: Appearance.colors.colLayer3; opacity: 0.5 }
+                    Rectangle { Layout.preferredWidth: 1 * Appearance.effectiveScale; Layout.fillHeight: true; color: Appearance.colors.colLayer3; opacity: 0.5 }
                     
                     ColumnLayout {
-                        spacing: 2
-                        StyledText { text: "WRITE"; font.pixelSize: 10; font.weight: Font.Bold; color: Appearance.m3colors.m3outline }
+                        spacing: 2 * Appearance.effectiveScale
+                        StyledText { text: "WRITE"; font.pixelSize: Appearance.font.pixelSize.smallest; font.weight: Font.Bold; color: Appearance.m3colors.m3outline }
                         StyledText { 
                             text: (SystemData.diskWriteRate / (1024 * 1024)).toFixed(2) + " MB/s"
-                            font.pixelSize: 14
+                            font.pixelSize: Appearance.font.pixelSize.small
                             font.weight: Font.Bold
                             color: Appearance.m3colors.m3onSurface
                         }
@@ -98,40 +98,40 @@ Item {
 
         StyledText {
             text: "Disk Operations"
-            Layout.topMargin: 12
-            font.pixelSize: 18
+            Layout.topMargin: 12 * Appearance.effectiveScale
+            font.pixelSize: Appearance.font.pixelSize.large
             font.weight: Font.Bold
         }
 
         // Monitors each disk in the list
         ColumnLayout {
             Layout.fillWidth: true
-            spacing: 24
+            spacing: 24 * Appearance.effectiveScale
 
             Repeater {
                 model: SystemData.diskStats
                 delegate: ColumnLayout {
                     Layout.fillWidth: true
-                    spacing: 8
+                    spacing: 8 * Appearance.effectiveScale
 
                     RowLayout {
                         Layout.fillWidth: true
-                        spacing: 8
+                        spacing: 8 * Appearance.effectiveScale
                         MaterialSymbol {
                             text: "storage"
-                            iconSize: 18
+                            iconSize: 18 * Appearance.effectiveScale
                             color: Appearance.m3colors.m3primary
                         }
                         StyledText {
                             text: modelData.hasAlias ? `${modelData.label.toUpperCase()} DISK USAGE` : `"${modelData.label.toUpperCase()}" DISK USAGE`
-                            font.pixelSize: 11
+                            font.pixelSize: Appearance.font.pixelSize.smaller
                             font.weight: Font.Bold
                             color: Appearance.m3colors.m3outline
                             Layout.fillWidth: true
                         }
                         StyledText {
                             text: `${Math.round(modelData.usage * 100)}%`
-                            font.pixelSize: 11
+                            font.pixelSize: Appearance.font.pixelSize.smaller
                             font.weight: Font.Bold
                             color: Appearance.m3colors.m3onSurface
                         }
@@ -140,15 +140,15 @@ Item {
                     // Large Disk Bar
                     Rectangle {
                         Layout.fillWidth: true
-                        implicitHeight: 12
-                        radius: 6
+                        Layout.preferredHeight: 12 * Appearance.effectiveScale
+                        radius: 6 * Appearance.effectiveScale
                         color: Appearance.colors.colLayer2
                         clip: true
 
                         Rectangle {
                             width: parent.width * Math.max(0, Math.min(1, modelData.usage))
                             height: parent.height
-                            radius: 6
+                            radius: 6 * Appearance.effectiveScale
                             color: Appearance.m3colors.m3primary
                             visible: modelData.usage > 0
 
@@ -162,13 +162,13 @@ Item {
                         Layout.fillWidth: true
                         StyledText {
                             text: modelData.path
-                            font.pixelSize: 11
+                            font.pixelSize: Appearance.font.pixelSize.smaller
                             color: Appearance.colors.colSubtext
                         }
                         Item { Layout.fillWidth: true }
                         StyledText {
                             text: (modelData.used / (1024*1024*1024)).toFixed(1) + " GB / " + (modelData.total / (1024*1024*1024)).toFixed(1) + " GB"
-                            font.pixelSize: 11
+                            font.pixelSize: Appearance.font.pixelSize.smaller
                             color: Appearance.colors.colSubtext
                         }
                     }

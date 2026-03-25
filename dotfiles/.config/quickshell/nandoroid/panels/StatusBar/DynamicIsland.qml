@@ -19,10 +19,10 @@ Item {
     
     property HyprlandMonitor monitor
     property bool pomodoroActive: PomodoroService.isSessionRunning
-    property real indicatorWidth: 52 
+    property real indicatorWidth: 52 * Appearance.effectiveScale 
     
     width: 0 
-    height: 40 // Matches status bar height for safe rendering
+    height: 40 * Appearance.effectiveScale // Matches status bar height for safe rendering
 
     readonly property string islandStyle: Config.options.statusBar?.islandStyle ?? "pill"
     readonly property bool isWaterdrop: islandStyle === "waterdrop"
@@ -59,18 +59,18 @@ Item {
     // Media Width Synchronization Logic
     readonly property real mediaLeftNaturalWidth: {
         let w = 0
-        if (mediaLogo.visible) w += 18 + 6
-        if (mediaArtistLabel.visible) w += mediaArtistLabel.implicitWidth + 4
-        return w > 0 ? w + 4 : 0
+        if (mediaLogo.visible) w += (18 * Appearance.effectiveScale) + (6 * Appearance.effectiveScale)
+        if (mediaArtistLabel.visible) w += mediaArtistLabel.implicitWidth + (4 * Appearance.effectiveScale)
+        return w > 0 ? w + (4 * Appearance.effectiveScale) : 0
     }
 
     readonly property real mediaRightNaturalWidth: {
-        return (mediaTitleLabel.visible && mediaTitleLabel.text !== "") ? mediaTitleLabel.implicitWidth + 12 : 0
+        return (mediaTitleLabel.visible && mediaTitleLabel.text !== "") ? mediaTitleLabel.implicitWidth + (12 * Appearance.effectiveScale) : 0
     }
 
     // Dynamic Max Width Logic - HUD mode is tighter because Clock/Date are centered
-    readonly property real earMaxWidthNormal: 150
-    readonly property real earMaxWidthHud: 100 
+    readonly property real earMaxWidthNormal: 150 * Appearance.effectiveScale
+    readonly property real earMaxWidthHud: 100 * Appearance.effectiveScale 
     readonly property real currentEarMaxWidth: (islandState === "idle") ? earMaxWidthNormal : earMaxWidthHud
 
     // Balanced Width Calculation - Use the LARGER side as reference, clamped by max width
@@ -81,15 +81,15 @@ Item {
     }
 
     // Gap width: 4px in idle, tight 2px in active states.
-    readonly property real gapHalf: (indicatorWidth / 2) + (islandState === "idle" ? 4 : 2)
+    readonly property real gapHalf: (indicatorWidth / 2) + (islandState === "idle" ? 4 * Appearance.effectiveScale : 2 * Appearance.effectiveScale)
 
     // --- LEFT EAR ---
     Item {
         id: leftEar
         anchors.right: root.left
         anchors.rightMargin: root.gapHalf
-        y: 6 
-        height: 28
+        y: 6 * Appearance.effectiveScale 
+        height: 28 * Appearance.effectiveScale
         clip: true
         
         HoverHandler {
@@ -106,18 +106,18 @@ Item {
         width: {
             if (islandState === "notification") {
                 let w = 0
-                if (notifLogo.visible) w += 20 + 6
-                if (notifAppNameLabel.visible) w += Math.min(notifAppNameLabel.implicitWidth, 80) + 4
-                let finalW = w > 0 ? w + 4 : 0
+                if (notifLogo.visible) w += (20 * Appearance.effectiveScale) + (6 * Appearance.effectiveScale)
+                if (notifAppNameLabel.visible) w += Math.min(notifAppNameLabel.implicitWidth, 80 * Appearance.effectiveScale) + (4 * Appearance.effectiveScale)
+                let finalW = w > 0 ? w + (4 * Appearance.effectiveScale) : 0
                 return Math.min(finalW, root.currentEarMaxWidth)
             }
-            if (islandState === "recording") return Math.min(24, root.currentEarMaxWidth)
+            if (islandState === "recording") return Math.min(24 * Appearance.effectiveScale, root.currentEarMaxWidth)
             if (islandState === "media") {
                 let w = (Config.ready && Config.options.media && Config.options.media.balancedEars) 
                     ? root.sharedMediaWidth : root.mediaLeftNaturalWidth
                 return Math.min(w, root.currentEarMaxWidth)
             }
-            if (islandState === "pomodoro") return Math.min(pomoModeLabel.implicitWidth + 8, root.currentEarMaxWidth)
+            if (islandState === "pomodoro") return Math.min(pomoModeLabel.implicitWidth + (8 * Appearance.effectiveScale), root.currentEarMaxWidth)
             return 0
         }
 
@@ -128,12 +128,12 @@ Item {
         Row {
             anchors.centerIn: parent
             visible: islandState === "notification"
-            spacing: 6
+            spacing: 6 * Appearance.effectiveScale
             NotificationAppIcon {
                 id: notifLogo
-                width: 18; height: 18; implicitSize: 18
+                width: 18 * Appearance.effectiveScale; height: 18 * Appearance.effectiveScale; implicitSize: 18 * Appearance.effectiveScale
                 visible: islandState === "notification"
-                opacity: parent.parent.width > 24 ? 1 : 0
+                opacity: parent.parent.width > (24 * Appearance.effectiveScale) ? 1 : 0
                 Behavior on opacity { NumberAnimation { duration: 200 } }
                 appIcon: Notifications.activePopup?.appIcon || Notifications.activePopup?.appName || ""
                 image: Notifications.activePopup?.image || ""
@@ -145,11 +145,11 @@ Item {
                 id: notifAppNameLabel
                 text: Notifications.activePopup?.appName || "Notification"
                 visible: islandState === "notification"
-                opacity: parent.parent.width > 30 ? 1 : 0
+                opacity: parent.parent.width > (30 * Appearance.effectiveScale) ? 1 : 0
                 Behavior on opacity { NumberAnimation { duration: 200 } }
-                font.pixelSize: 12; font.weight: Font.Medium
+                font.pixelSize: 12 * Appearance.effectiveScale; font.weight: Font.Medium
                 color: Appearance.colors.colNotchText
-                width: Math.min(implicitWidth, root.currentEarMaxWidth - (notifLogo.visible ? 28 : 8))
+                width: Math.min(implicitWidth, root.currentEarMaxWidth - (notifLogo.visible ? 28 * Appearance.effectiveScale : 8 * Appearance.effectiveScale))
                 elide: Text.ElideRight
                 verticalAlignment: Text.AlignVCenter
             }
@@ -159,11 +159,11 @@ Item {
         Item {
             anchors.centerIn: parent
             visible: islandState === "recording"
-            opacity: parent.width > 12 ? 1 : 0
-            width: 16; height: 16
+            opacity: parent.width > (12 * Appearance.effectiveScale) ? 1 : 0
+            width: 16 * Appearance.effectiveScale; height: 16 * Appearance.effectiveScale
             Behavior on opacity { NumberAnimation { duration: 200 } }
             MaterialSymbol {
-                id: recordIcon; anchors.centerIn: parent; text: "screen_record"; iconSize: 16
+                id: recordIcon; anchors.centerIn: parent; text: "screen_record"; iconSize: 16 * Appearance.effectiveScale
                 color: Appearance.m3colors.m3error; fill: 1
                 SequentialAnimation on opacity {
                     running: recordIcon.visible; loops: Animation.Infinite
@@ -178,10 +178,10 @@ Item {
             id: leftMediaGroup
             anchors.centerIn: parent
             visible: islandState === "media"
-            spacing: 6
+            spacing: 6 * Appearance.effectiveScale
             Loader {
-                id: mediaLogo; width: 18; height: 18; visible: islandState === "media"
-                opacity: parent.parent.width > 24 ? 1 : 0; Behavior on opacity { NumberAnimation { duration: 200 } }
+                id: mediaLogo; width: 18 * Appearance.effectiveScale; height: 18 * Appearance.effectiveScale; visible: islandState === "media"
+                opacity: parent.parent.width > (24 * Appearance.effectiveScale) ? 1 : 0; Behavior on opacity { NumberAnimation { duration: 200 } }
                 property string activeEntryStr: {
                     if (!MprisController.activePlayer) return "";
                     let entry = MprisController.activePlayer.desktopEntry.toString();
@@ -191,14 +191,14 @@ Item {
                 
                 sourceComponent: Component { 
                     Item {
-                        width: 18; height: 18
+                        width: 18 * Appearance.effectiveScale; height: 18 * Appearance.effectiveScale
                         IconImage { 
                             id: innerImg; anchors.fill: parent; 
                             source: mediaLogo.activeEntryStr !== "" ? Quickshell.iconPath(mediaLogo.activeEntryStr, "") : ""
                             visible: status === Image.Ready
                         }
                         MaterialSymbol {
-                            anchors.centerIn: parent; text: "music_note"; iconSize: 18
+                            anchors.centerIn: parent; text: "music_note"; iconSize: 18 * Appearance.effectiveScale
                             color: Appearance.colors.colNotchText; visible: innerImg.status !== Image.Ready
                         }
                     }
@@ -206,10 +206,10 @@ Item {
             }
             StyledText {
                 id: mediaArtistLabel; text: MprisController.trackArtist || "Unknown Artist"
-                visible: islandState === "media"; opacity: parent.parent.width > 30 ? 1 : 0
+                visible: islandState === "media"; opacity: parent.parent.width > (30 * Appearance.effectiveScale) ? 1 : 0
                 Behavior on opacity { NumberAnimation { duration: 200 } }
-                font.pixelSize: 12; font.weight: Font.Medium; color: Appearance.colors.colNotchText
-                width: Math.min(implicitWidth, parent.parent.width - (mediaLogo.visible ? 28 : 8))
+                font.pixelSize: 12 * Appearance.effectiveScale; font.weight: Font.Medium; color: Appearance.colors.colNotchText
+                width: Math.min(implicitWidth, parent.parent.width - (mediaLogo.visible ? 28 * Appearance.effectiveScale : 8 * Appearance.effectiveScale))
                 elide: Text.ElideRight; verticalAlignment: Text.AlignVCenter
             }
         }
@@ -218,8 +218,8 @@ Item {
         StyledText {
             id: pomoModeLabel; anchors.centerIn: parent
             text: PomodoroService.modeName
-            opacity: parent.width > 20 ? 1 : 0; Behavior on opacity { NumberAnimation { duration: 200 } }
-            font.pixelSize: 12; font.weight: Font.DemiBold; color: Appearance.colors.colNotchText
+            opacity: parent.width > (20 * Appearance.effectiveScale) ? 1 : 0; Behavior on opacity { NumberAnimation { duration: 200 } }
+            font.pixelSize: 12 * Appearance.effectiveScale; font.weight: Font.DemiBold; color: Appearance.colors.colNotchText
             visible: islandState === "pomodoro"
         }
     }
@@ -229,8 +229,8 @@ Item {
         id: rightEar
         anchors.left: root.right
         anchors.leftMargin: root.gapHalf
-        y: 6
-        height: 28
+        y: 6 * Appearance.effectiveScale
+        height: 28 * Appearance.effectiveScale
         clip: true
         
         HoverHandler {
@@ -245,14 +245,14 @@ Item {
         }
         
         width: {
-            if (islandState === "notification") return notifSummaryLabel.visible ? Math.min(notifSummaryLabel.implicitWidth, root.currentEarMaxWidth - 8) + 8 : 0
-            if (islandState === "recording") return Math.min(recordTimeLabel.implicitWidth + 8, root.currentEarMaxWidth)
+            if (islandState === "notification") return notifSummaryLabel.visible ? Math.min(notifSummaryLabel.implicitWidth, root.currentEarMaxWidth - (8 * Appearance.effectiveScale)) + (8 * Appearance.effectiveScale) : 0
+            if (islandState === "recording") return Math.min(recordTimeLabel.implicitWidth + (8 * Appearance.effectiveScale), root.currentEarMaxWidth)
             if (islandState === "media") {
                 let w = (Config.ready && Config.options.media && Config.options.media.balancedEars) 
                     ? root.sharedMediaWidth : root.mediaRightNaturalWidth
                 return Math.min(w, root.currentEarMaxWidth)
             }
-            if (islandState === "pomodoro") return Math.min(pomoTimeLabel.implicitWidth + 8, root.currentEarMaxWidth)
+            if (islandState === "pomodoro") return Math.min(pomoTimeLabel.implicitWidth + (8 * Appearance.effectiveScale), root.currentEarMaxWidth)
             return 0
         }
 
@@ -263,37 +263,37 @@ Item {
             id: notifSummaryLabel; anchors.centerIn: parent
             text: Notifications.activePopup?.summary || ""
             visible: islandState === "notification"
-            opacity: parent.width > 20 ? 1 : 0
+            opacity: parent.width > (20 * Appearance.effectiveScale) ? 1 : 0
             Behavior on opacity { NumberAnimation { duration: 200 } }
-            font.pixelSize: 12; font.weight: Font.DemiBold
+            font.pixelSize: 12 * Appearance.effectiveScale; font.weight: Font.DemiBold
             color: Appearance.colors.colNotchText
-            width: Math.min(implicitWidth, root.currentEarMaxWidth - 8)
+            width: Math.min(implicitWidth, root.currentEarMaxWidth - (8 * Appearance.effectiveScale))
             elide: Text.ElideRight
         }
 
         StyledText {
             id: recordTimeLabel; anchors.centerIn: parent
             text: Functions.General.formatDuration(ScreenRecord.seconds)
-            opacity: parent.width > 10 ? 1 : 0; Behavior on opacity { NumberAnimation { duration: 200 } }
-            font.pixelSize: 12; font.weight: Font.DemiBold; color: Appearance.colors.colNotchText
+            opacity: parent.width > (10 * Appearance.effectiveScale) ? 1 : 0; Behavior on opacity { NumberAnimation { duration: 200 } }
+            font.pixelSize: 12 * Appearance.effectiveScale; font.weight: Font.DemiBold; color: Appearance.colors.colNotchText
             font.family: Appearance.font.family.numbers; visible: islandState === "recording"
         }
 
         StyledText {
             id: mediaTitleLabel; anchors.centerIn: parent
             text: MprisController.trackTitle || ""
-            visible: text !== "" && islandState === "media"; opacity: parent.width > 20 ? 1 : 0
+            visible: text !== "" && islandState === "media"; opacity: parent.width > (20 * Appearance.effectiveScale) ? 1 : 0
             Behavior on opacity { NumberAnimation { duration: 200 } }
-            font.pixelSize: 12; font.weight: Font.DemiBold; color: Appearance.colors.colNotchText
-            width: Math.min(implicitWidth, parent.width - 8)
+            font.pixelSize: 12 * Appearance.effectiveScale; font.weight: Font.DemiBold; color: Appearance.colors.colNotchText
+            width: Math.min(implicitWidth, parent.width - (8 * Appearance.effectiveScale))
             elide: Text.ElideRight
         }
 
         StyledText {
             id: pomoTimeLabel; anchors.centerIn: parent
             text: PomodoroService.timeString
-            opacity: parent.width > 10 ? 1 : 0; Behavior on opacity { NumberAnimation { duration: 200 } }
-            font.pixelSize: 12; font.weight: Font.Bold; color: Appearance.colors.colNotchText
+            opacity: parent.width > (10 * Appearance.effectiveScale) ? 1 : 0; Behavior on opacity { NumberAnimation { duration: 200 } }
+            font.pixelSize: 12 * Appearance.effectiveScale; font.weight: Font.Bold; color: Appearance.colors.colNotchText
             font.family: Appearance.font.family.numbers; visible: islandState === "pomodoro"
         }
     }
@@ -304,12 +304,12 @@ Item {
         color: "black"
         
         // Idle: y=6, height=28. Waterdrop: y=0, height=34.
-        y: isWaterdrop ? 0 : 6
-        height: isWaterdrop ? 34 : 28
+        y: isWaterdrop ? 0 : 6 * Appearance.effectiveScale
+        height: isWaterdrop ? 34 * Appearance.effectiveScale : 28 * Appearance.effectiveScale
         radius: height / 2
         
         z: -1
-        readonly property real margin: (islandState === "idle") ? 10 : 8
+        readonly property real margin: (islandState === "idle") ? 10 * Appearance.effectiveScale : 8 * Appearance.effectiveScale
         x: leftEar.x - margin
         width: (rightEar.x + rightEar.width) - leftEar.x + (2 * margin)
 
@@ -324,14 +324,14 @@ Item {
         // Concave Corners
         RoundCorner {
             anchors.right: parent.left; anchors.top: parent.top
-            implicitSize: 12; color: "black"; corner: RoundCorner.CornerEnum.TopRight
+            implicitSize: 12 * Appearance.effectiveScale; color: "black"; corner: RoundCorner.CornerEnum.TopRight
             visible: isWaterdrop; opacity: visible ? 1 : 0
             Behavior on opacity { NumberAnimation { duration: 250 } }
         }
 
         RoundCorner {
             anchors.left: parent.right; anchors.top: parent.top
-            implicitSize: 12; color: "black"; corner: RoundCorner.CornerEnum.TopLeft
+            implicitSize: 12 * Appearance.effectiveScale; color: "black"; corner: RoundCorner.CornerEnum.TopLeft
             visible: isWaterdrop; opacity: visible ? 1 : 0
             Behavior on opacity { NumberAnimation { duration: 250 } }
         }

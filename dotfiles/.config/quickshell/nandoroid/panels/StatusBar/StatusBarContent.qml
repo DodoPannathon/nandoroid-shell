@@ -19,7 +19,7 @@ Item {
     readonly property HyprlandMonitor monitor: Hyprland.monitorFor(root.QsWindow.window ? root.QsWindow.window.screen : null)
 
     readonly property bool isCentered: (Config.ready && Config.options.statusBar) ? Config.options.statusBar.layoutStyle === "centered" : false
-    readonly property real centeredWidth: (Config.ready && Config.options.statusBar) ? Config.options.statusBar.centeredWidth : 1200
+    readonly property real centeredWidth: (Config.ready && Config.options.statusBar) ? Config.options.statusBar.centeredWidth * Appearance.effectiveScale : 1200 * Appearance.effectiveScale
     
     // Dynamic background detection for color switching
     readonly property int bgStyle: (Config.ready && Config.options.statusBar) ? (Config.options.statusBar.backgroundStyle ?? 0) : 0
@@ -41,7 +41,7 @@ Item {
     Behavior on contentColor { ColorAnimation { duration: 300 } }
     Behavior on subtextColor { ColorAnimation { duration: 300 } }
 
-    readonly property real targetSidePadding: isCentered ? Math.max(12, (root.width - centeredWidth) / 2) : 12
+    readonly property real targetSidePadding: isCentered ? Math.max(12 * Appearance.effectiveScale, (root.width - centeredWidth) / 2) : 12 * Appearance.effectiveScale
     property real sidePadding: targetSidePadding
     Behavior on sidePadding { NumberAnimation { duration: 450; easing.type: Easing.OutQuint } }
 
@@ -76,7 +76,7 @@ Item {
             tooltipText: "Scroll to change brightness"
             side: "left"
             anchors.left: parent.left
-            anchors.leftMargin: root.isCentered ? root.sidePadding : 4
+            anchors.leftMargin: root.isCentered ? root.sidePadding : 4 * Appearance.effectiveScale
             anchors.verticalCenter: parent.verticalCenter
             color: root.contentColor
         }
@@ -106,7 +106,7 @@ Item {
             tooltipText: "Scroll to change volume"
             side: "right"
             anchors.right: parent.right
-            anchors.rightMargin: root.isCentered ? root.sidePadding : 4
+            anchors.rightMargin: root.isCentered ? root.sidePadding : 4 * Appearance.effectiveScale
             anchors.verticalCenter: parent.verticalCenter
             color: root.contentColor
         }
@@ -133,8 +133,8 @@ Item {
         anchors.left: parent.left
         anchors.top: parent.top
         anchors.bottom: parent.bottom
-        anchors.leftMargin: root.sidePadding + (root.isCentered ? 12 : 0)
-        spacing: 8
+        anchors.leftMargin: root.sidePadding + (root.isCentered ? 12 * Appearance.effectiveScale : 0)
+        spacing: 8 * Appearance.effectiveScale
 
         Item {
             Layout.fillHeight: true
@@ -143,7 +143,7 @@ Item {
             RowLayout {
                 id: leftClusterContent
                 anchors.fill: parent
-                spacing: 10
+                spacing: 10 * Appearance.effectiveScale
 
                 // Distro icon (config-driven visibility)
                 CustomIcon {
@@ -155,8 +155,8 @@ Item {
                     }
                     colorize: true
                     color: root.contentColor
-                    width: (root.monitor && root.monitor.width && root.monitor.width > 2000) ? 20 : 18
-                    height: (root.monitor && root.monitor.width && root.monitor.width > 2000) ? 20 : 18
+                    width: (root.monitor && root.monitor.width && root.monitor.width > 2000) ? 20 * Appearance.effectiveScale : 18 * Appearance.effectiveScale
+                    height: (root.monitor && root.monitor.width && root.monitor.width > 2000) ? 20 * Appearance.effectiveScale : 18 * Appearance.effectiveScale
                     Layout.alignment: Qt.AlignVCenter
                 }
 
@@ -168,7 +168,7 @@ Item {
                     Layout.alignment: Qt.AlignVCenter
                     // Dynamically calculate max width: proportional to HUD width in centered mode
                     // Use root.width for stable calculation instead of parent.width
-                    Layout.maximumWidth: root.isCentered ? (root.centeredWidth * 0.2) : Math.min(400, root.width * 0.25)
+                    Layout.maximumWidth: root.isCentered ? (root.centeredWidth * 0.2) : Math.min(400 * Appearance.effectiveScale, root.width * 0.25)
                     monitor: root.monitor
                     color: root.contentColor
                     subtextColor: root.subtextColor
@@ -189,9 +189,9 @@ Item {
     // Time (Left of Notch)
     StyledText {
         anchors.verticalCenter: parent.verticalCenter
-        x: dynamicIsland.x + dynamicIsland.pill.x - width - 16
+        x: dynamicIsland.x + dynamicIsland.pill.x - width - 16 * Appearance.effectiveScale
         text: DateTime.currentTime
-        font.pixelSize: 14 // Bigger font
+        font.pixelSize: Appearance.font.pixelSize.small
         font.weight: Font.DemiBold
         color: root.contentColor
     }
@@ -199,9 +199,9 @@ Item {
     // Date (Right of Notch)
     StyledText {
         anchors.verticalCenter: parent.verticalCenter
-        x: dynamicIsland.x + dynamicIsland.pill.x + dynamicIsland.pill.width + 16
+        x: dynamicIsland.x + dynamicIsland.pill.x + dynamicIsland.pill.width + 16 * Appearance.effectiveScale
         text: DateTime.currentDate
-        font.pixelSize: 14 // Bigger font
+        font.pixelSize: Appearance.font.pixelSize.small
         font.weight: Font.DemiBold
         color: root.contentColor
     }
@@ -221,12 +221,12 @@ Item {
         anchors.right: privacyIndicator.left
         anchors.top: parent.top
         anchors.bottom: parent.bottom
-        anchors.rightMargin: 8
-        spacing: 4
+        anchors.rightMargin: 8 * Appearance.effectiveScale
+        spacing: 4 * Appearance.effectiveScale
 
         RowLayout {
             id: rightClusterContent
-            spacing: 6
+            spacing: 6 * Appearance.effectiveScale
 
             // Network Speed Meter
             NetworkSpeedMeter {
@@ -238,14 +238,14 @@ Item {
             // System Tray (Apps tray will be to the left of this)
             StatusBarTray {
                 Layout.alignment: Qt.AlignVCenter
-                Layout.rightMargin: 4
+                Layout.rightMargin: 4 * Appearance.effectiveScale
             }
 
             // VPN / WARP Key Icon
             MaterialSymbol {
                 visible: Network.warpConnected
                 text: "key"
-                iconSize: 16
+                iconSize: 16 * Appearance.effectiveScale
                 fill: 1
                 color: root.contentColor
             }
@@ -256,15 +256,15 @@ Item {
                 readonly property string style: (Config.ready && Config.options.notifications) ? Config.options.notifications.counterStyle : "counter"
                 
                 visible: style !== "hidden" && Notifications.unread > 0
-                Layout.preferredWidth: 20
-                Layout.preferredHeight: 20
+                Layout.preferredWidth: 20 * Appearance.effectiveScale
+                Layout.preferredHeight: 20 * Appearance.effectiveScale
                 Layout.alignment: Qt.AlignVCenter
 
                 MaterialSymbol {
                     id: bellIcon
                     anchors.centerIn: parent
                     text: "notifications_active"
-                    iconSize: 16
+                    iconSize: 16 * Appearance.effectiveScale
                     fill: 1
                     color: root.contentColor
                 }
@@ -273,18 +273,18 @@ Item {
                     visible: parent.style === "counter"
                     anchors.top: parent.top
                     anchors.right: parent.right
-                    anchors.topMargin: -2
-                    anchors.rightMargin: -2
-                    width: Math.max(12, badgeText.implicitWidth + 4)
-                    height: 12
-                    radius: 6
+                    anchors.topMargin: -2 * Appearance.effectiveScale
+                    anchors.rightMargin: -2 * Appearance.effectiveScale
+                    width: Math.max(12 * Appearance.effectiveScale, badgeText.implicitWidth + 4 * Appearance.effectiveScale)
+                    height: 12 * Appearance.effectiveScale
+                    radius: 6 * Appearance.effectiveScale
                     color: bellIcon.color // Match the bell icon color
 
                     StyledText {
                         id: badgeText
                         anchors.centerIn: parent
                         text: Notifications.unread > 99 ? "99+" : Notifications.unread.toString()
-                        font.pixelSize: 8
+                        font.pixelSize: 8 * Appearance.effectiveScale
                         font.weight: Font.Bold
                         color: showBackground ? Appearance.m3colors.m3surface : Appearance.colors.colLayer0 // High contrast against the bell-colored badge
                     }
@@ -294,7 +294,7 @@ Item {
             // WiFi (real data from Network service)
             MaterialSymbol {
                 text: Network.materialSymbol
-                iconSize: 16
+                iconSize: 16 * Appearance.effectiveScale
                 fill: 1
                 color: root.contentColor
             }
@@ -302,10 +302,10 @@ Item {
             // Bluetooth (real data from BluetoothStatus service)
             RowLayout {
                 visible: BluetoothStatus.available
-                spacing: 2
+                spacing: 2 * Appearance.effectiveScale
                 MaterialSymbol {
                     text: BluetoothStatus.materialSymbol
-                    iconSize: 16
+                    iconSize: 16 * Appearance.effectiveScale
                     fill: BluetoothStatus.connected ? 1 : 0
                     color: root.contentColor
                 }
@@ -314,9 +314,9 @@ Item {
                 Rectangle {
                     readonly property var device: BluetoothStatus.connectedDevices.length > 0 ? BluetoothStatus.connectedDevices[0] : null
                     visible: BluetoothStatus.connected && device && device.batteryAvailable
-                    width: 3
-                    height: 12
-                    radius: 1.5
+                    width: 3 * Appearance.effectiveScale
+                    height: 12 * Appearance.effectiveScale
+                    radius: 1.5 * Appearance.effectiveScale
                     color: root.subtextColor
                     Layout.alignment: Qt.AlignVCenter
                     
@@ -324,7 +324,7 @@ Item {
                         anchors.bottom: parent.bottom
                         width: parent.width
                         height: parent.height * (parent.device ? parent.device.battery : 0)
-                        radius: 1.5
+                        radius: 1.5 * Appearance.effectiveScale
                         color: root.contentColor
                     }
                 }
@@ -341,7 +341,7 @@ Item {
             MaterialSymbol {
                 visible: Notifications.silent
                 text: "notifications_paused"
-                iconSize: 16
+                iconSize: 16 * Appearance.effectiveScale
                 fill: 1
                 color: root.contentColor
                 Layout.alignment: Qt.AlignVCenter
@@ -356,7 +356,7 @@ Item {
     PrivacyIndicator {
         id: privacyIndicator
         anchors.right: parent.right
-        anchors.rightMargin: root.sidePadding + (root.isCentered ? 8 : -4)
+        anchors.rightMargin: root.sidePadding + (root.isCentered ? 8 * Appearance.effectiveScale : -4 * Appearance.effectiveScale)
         anchors.verticalCenter: parent.verticalCenter
     }
 }

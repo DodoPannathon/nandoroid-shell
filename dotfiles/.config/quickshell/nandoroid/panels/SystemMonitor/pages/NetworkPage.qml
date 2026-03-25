@@ -13,12 +13,12 @@ Item {
 
     ColumnLayout {
         anchors.fill: parent
-        anchors.margins: 20
-        spacing: 20
+        anchors.margins: 20 * Appearance.effectiveScale
+        spacing: 20 * Appearance.effectiveScale
 
         StyledText {
             text: "Network Activity"
-            font.pixelSize: 24
+            font.pixelSize: Appearance.font.pixelSize.huge
             font.weight: Font.Bold
         }
 
@@ -26,34 +26,34 @@ Item {
             Layout.fillWidth: true
             Layout.fillHeight: true
             color: Appearance.colors.colLayer2
-            radius: 16
+            radius: 16 * Appearance.effectiveScale
             border.width: 0
             
             ColumnLayout {
                 anchors.fill: parent
-                anchors.margins: 20
+                anchors.margins: 20 * Appearance.effectiveScale
                 spacing: 0
                 
                 RowLayout {
                     Layout.fillWidth: true
-                    Layout.bottomMargin: 20
+                    Layout.bottomMargin: 20 * Appearance.effectiveScale
                     ColumnLayout {
                         spacing: 0
-                        StyledText { text: "Network Bandwidth"; font.pixelSize: 18; font.weight: Font.Medium; color: Appearance.m3colors.m3onSurface }
-                        StyledText { text: "Total Activity: " + ((SystemData.networkTotalRate) / (1024 * 1024)).toFixed(2) + " MB/s"; color: Appearance.colors.colSubtext; font.pixelSize: 12 }
+                        StyledText { text: "Network Bandwidth"; font.pixelSize: Appearance.font.pixelSize.large; font.weight: Font.Medium; color: Appearance.m3colors.m3onSurface }
+                        StyledText { text: "Total Activity: " + ((SystemData.networkTotalRate) / (1024 * 1024)).toFixed(2) + " MB/s"; color: Appearance.colors.colSubtext; font.pixelSize: Appearance.font.pixelSize.smaller }
                     }
                     Item { Layout.fillWidth: true }
                     RowLayout {
-                        spacing: 24
+                        spacing: 24 * Appearance.effectiveScale
                         ColumnLayout {
                             spacing: 0
-                            StyledText { text: "DOWNLOAD"; font.pixelSize: 10; font.weight: Font.Bold; color: "#81C995" }
-                            StyledText { text: (SystemData.networkRxRate / (1024 * 1024)).toFixed(2) + " MB/s"; font.pixelSize: 16; font.weight: Font.Black; color: Appearance.m3colors.m3onSurface }
+                            StyledText { text: "DOWNLOAD"; font.pixelSize: Appearance.font.pixelSize.smallest; font.weight: Font.Bold; color: "#81C995" }
+                            StyledText { text: (SystemData.networkRxRate / (1024 * 1024)).toFixed(2) + " MB/s"; font.pixelSize: Appearance.font.pixelSize.normal; font.weight: Font.Black; color: Appearance.m3colors.m3onSurface }
                         }
                         ColumnLayout {
                             spacing: 0
-                            StyledText { text: "UPLOAD"; font.pixelSize: 10; font.weight: Font.Bold; color: "#FF8A65" }
-                            StyledText { text: (SystemData.networkTxRate / (1024 * 1024)).toFixed(2) + " MB/s"; font.pixelSize: 16; font.weight: Font.Black; color: Appearance.m3colors.m3onSurface; horizontalAlignment: Text.AlignRight }
+                            StyledText { text: "UPLOAD"; font.pixelSize: Appearance.font.pixelSize.smallest; font.weight: Font.Bold; color: "#FF8A65" }
+                            StyledText { text: (SystemData.networkTxRate / (1024 * 1024)).toFixed(2) + " MB/s"; font.pixelSize: Appearance.font.pixelSize.normal; font.weight: Font.Black; color: Appearance.m3colors.m3onSurface; horizontalAlignment: Text.AlignRight }
                         }
                     }
                 }
@@ -71,7 +71,7 @@ Item {
                 // Center line
                 Rectangle {
                     Layout.fillWidth: true
-                    height: 2
+                    Layout.preferredHeight: 2 * Appearance.effectiveScale
                     color: Appearance.m3colors.m3outlineVariant
                     opacity: 0.5
                 }

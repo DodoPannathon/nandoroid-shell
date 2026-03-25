@@ -6,14 +6,14 @@ import ".."
 
 Item {
     id: root
-    property real numberSize: 80
-    property real margins: 10
+    property real numberSize: 80 * Appearance.effectiveScale
+    property real margins: 10 * Appearance.effectiveScale
     property color color: Appearance.colors.colOnSecondaryContainer
 
-    property real hourLineSize: 4
-    property real minuteLineSize: 2
-    property real hourLineLength: 18
-    property real minuteLineLength: 7
+    property real hourLineSize: 4 * Appearance.effectiveScale
+    property real minuteLineSize: 2 * Appearance.effectiveScale
+    property real hourLineLength: 18 * Appearance.effectiveScale
+    property real minuteLineLength: 7 * Appearance.effectiveScale
 
     property int hours: 12
     property int minutes: 60

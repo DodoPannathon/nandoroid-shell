@@ -11,7 +11,7 @@ import "../NotificationCenter" as NotificationCenter
 
 /**
  * Media Notch Popup — The expanded HUD that appears below the Dynamic Island.
- * Supports "mini" (original HUD) and "full" (MediaCard) styles.
+ * Refactored for global scaling.
  */
 Variants {
     id: root
@@ -28,19 +28,19 @@ Variants {
         // Positioning: Center top, below status bar
         WlrLayershell.layer: WlrLayer.Top
         WlrLayershell.namespace: "nandoroid:media-hud"
-        exclusionMode: ExclusionMode.Ignore
+        exclusiveZone: 0
 
         anchors {
             top: true
         }
 
         WlrLayershell.margins {
-            top: 44
+            top: 4 * Appearance.effectiveScale
         }
 
         // Responsive window width
-        implicitWidth: isFull ? Math.min(450, modelData.width * 0.9) : Math.min(320, modelData.width * 0.9)
-        implicitHeight: contentRect.height + 20
+        implicitWidth: isFull ? Math.min(450 * Appearance.effectiveScale, modelData.width * 0.9) : Math.min(320 * Appearance.effectiveScale, modelData.width * 0.9)
+        implicitHeight: contentRect.height + (20 * Appearance.effectiveScale)
         color: "transparent"
 
         visible: (GlobalStates.mediaNotchOpen && (GlobalStates.activeMediaNotchScreen === null || GlobalStates.activeMediaNotchScreen === modelData)) || contentRect.opacity > 0
@@ -48,9 +48,9 @@ Variants {
         Rectangle {
             id: contentRect
             // Responsive pill width
-            width: parent.width - 20
+            width: parent.width - (20 * Appearance.effectiveScale)
             anchors.horizontalCenter: parent.horizontalCenter
-            height: isFull ? (fullLoader.item ? fullLoader.item.implicitHeight : 118) : (miniLayout.implicitHeight + 12)
+            height: isFull ? (fullLoader.item ? fullLoader.item.implicitHeight : 118 * Appearance.effectiveScale) : (miniLayout.implicitHeight + (12 * Appearance.effectiveScale))
             color: isFull ? "transparent" : "black"
             radius: Appearance.rounding.button
 
@@ -75,12 +75,12 @@ Variants {
                 id: miniLayout
                 visible: !popupWindow.isFull
                 anchors.fill: parent
-                anchors.margins: 8
-                spacing: 10
+                anchors.margins: 8 * Appearance.effectiveScale
+                spacing: 10 * Appearance.effectiveScale
 
                 // ── 1. Art with Play/Pause Overlay ──
                 MaterialShape {
-                    width: 36; height: 36
+                    width: 36 * Appearance.effectiveScale; height: 36 * Appearance.effectiveScale
                     shape: MaterialShape.Shape.Circle
                     image: MprisController.displayedArtFilePath || ""
                     color: Appearance.colors.colLayer2
@@ -88,7 +88,7 @@ Variants {
                     // Semi-transparent overlay for contrast
                     Rectangle {
                         anchors.fill: parent
-                        radius: 18
+                        radius: 18 * Appearance.effectiveScale
                         color: "black"
                         opacity: (MprisController.displayedArtFilePath && MprisController.displayedArtFilePath.toString() !== "") ? 0.35 : 0
                         visible: opacity > 0
@@ -97,7 +97,7 @@ Variants {
                     MaterialSymbol {
                         anchors.centerIn: parent
                         text: "music_note"
-                        iconSize: 18
+                        iconSize: 18 * Appearance.effectiveScale
                         fill: 1
                         visible: !MprisController.displayedArtFilePath || MprisController.displayedArtFilePath.toString() === ""
                         color: Appearance.colors.colNotchText
@@ -107,7 +107,7 @@ Variants {
                     MaterialSymbol {
                         anchors.centerIn: parent
                         text: MprisController.isPlaying ? "pause" : "play_arrow"
-                        iconSize: 24
+                        iconSize: 24 * Appearance.effectiveScale
                         fill: 1
                         color: "white"
                         opacity: 0.9
@@ -122,7 +122,7 @@ Variants {
 
                 // ── 2. Skip Previous ──
                 MaterialSymbol {
-                    text: "skip_previous"; iconSize: 22; fill: 1; color: Appearance.colors.colNotchText
+                    text: "skip_previous"; iconSize: 22 * Appearance.effectiveScale; fill: 1; color: Appearance.colors.colNotchText
                     opacity: MprisController.canGoPrevious ? 1 : 0.4
                     MouseArea { 
                         anchors.fill: parent; cursorShape: Qt.PointingHandCursor; 
@@ -133,7 +133,7 @@ Variants {
                 // ── 3. Slider ──
                 StyledSlider {
                     id: progressSlider
-                    Layout.fillWidth: true; Layout.preferredHeight: 14
+                    Layout.fillWidth: true; Layout.preferredHeight: 14 * Appearance.effectiveScale
                     configuration: StyledSlider.Configuration.Wavy
                     wavy: MprisController.isPlaying
                     value: MprisController.length > 0 ? (MprisController.position / MprisController.length) : 0
@@ -154,7 +154,7 @@ Variants {
 
                 // ── 4. Skip Next ──
                 MaterialSymbol {
-                    text: "skip_next"; iconSize: 22; fill: 1; color: Appearance.colors.colNotchText
+                    text: "skip_next"; iconSize: 22 * Appearance.effectiveScale; fill: 1; color: Appearance.colors.colNotchText
                     opacity: MprisController.canGoNext ? 1 : 0.4
                     MouseArea { 
                         anchors.fill: parent; cursorShape: Qt.PointingHandCursor;

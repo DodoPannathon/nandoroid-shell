@@ -9,9 +9,9 @@ Item {
     anchors.fill: parent
 
     required property int clockSecond
-    property real handWidth: 2
-    property real handLength: 95
-    property real dotSize: 14
+    property real handWidth: 2 * Appearance.effectiveScale
+    property real handLength: 95 * Appearance.effectiveScale
+    property real dotSize: 14 * Appearance.effectiveScale
     property string style: "dot"
     property color color: Appearance.colors.colSecondary
 
@@ -30,9 +30,9 @@ Item {
     Rectangle {
         visible: root.style === "line" || root.style === "classic"
         anchors.verticalCenter: parent.verticalCenter
-        x: parent.width / 2 - (root.style === "classic" ? 20 : 0)
+        x: parent.width / 2 - (root.style === "classic" ? 20 * Appearance.effectiveScale : 0)
         width: root.handLength
-        height: root.style === "classic" ? 3 : root.handWidth
+        height: root.style === "classic" ? 3 * Appearance.effectiveScale : root.handWidth
         radius: height / 2
         color: root.color
     }
@@ -41,10 +41,10 @@ Item {
     Rectangle {
         visible: root.style === "classic"
         anchors.verticalCenter: parent.verticalCenter
-        x: parent.width / 2 - 24
-        width: 20
-        height: 3
-        radius: 1.5
+        x: parent.width / 2 - 24 * Appearance.effectiveScale
+        width: 20 * Appearance.effectiveScale
+        height: 3 * Appearance.effectiveScale
+        radius: 1.5 * Appearance.effectiveScale
         color: root.color
     }
 

@@ -95,7 +95,7 @@ Item {
                     Rectangle {
                         property real baseX: Math.random() * starsEffect.width
                         property real baseY: Math.random() * (starsEffect.height * 0.7)
-                        x: baseX; y: baseY; width: 1.5 + Math.random(); height: width; radius: width/2; color: "white"
+                        x: baseX; y: baseY; width: (1.5 + Math.random()) * Appearance.effectiveScale; height: width; radius: width/2; color: "white"
                         opacity: 0.5 + Math.random() * 0.5
                         
                         SequentialAnimation on opacity {
@@ -122,15 +122,15 @@ Item {
                     Item {
                         required property int index
                         readonly property bool fromRight: index % 2 !== 0
-                        width: 250; height: 90
-                        x: fromRight ? cloudEffect.width + 100 : -300
-                        y: 10 + (index * 30)
+                        width: 250 * Appearance.effectiveScale; height: 90 * Appearance.effectiveScale
+                        x: fromRight ? cloudEffect.width + 100 * Appearance.effectiveScale : -300 * Appearance.effectiveScale
+                        y: (10 * Appearance.effectiveScale) + (index * 30 * Appearance.effectiveScale)
                         Rectangle {
                             anchors.fill: parent; radius: height/2; color: cloudEffect.cloudColor; opacity: 0.12
                         }
                         NumberAnimation on x {
-                            from: index % 2 !== 0 ? cloudEffect.width + 100 : -300
-                            to: index % 2 !== 0 ? -300 : cloudEffect.width + 100
+                            from: index % 2 !== 0 ? cloudEffect.width + 100 * Appearance.effectiveScale : -300 * Appearance.effectiveScale
+                            to: index % 2 !== 0 ? -300 * Appearance.effectiveScale : cloudEffect.width + 100 * Appearance.effectiveScale
                             duration: 35000 + (index * 6000); loops: Animation.Infinite
                             running: cloudEffect.visible && root.animationsEnabled
                         }
@@ -143,15 +143,15 @@ Item {
                     Item {
                         required property int index
                         readonly property bool fromRight: index % 2 !== 0
-                        width: 150; height: 55
-                        x: fromRight ? cloudEffect.width + 50 : -200
-                        y: 50 + (index * 25)
+                        width: 150 * Appearance.effectiveScale; height: 55 * Appearance.effectiveScale
+                        x: fromRight ? cloudEffect.width + 50 * Appearance.effectiveScale : -200 * Appearance.effectiveScale
+                        y: (50 * Appearance.effectiveScale) + (index * 25 * Appearance.effectiveScale)
                         Rectangle {
                             anchors.fill: parent; radius: height/2; color: cloudEffect.cloudColor; opacity: 0.18
                         }
                         NumberAnimation on x {
-                            from: index % 2 !== 0 ? cloudEffect.width + 50 : -200
-                            to: index % 2 !== 0 ? -200 : cloudEffect.width + 50
+                            from: index % 2 !== 0 ? cloudEffect.width + 50 * Appearance.effectiveScale : -200 * Appearance.effectiveScale
+                            to: index % 2 !== 0 ? -200 * Appearance.effectiveScale : cloudEffect.width + 50 * Appearance.effectiveScale
                             duration: 25000 + (index * 4000); loops: Animation.Infinite
                             running: cloudEffect.visible && root.animationsEnabled
                         }
@@ -174,14 +174,14 @@ Item {
                         property real fallSpeed: 450 + Math.random() * 200
                         property real delay: Math.random() * 1000
 
-                        x: initialX; y: -30; width: 1.2; height: 16; radius: 0.6
+                        x: initialX; y: -30 * Appearance.effectiveScale; width: 1.2 * Appearance.effectiveScale; height: 16 * Appearance.effectiveScale; radius: 0.6 * Appearance.effectiveScale
                         color: rainEffect.dropColor; opacity: 0.25; rotation: 0
 
                         SequentialAnimation {
                             loops: Animation.Infinite
                             running: rainEffect.visible && root.animationsEnabled
                             PauseAnimation { duration: rainDrop.delay }
-                            NumberAnimation { target: rainDrop; property: "y"; from: -30; to: rainEffect.height + 30; duration: rainDrop.fallSpeed; easing.type: Easing.Linear }
+                            NumberAnimation { target: rainDrop; property: "y"; from: -30 * Appearance.effectiveScale; to: rainEffect.height + 30 * Appearance.effectiveScale; duration: rainDrop.fallSpeed; easing.type: Easing.Linear }
                             ScriptAction { script: { rainDrop.initialX = Math.random() * rainEffect.width; } }
                         }
                     }
@@ -198,19 +198,19 @@ Item {
                         id: snowFlake
                         property real initialX: Math.random() * snowEffect.width
                         property real fallSpeed: 5000 + Math.random() * 2000
-                        x: initialX; y: -10; width: 5 + Math.random() * 4; height: width; radius: width/2
+                        x: initialX; y: -10 * Appearance.effectiveScale; width: (5 + Math.random() * 4) * Appearance.effectiveScale; height: width; radius: width/2
                         color: "white"; opacity: 0.7
 
                         SequentialAnimation on y {
                             loops: Animation.Infinite
                             running: snowEffect.visible && root.animationsEnabled
-                            NumberAnimation { from: -20; to: snowEffect.height + 20; duration: snowFlake.fallSpeed; easing.type: Easing.Linear }
+                            NumberAnimation { from: -20 * Appearance.effectiveScale; to: snowEffect.height + 20 * Appearance.effectiveScale; duration: snowFlake.fallSpeed; easing.type: Easing.Linear }
                         }
                         SequentialAnimation on x {
                             loops: Animation.Infinite
                             running: snowEffect.visible && root.animationsEnabled
-                            NumberAnimation { to: snowFlake.initialX + 30; duration: snowFlake.fallSpeed / 2; easing.type: Easing.InOutSine }
-                            NumberAnimation { to: snowFlake.initialX - 30; duration: snowFlake.fallSpeed / 2; easing.type: Easing.InOutSine }
+                            NumberAnimation { to: snowFlake.initialX + 30 * Appearance.effectiveScale; duration: snowFlake.fallSpeed / 2; easing.type: Easing.InOutSine }
+                            NumberAnimation { to: snowFlake.initialX - 30 * Appearance.effectiveScale; duration: snowFlake.fallSpeed / 2; easing.type: Easing.InOutSine }
                         }
                     }
                 }

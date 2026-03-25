@@ -17,10 +17,10 @@ Item {
     required property var modelData
     property var notificationObject: modelData
     property bool expanded: false
-    property real padding: 16
+    property real padding: 16 * Appearance.effectiveScale
 
     implicitHeight: background.height
-    width: parent ? parent.width : 400
+    width: parent ? parent.width : 400 * Appearance.effectiveScale
 
     Component.onCompleted: root.updateTimerState()
 
@@ -55,7 +55,7 @@ Item {
         clip: true
         
         // MD3 Outline Style
-        border.width: 1
+        border.width: Math.max(1, 1 * Appearance.effectiveScale)
         border.color: Functions.ColorUtils.applyAlpha(Appearance.m3colors.m3onSurface, 0.12)
 
         anchors.leftMargin: 0
@@ -86,7 +86,7 @@ Item {
                 root.expanded = !root.expanded;
             }
             onDragReleased: (diffX, diffY) => {
-                if (Math.abs(diffX) > 70) {
+                if (Math.abs(diffX) > 70 * Appearance.effectiveScale) {
                     if (notificationObject) Notifications.discardNotification(notificationObject.notificationId);
                 } else {
                     dragManager.resetDrag();
@@ -100,7 +100,7 @@ Item {
             anchors.right: parent.right
             anchors.top: parent.top
             anchors.margins: root.padding
-            spacing: 6
+            spacing: 6 * Appearance.effectiveScale
 
             // Header Row (App Name, Icon, Time) dihapus sesuai request
 
@@ -122,7 +122,7 @@ Item {
                         return summary !== "" ? summary : body;
                     }
                 }
-                font.pixelSize: 14
+                font.pixelSize: 14 * Appearance.effectiveScale
                 
                 wrapMode: root.expanded ? Text.Wrap : Text.NoWrap
                 maximumLineCount: root.expanded ? 40 : 1
@@ -142,7 +142,7 @@ Item {
                 id: actionsRow
                 width: parent.width
                 visible: root.expanded && notificationObject
-                spacing: 8
+                spacing: 8 * Appearance.effectiveScale
                 
                 readonly property int totalButtons: (notificationObject ? notificationObject.actions.length : 0) + 2
                 readonly property real buttonWidth: (width - (spacing * (totalButtons - 1))) / totalButtons
@@ -155,10 +155,10 @@ Item {
                     }
                     contentItem: Item {
                         Row {
-                            spacing: 4
+                            spacing: 4 * Appearance.effectiveScale
                             anchors.centerIn: parent
                             MaterialSymbol {
-                                iconSize: 16
+                                iconSize: 16 * Appearance.effectiveScale
                                 anchors.verticalCenter: parent.verticalCenter
                                 color: (notificationObject && notificationObject.urgency == NotificationUrgency.Critical) ? 
                                     Appearance.m3colors.m3onSurfaceVariant : Appearance.m3colors.m3onSurface
@@ -166,9 +166,9 @@ Item {
                             }
                             StyledText {
                                 text: "Close"
-                                font.pixelSize: 12
+                                font.pixelSize: 12 * Appearance.effectiveScale
                                 anchors.verticalCenter: parent.verticalCenter
-                                visible: parent.parent.parent.width > 60
+                                visible: parent.parent.parent.width > 60 * Appearance.effectiveScale
                                 color: (notificationObject && notificationObject.urgency == NotificationUrgency.Critical) ? 
                                     Appearance.m3colors.m3onSurfaceVariant : Appearance.m3colors.m3onSurface
                             }
@@ -192,11 +192,11 @@ Item {
 
                     contentItem: Item {
                         Row {
-                            spacing: 4
+                            spacing: 4 * Appearance.effectiveScale
                             anchors.centerIn: parent
                             MaterialSymbol {
                                 id: copyIcon
-                                iconSize: 16
+                                iconSize: 16 * Appearance.effectiveScale
                                 anchors.verticalCenter: parent.verticalCenter
                                 color: (notificationObject && notificationObject.urgency == NotificationUrgency.Critical) ? 
                                     Appearance.m3colors.m3onSurfaceVariant : Appearance.m3colors.m3onSurface
@@ -204,9 +204,9 @@ Item {
                             }
                             StyledText {
                                 text: "Copy"
-                                font.pixelSize: 12
+                                font.pixelSize: 12 * Appearance.effectiveScale
                                 anchors.verticalCenter: parent.verticalCenter
-                                visible: parent.parent.parent.width > 60
+                                visible: parent.parent.parent.width > 60 * Appearance.effectiveScale
                                 color: (notificationObject && notificationObject.urgency == NotificationUrgency.Critical) ? 
                                     Appearance.m3colors.m3onSurfaceVariant : Appearance.m3colors.m3onSurface
                             }

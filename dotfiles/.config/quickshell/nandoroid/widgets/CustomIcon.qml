@@ -16,8 +16,8 @@ Item {
     property string source: ""
     property string iconFolder: "assets/icons"
     
-    width: 30
-    height: 30
+    width: 30 * Appearance.effectiveScale
+    height: 30 * Appearance.effectiveScale
     implicitWidth: width
     implicitHeight: height
 

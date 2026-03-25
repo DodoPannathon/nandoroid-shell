@@ -51,20 +51,20 @@ Rectangle {
         // ── Top Section: Primary Conditions ──
         RowLayout {
             Layout.fillWidth: true
-            Layout.margins: 20
-            Layout.bottomMargin: 12
+            Layout.margins: 20 * Appearance.effectiveScale
+            Layout.bottomMargin: 12 * Appearance.effectiveScale
             spacing: 0 
 
             ColumnLayout {
                 Layout.alignment: Qt.AlignLeft | Qt.AlignTop
-                spacing: 6
+                spacing: 6 * Appearance.effectiveScale
                 
                 RowLayout {
-                    spacing: 8
+                    spacing: 8 * Appearance.effectiveScale
                     CustomIcon {
                         source: Weather.current.icon
                         iconFolder: root.weatherIconsDir
-                        width: 32; height: 32; colorize: false
+                        width: 32 * Appearance.effectiveScale; height: 32 * Appearance.effectiveScale; colorize: false
                     }
                     StyledText {
                         text: Weather.loading ? "Updating..." : Weather.current.condition
@@ -93,7 +93,7 @@ Rectangle {
 
             StyledText {
                 text: Weather.current.temp + "°"
-                font.pixelSize: 64
+                font.pixelSize: 64 * Appearance.effectiveScale
                 font.weight: Font.Normal
                 color: root.contentColor
                 Layout.alignment: Qt.AlignTop | Qt.AlignRight
@@ -103,13 +103,13 @@ Rectangle {
         // ── Middle Section: Hourly (Transparent) ──
         Item {
             Layout.fillWidth: true
-            implicitHeight: hourlyCol.implicitHeight + 32
+            implicitHeight: hourlyCol.implicitHeight + 32 * Appearance.effectiveScale
             
             ColumnLayout {
                 id: hourlyCol
                 anchors.fill: parent
-                anchors.leftMargin: 20; anchors.rightMargin: 20
-                anchors.topMargin: 16; anchors.bottomMargin: 16
+                anchors.leftMargin: 20 * Appearance.effectiveScale; anchors.rightMargin: 20 * Appearance.effectiveScale
+                anchors.topMargin: 16 * Appearance.effectiveScale; anchors.bottomMargin: 16 * Appearance.effectiveScale
                 
                 RowLayout {
                     Layout.fillWidth: true
@@ -119,18 +119,18 @@ Rectangle {
                         delegate: ColumnLayout {
                             Layout.fillWidth: true
                             Layout.preferredWidth: 0
-                            spacing: 8
+                            spacing: 8 * Appearance.effectiveScale
                             StyledText {
                                 text: modelData.temp + "°"; font.pixelSize: Appearance.font.pixelSize.small
                                 font.weight: Font.Medium; color: root.contentColor; Layout.alignment: Qt.AlignHCenter
                             }
                             CustomIcon {
                                 source: modelData.icon; iconFolder: root.weatherIconsDir
-                                width: 28; height: 28; colorize: false; Layout.alignment: Qt.AlignHCenter
+                                width: 28 * Appearance.effectiveScale; height: 28 * Appearance.effectiveScale; colorize: false; Layout.alignment: Qt.AlignHCenter
                             }
                             StyledText {
                                 text: index === 0 ? "Now" : modelData.time
-                                font.pixelSize: 10; color: root.contentColor; opacity: root.lowOpacity
+                                font.pixelSize: Appearance.font.pixelSize.smallest; color: root.contentColor; opacity: root.lowOpacity
                                 Layout.alignment: Qt.AlignHCenter; horizontalAlignment: Text.AlignHCenter; Layout.fillWidth: true
                             }
                         }
@@ -143,20 +143,20 @@ Rectangle {
         Item {
             visible: Weather.daily.length > 0
             Layout.fillWidth: true
-            implicitHeight: dailyCol.implicitHeight + 24
+            implicitHeight: dailyCol.implicitHeight + 24 * Appearance.effectiveScale
             
             ColumnLayout {
                 id: dailyCol
                 anchors.fill: parent
-                anchors.leftMargin: 20; anchors.rightMargin: 20
-                anchors.topMargin: 12; anchors.bottomMargin: 12
-                spacing: 8
+                anchors.leftMargin: 20 * Appearance.effectiveScale; anchors.rightMargin: 20 * Appearance.effectiveScale
+                anchors.topMargin: 12 * Appearance.effectiveScale; anchors.bottomMargin: 12 * Appearance.effectiveScale
+                spacing: 8 * Appearance.effectiveScale
                 Repeater {
                     model: root.showDailyForecast ? Weather.daily : Weather.daily.slice(0, 1)
                     delegate: RowLayout {
                         Layout.fillWidth: true
-                        Layout.leftMargin: 8; Layout.rightMargin: 8
-                        spacing: 12
+                        Layout.leftMargin: 8 * Appearance.effectiveScale; Layout.rightMargin: 8 * Appearance.effectiveScale
+                        spacing: 12 * Appearance.effectiveScale
                         StyledText {
                             text: modelData.date; font.pixelSize: Appearance.font.pixelSize.small
                             color: root.contentColor; Layout.fillWidth: true
@@ -167,7 +167,7 @@ Rectangle {
                         }
                         CustomIcon {
                             source: modelData.icon; iconFolder: root.weatherIconsDir
-                            width: 24; height: 24; colorize: false
+                            width: 24 * Appearance.effectiveScale; height: 24 * Appearance.effectiveScale; colorize: false
                         }
                     }
                 }
@@ -178,17 +178,17 @@ Rectangle {
         ColumnLayout {
             Layout.fillWidth: true
             spacing: 0
-            Layout.topMargin: 4
-            Layout.bottomMargin: 16
+            Layout.topMargin: 4 * Appearance.effectiveScale
+            Layout.bottomMargin: 16 * Appearance.effectiveScale
 
             Item {
                 Layout.fillWidth: true
-                Layout.preferredHeight: 20
+                Layout.preferredHeight: 20 * Appearance.effectiveScale
                 
                 StyledText {
                     id: timestampText
                     anchors.centerIn: parent
-                    font.pixelSize: 9
+                    font.pixelSize: 9 * Appearance.effectiveScale
                     color: root.contentColor; opacity: root.lowOpacity; textFormat: Text.StyledText
                     
                     property string timeString: "just now"

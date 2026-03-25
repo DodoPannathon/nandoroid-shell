@@ -23,8 +23,8 @@ PopupWindow {
     property var _lockedRect: Qt.rect(0, 0, 0, 0)
 
     color: "transparent"
-    implicitWidth: 240
-    implicitHeight: 400
+    implicitWidth: 240 * Appearance.effectiveScale
+    implicitHeight: 400 * Appearance.effectiveScale
 
     anchor {
         window: parentWindow
@@ -57,8 +57,8 @@ PopupWindow {
 
     Rectangle {
         id: previewContainer
-        width: 210
-        implicitHeight: Math.min(300, previewListView.contentHeight + 12)
+        width: 210 * Appearance.effectiveScale
+        implicitHeight: Math.min(300 * Appearance.effectiveScale, previewListView.contentHeight + 12 * Appearance.effectiveScale)
         height: implicitHeight
         
         anchors.bottom: parent.bottom
@@ -67,7 +67,7 @@ PopupWindow {
         radius: Appearance.rounding.normal
         color: Appearance.colors.colLayer0
         border.color: Appearance.colors.colOutlineVariant
-        border.width: 1
+        border.width: Math.max(1, 1 * Appearance.effectiveScale)
         
         opacity: root.visible ? 0.98 : 0
         scale: root.visible ? 1 : 0.95
@@ -87,15 +87,15 @@ PopupWindow {
         StyledListView {
             id: previewListView
             anchors.fill: parent
-            anchors.margins: 6
-            spacing: 2
+            anchors.margins: 6 * Appearance.effectiveScale
+            spacing: 2 * Appearance.effectiveScale
             clip: true
             interactive: contentHeight > height
             model: root.liveToplevels
             
             delegate: Rectangle {
                 width: ListView.view.width
-                height: 36
+                height: 36 * Appearance.effectiveScale
                 color: "transparent"
                 radius: Appearance.rounding.verysmall
 
@@ -109,7 +109,7 @@ PopupWindow {
                 }
 
                 RowLayout {
-                    anchors.fill: parent; anchors.leftMargin: 10; anchors.rightMargin: 6; spacing: 8
+                    anchors.fill: parent; anchors.leftMargin: 10 * Appearance.effectiveScale; anchors.rightMargin: 6 * Appearance.effectiveScale; spacing: 8 * Appearance.effectiveScale
 
                     StyledText {
                         text: modelData.title || "Window"
@@ -121,7 +121,7 @@ PopupWindow {
                     }
 
                     RippleButton {
-                        Layout.preferredWidth: 28; Layout.preferredHeight: 28
+                        Layout.preferredWidth: 28 * Appearance.effectiveScale; Layout.preferredHeight: 28 * Appearance.effectiveScale
                         Layout.alignment: Qt.AlignVCenter
                         padding: 0
                         buttonRadius: Appearance.rounding.verysmall
@@ -131,7 +131,7 @@ PopupWindow {
                         contentItem: Item {
                             MaterialSymbol {
                                 anchors.centerIn: parent
-                                text: "close"; iconSize: 16
+                                text: "close"; iconSize: 16 * Appearance.effectiveScale
                                 color: parent.parent.hovered ? Appearance.colors.colOnErrorContainer : Appearance.colors.colOnLayer0
                             }
                         }
@@ -158,7 +158,7 @@ PopupWindow {
         targetButton = button;
         appId = appData.appId;
         
-        const pos = targetButton.mapToItem(null, targetButton.width / 2, 4);
+        const pos = targetButton.mapToItem(null, targetButton.width / 2, 4 * Appearance.effectiveScale);
         root._lockedRect = Qt.rect(pos.x, pos.y, 0, 0);
         
         root.visible = true;

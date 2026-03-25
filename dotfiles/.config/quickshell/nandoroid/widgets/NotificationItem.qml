@@ -19,11 +19,11 @@ Item { // Notification item area
     property bool expanded: false
     property bool onlyNotification: false
     property real fontSize: Appearance.font.pixelSize.small
-    property real padding: onlyNotification ? 0 : 8
+    property real padding: onlyNotification ? 0 : 8 * Appearance.effectiveScale
     property real summaryElideRatio: 0.85
 
-    property real dragConfirmThreshold: 70 // Drag further to discard notification
-    property real dismissOvershoot: 60 // Account for gaps and bouncy animations
+    property real dragConfirmThreshold: 70 * Appearance.effectiveScale // Drag further to discard notification
+    property real dismissOvershoot: 60 * Appearance.effectiveScale // Account for gaps and bouncy animations
     property var qmlParent: root?.parent?.parent // There's something between this and the parent ListView
     property int index: 0
     property var parentDragIndex: qmlParent?.dragIndex ?? -1
@@ -111,7 +111,7 @@ Item { // Notification item area
         image: notificationObject.image
         anchors.right: background.left
         anchors.top: background.top
-        anchors.rightMargin: 10
+        anchors.rightMargin: 10 * Appearance.effectiveScale
     }
 
     Rectangle { // Background of notification item
@@ -145,7 +145,7 @@ Item { // Notification item area
             id: contentColumn
             anchors.fill: parent
             anchors.margins: expanded ? root.padding : 0
-            spacing: 3
+            spacing: 3 * Appearance.effectiveScale
 
             Behavior on anchors.margins {
                 animation: Appearance.animation.elementMoveFast.numberAnimation.createObject(this)
@@ -155,7 +155,7 @@ Item { // Notification item area
                 id: summaryRow
                 visible: !root.onlyNotification || !root.expanded
                 Layout.fillWidth: true
-                spacing: 8
+                spacing: 8 * Appearance.effectiveScale
                 implicitHeight: summaryText.implicitHeight
                 StyledText {
                     id: summaryText
@@ -233,7 +233,7 @@ Item { // Notification item area
                     ScrollEdgeFade {
                         target: actionsFlickable
                         vertical: false
-                        fadeSize: 20
+                        fadeSize: 20 * Appearance.effectiveScale
                         color: Functions.ColorUtils.transparentize(Appearance.m3colors.m3shadow, 0.96) // Super subtle
                     }
 
@@ -256,6 +256,7 @@ Item { // Notification item area
                         RowLayout {
                             id: actionRowLayout
                             Layout.alignment: Qt.AlignBottom
+                            spacing: 8 * Appearance.effectiveScale
 
                             NotificationActionButton {
                                 Layout.fillWidth: true

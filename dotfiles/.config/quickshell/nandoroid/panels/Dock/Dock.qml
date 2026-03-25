@@ -1,13 +1,13 @@
+import "../../core"
+import "../../core/functions" as Functions
+import "../../services"
+import "../../widgets"
 import QtQuick
 import QtQuick.Layouts
 import Qt5Compat.GraphicalEffects
 import Quickshell
 import Quickshell.Wayland
 import Quickshell.Hyprland
-import "../../core"
-import "../../core/functions" as Functions
-import "../../services"
-import "../../widgets"
 
 /**
  * NAnDoroid Ported Dock
@@ -33,16 +33,23 @@ Scope {
                 WlrLayershell.namespace: "nandoroid:dock"
                 
                 exclusiveZone: {
-                    if (!Config.ready) return 0;
-                    const scale = Config.options.dock.scale ?? 1.0;
+                    if (!Config.ready || !visible) return 0;
+                    const scale = (Config.options.dock.scale ?? 1.0) * Appearance.effectiveScale;
+                    // Only reserve space if NOT auto-hiding and NOT showOnlyInDesktop
                     if (!Config.options.dock.showOnlyInDesktop && !Config.options.dock.autoHide) {
                         return 70 * scale + (dockWindow.bgStyle === 2 ? 0 : Appearance.sizes.elevationMargin / 2);
                     }
                     return 0;
                 }
                 
-                anchors { bottom: true }
+                anchors { left: true; right: true; bottom: true }
                 color: "transparent"
+                
+                // Define the clickable area to allow click-through on the sides
+                mask: Region {
+                    // Include the entire mouse area to allow trigger at bottom edge
+                    item: dockMouseArea
+                }
                 
                 // SIMPLIFIED VISIBILITY: Toggle the whole window for 'Show Only In Desktop'
                 visible: {
@@ -59,13 +66,13 @@ Scope {
 
                 // Removed restrictive mask to allow shadow to spread
                 
-                readonly property real dockHeight: 70
-                readonly property real dockScale: Config.ready && Config.options.dock ? Config.options.dock.scale : 1.0
+                readonly property real dockHeight: 70 * Appearance.effectiveScale
+                readonly property real dockScale: (Config.ready && Config.options.dock ? Config.options.dock.scale : 1.0) * Appearance.effectiveScale
                 readonly property int bgStyle: Config.ready && Config.options.dock ? Config.options.dock.backgroundStyle : 1
                 
                 implicitWidth: modelData.width
-                // Increased height to provide more room for the premium soft shadow (radius 36)
-                implicitHeight: (dockHeight * dockScale) + Appearance.sizes.elevationMargin + 60
+                // Provide enough height for popups and shadows without pushing them too far up
+                implicitHeight: 500 * Appearance.effectiveScale
                 readonly property real screenY: modelData.height - height
 
                 readonly property bool hasActiveWindows: {
@@ -116,27 +123,27 @@ Scope {
                 MouseArea {
                     id: dockMouseArea
                     // Standard interactive area
-                    width: Math.max(200, visualContainer.width * dockWindow.dockScale)
+                    width: Math.max(200 * Appearance.effectiveScale, visualContainer.width * (dockWindow.dockScale / Appearance.effectiveScale))
                     anchors.horizontalCenter: parent.horizontalCenter
                     hoverEnabled: true
                     height: {
                         if (!Config.ready) return parent.height;
                         if (dockPreview.visible || dockPreview.hovered) return parent.height;
-                        return dockWindow.reveal ? parent.height : 3;
+                        return dockWindow.reveal ? parent.height : 3 * Appearance.effectiveScale;
                     }
                     anchors.bottom: parent.bottom
 
                     Item {
                         id: visualContainer
                         anchors.horizontalCenter: parent.horizontalCenter
-                        width: Math.max(100, mainRowContainer.implicitWidth + 20)
+                        width: Math.max(100 * Appearance.effectiveScale, mainRowContainer.implicitWidth + 20 * Appearance.effectiveScale)
                         height: dockWindow.dockHeight
-                        scale: dockWindow.dockScale
+                        scale: dockWindow.dockScale / Appearance.effectiveScale
                         transformOrigin: Item.Bottom
                         
-                        readonly property real bMargin: (dockWindow.bgStyle === 2) ? 0 : Appearance.sizes.elevationMargin / 2
+                        readonly property real bMargin: (dockWindow.bgStyle === 2) ? -2 * Appearance.effectiveScale : Appearance.sizes.elevationMargin / 2
                         anchors.bottom: parent.bottom
-                        anchors.bottomMargin: dockWindow.reveal ? bMargin : (-height * scale) - 20
+                        anchors.bottomMargin: dockWindow.reveal ? bMargin : (-height * scale) - 20 * Appearance.effectiveScale
                         opacity: dockWindow.reveal ? 1 : 0
 
                         Behavior on anchors.bottomMargin {
@@ -159,14 +166,14 @@ Scope {
                                 Rectangle {
                                     id: dockVisualRect; anchors.fill: parent
                                     radius: dockWindow.bgStyle === 1 ? height / 2 : 0
-                                    topLeftRadius: (dockWindow.bgStyle === 1 || dockWindow.bgStyle === 2) ? (dockWindow.bgStyle === 1 ? height/2 : 24) : 0
-                                    topRightRadius: (dockWindow.bgStyle === 1 || dockWindow.bgStyle === 2) ? (dockWindow.bgStyle === 1 ? height/2 : 24) : 0
+                                    topLeftRadius: (dockWindow.bgStyle === 1 || dockWindow.bgStyle === 2) ? (dockWindow.bgStyle === 1 ? height/2 : 24 * Appearance.effectiveScale) : 0
+                                    topRightRadius: (dockWindow.bgStyle === 1 || dockWindow.bgStyle === 2) ? (dockWindow.bgStyle === 1 ? height/2 : 24 * Appearance.effectiveScale) : 0
                                     bottomLeftRadius: (dockWindow.bgStyle === 1) ? height/2 : 0
                                     bottomRightRadius: (dockWindow.bgStyle === 1) ? height/2 : 0
                                     color: Appearance.colors.colStatusBarSolid; opacity: dockWindow.bgStyle === 0 ? 0 : 1.0; 
                                     
                                     // MD3 Outline Style
-                                    border.width: dockWindow.bgStyle !== 0 ? 1 : 0
+                                    border.width: dockWindow.bgStyle !== 0 ? Math.max(1, 1 * Appearance.effectiveScale) : 0
                                     border.color: Functions.ColorUtils.applyAlpha(Appearance.colors.colOnLayer0, 0.12)
                                 }
 
@@ -189,13 +196,13 @@ Scope {
                                     RowLayout {
                                         id: mainRowContainer
                                         anchors.centerIn: parent
-                                        spacing: 8
+                                        spacing: 8 * Appearance.effectiveScale
                                         
                                         DockApps {
-                                            id: dockApps; buttonPadding: 6; spacing: 8; height: visualContainer.height
+                                            id: dockApps; buttonPadding: 6 * Appearance.effectiveScale; spacing: 8 * Appearance.effectiveScale; height: visualContainer.height
                                             backgroundStyle: dockWindow.bgStyle
                                             onRequestContextMenu: (appData, x, y) => {
-                                                dockContextMenu.openAt(x, (dockWindow.screenY + (y * dockWindow.dockScale)), appData);
+                                                dockContextMenu.openAt(x, (dockWindow.screenY + (y * (dockWindow.dockScale / Appearance.effectiveScale))), appData);
                                             }
                                             onButtonHoverChanged: (button, appData, hovered) => {
                                                 if (hovered) {
@@ -215,19 +222,19 @@ Scope {
                                             pointingHandCursor: true
                                             onClicked: GlobalStates.overviewOpen = !GlobalStates.overviewOpen
                                             toggled: GlobalStates.overviewOpen
-                                            dockTopInset: 6; dockBottomInset: 6
+                                            dockTopInset: 6 * Appearance.effectiveScale; dockBottomInset: 6 * Appearance.effectiveScale
                                             colBackgroundToggled: "transparent"
                                             colBackgroundToggledHover: "transparent"
                                             background: Item {
                                                 anchors.fill: parent
                                                 Rectangle { anchors.fill: parent; radius: Appearance.rounding.button; color: overviewButton.baseColor; visible: !(Config.ready && Config.options.dock.monochromeIcons) }
-                                                MaterialShape { anchors.fill: parent; anchors.margins: 4; visible: Config.ready && Config.options.dock.monochromeIcons; shapeString: Config.ready && Config.options.search ? Config.options.search.iconShape : "Circle"; color: overviewButton.down ? Appearance.colors.colPrimary : Appearance.colors.colPrimaryContainer }
+                                                MaterialShape { anchors.fill: parent; anchors.margins: 4 * Appearance.effectiveScale; visible: Config.ready && Config.options.dock.monochromeIcons; shapeString: Config.ready && Config.options.search ? Config.options.search.iconShape : "Circle"; color: overviewButton.down ? Appearance.colors.colPrimary : Appearance.colors.colPrimaryContainer }
                                             }
                                             contentItem: Item {
                                                 anchors.fill: parent
                                                 scale: overviewButton.down ? 0.92 : (overviewButton.hovered ? 1.05 : 1.0)
                                                 Behavior on scale { NumberAnimation { duration: 150; easing.type: Easing.OutCubic } }
-                                                MaterialSymbol { id: overviewIcon; anchors.centerIn: parent; text: "grid_view"; iconSize: Config.ready && Config.options.dock.monochromeIcons ? 22 : 26; color: overviewButton.toggled ? Appearance.colors.colPrimary : Appearance.colors.colOnLayer0; visible: !(Config.ready && Config.options.dock.monochromeIcons) }
+                                                MaterialSymbol { id: overviewIcon; anchors.centerIn: parent; text: "grid_view"; iconSize: (Config.ready && Config.options.dock.monochromeIcons ? 22 : 26) * Appearance.effectiveScale; color: overviewButton.toggled ? Appearance.colors.colPrimary : Appearance.colors.colOnLayer0; visible: !(Config.ready && Config.options.dock.monochromeIcons) }
                                                 ColorOverlay { anchors.fill: overviewIcon; source: overviewIcon; color: Appearance.colors.colOnPrimaryContainer; visible: Config.ready && Config.options.dock.monochromeIcons }
                                             }
                                         }
@@ -238,7 +245,7 @@ Scope {
                                             pointingHandCursor: true
                                             onClicked: GlobalStates.launcherOpen = !GlobalStates.launcherOpen
                                             toggled: GlobalStates.launcherOpen
-                                            dockTopInset: 6; dockBottomInset: 6
+                                            dockTopInset: 6 * Appearance.effectiveScale; dockBottomInset: 6 * Appearance.effectiveScale
                                             colBackgroundToggled: "transparent"
                                             colBackgroundToggledHover: "transparent"
                                             altAction: (event) => {
@@ -248,13 +255,13 @@ Scope {
                                             background: Item {
                                                 anchors.fill: parent
                                                 Rectangle { anchors.fill: parent; radius: Appearance.rounding.button; color: launcherButton.baseColor; visible: !(Config.ready && Config.options.dock.monochromeIcons) }
-                                                MaterialShape { anchors.fill: parent; anchors.margins: 4; visible: Config.ready && Config.options.dock.monochromeIcons; shapeString: Config.ready && Config.options.search ? Config.options.search.iconShape : "Circle"; color: launcherButton.down ? Appearance.colors.colPrimary : Appearance.colors.colPrimaryContainer }
+                                                MaterialShape { anchors.fill: parent; anchors.margins: 4 * Appearance.effectiveScale; visible: Config.ready && Config.options.dock.monochromeIcons; shapeString: Config.ready && Config.options.search ? Config.options.search.iconShape : "Circle"; color: launcherButton.down ? Appearance.colors.colPrimary : Appearance.colors.colPrimaryContainer }
                                             }
                                             contentItem: Item {
                                                 anchors.fill: parent
                                                 scale: launcherButton.down ? 0.92 : (launcherButton.hovered ? 1.05 : 1.0)
                                                 Behavior on scale { NumberAnimation { duration: 150; easing.type: Easing.OutCubic } }
-                                                MaterialSymbol { id: launcherIcon; anchors.centerIn: parent; text: "apps"; iconSize: Config.ready && Config.options.dock.monochromeIcons ? 24 : 28; color: launcherButton.toggled ? Appearance.colors.colPrimary : Appearance.colors.colOnLayer0; visible: !(Config.ready && Config.options.dock.monochromeIcons) }
+                                                MaterialSymbol { id: launcherIcon; anchors.centerIn: parent; text: "apps"; iconSize: (Config.ready && Config.options.dock.monochromeIcons ? 24 : 28) * Appearance.effectiveScale; color: launcherButton.toggled ? Appearance.colors.colPrimary : Appearance.colors.colOnLayer0; visible: !(Config.ready && Config.options.dock.monochromeIcons) }
                                                 ColorOverlay { anchors.fill: launcherIcon; source: launcherIcon; color: Appearance.colors.colOnPrimaryContainer; visible: Config.ready && Config.options.dock.monochromeIcons }
                                             }
                                         }

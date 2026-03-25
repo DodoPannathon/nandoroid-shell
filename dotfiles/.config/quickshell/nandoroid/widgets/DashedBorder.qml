@@ -3,9 +3,9 @@ import QtQuick
 Canvas {
     id: root
     property color color: "#ffffff"
-    property int dashLength: 6
-    property int gapLength: 4
-    property int borderWidth: 1
+    property int dashLength: 6 * Appearance.effectiveScale
+    property int gapLength: 4 * Appearance.effectiveScale
+    property int borderWidth: Math.max(1, 1 * Appearance.effectiveScale)
 
     onDashLengthChanged: requestPaint()
     onGapLengthChanged: requestPaint()

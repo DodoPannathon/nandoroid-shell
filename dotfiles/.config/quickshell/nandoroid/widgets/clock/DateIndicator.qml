@@ -10,7 +10,7 @@ Item {
     id: indicatorRoot
     property string style: "bubble"
     property color color: Appearance.colors.colOnSecondaryContainer
-    property real dateSquareSize: 64
+    property real dateSquareSize: 64 * Appearance.effectiveScale
 
     // Rotating date
     FadeLoader {
@@ -28,15 +28,15 @@ Item {
         anchors {
             verticalCenter: parent.verticalCenter
             right: parent.right
-            rightMargin: 40 - rectLoader.opacity * 30
+            rightMargin: (40 * Appearance.effectiveScale) - rectLoader.opacity * (30 * Appearance.effectiveScale)
         }
 
         sourceComponent: RectangleDate {
             color: Appearance.colors.colSecondaryContainerHover
             textColor: indicatorRoot.color
             radius: Appearance.rounding.small
-            implicitWidth: 45 * rectLoader.opacity
-            implicitHeight: 30 * rectLoader.opacity
+            implicitWidth: (45 * Appearance.effectiveScale) * rectLoader.opacity
+            implicitHeight: (30 * Appearance.effectiveScale) * rectLoader.opacity
         }
     }
 

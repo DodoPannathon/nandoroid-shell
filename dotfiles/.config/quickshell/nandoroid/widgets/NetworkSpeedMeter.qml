@@ -5,11 +5,11 @@ import "../services"
 
 /**
  * Network Speed Meter widget for the status bar.
- * Displays real-time download (RX) and upload (TX) speeds in an extremely compact 2-row layout.
+ * Refactored for global scaling.
  */
 ColumnLayout {
     id: root
-    spacing: -6
+    spacing: -6 * Appearance.effectiveScale
     visible: Config.ready && Config.options.bar ? Config.options.bar.show_network_speed : false
 
     property color color: Appearance.colors.colStatusBarText
@@ -20,7 +20,6 @@ ColumnLayout {
     function formatSpeed(bytes) {
         const k = 1024;
         const mt = 1024 * 1024;
-        const gt = 1024 * 1024 * 1024;
         
         if (root.currentUnit === "MB") {
             return (bytes / mt).toFixed(1) + " MB/s";
@@ -43,12 +42,12 @@ ColumnLayout {
 
     // TX (Upload) - Top Row
     RowLayout {
-        spacing: 4
+        spacing: 4 * Appearance.effectiveScale
         Layout.alignment: Qt.AlignRight
-        Layout.preferredHeight: 10
+        Layout.preferredHeight: 10 * Appearance.effectiveScale
         StyledText {
             text: root.formatSpeed(SystemData.networkTxRate)
-            font.pixelSize: 10
+            font.pixelSize: Appearance.font.pixelSize.smallest
             font.weight: Font.Medium
             color: root.color
             horizontalAlignment: Text.AlignRight
@@ -56,19 +55,19 @@ ColumnLayout {
         }
         MaterialSymbol {
             text: "arrow_drop_up"
-            iconSize: 14
+            iconSize: 14 * Appearance.effectiveScale
             color: root.isHighSpeed(SystemData.networkTxRate) ? root.color : root.subtextColor
         }
     }
 
     // RX (Download) - Bottom Row
     RowLayout {
-        spacing: 4
+        spacing: 4 * Appearance.effectiveScale
         Layout.alignment: Qt.AlignRight
-        Layout.preferredHeight: 10
+        Layout.preferredHeight: 10 * Appearance.effectiveScale
         StyledText {
             text: root.formatSpeed(SystemData.networkRxRate)
-            font.pixelSize: 10
+            font.pixelSize: Appearance.font.pixelSize.smallest
             font.weight: Font.Medium
             color: root.color
             horizontalAlignment: Text.AlignRight
@@ -76,7 +75,7 @@ ColumnLayout {
         }
         MaterialSymbol {
             text: "arrow_drop_down"
-            iconSize: 14
+            iconSize: 14 * Appearance.effectiveScale
             color: root.isHighSpeed(SystemData.networkRxRate) ? root.color : root.subtextColor
         }
     }

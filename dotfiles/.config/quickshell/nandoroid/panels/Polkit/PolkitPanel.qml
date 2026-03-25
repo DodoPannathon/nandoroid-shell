@@ -53,22 +53,22 @@ Scope {
                 Rectangle {
                     id: dialog
                     anchors.centerIn: parent
-                    width: 450
-                    implicitHeight: contentCol.implicitHeight + 40
+                    width: 450 * Appearance.effectiveScale
+                    implicitHeight: contentCol.implicitHeight + (40 * Appearance.effectiveScale)
                     radius: Appearance.rounding.card
                     color: Appearance.m3colors.m3surfaceContainerHigh
                     
                     ColumnLayout {
                         id: contentCol
                         anchors.fill: parent
-                        anchors.margins: 24
-                        spacing: 20
+                        anchors.margins: 24 * Appearance.effectiveScale
+                        spacing: 20 * Appearance.effectiveScale
 
                         // Icon
                         MaterialSymbol {
                             Layout.alignment: Qt.AlignHCenter
                             text: "security"
-                            iconSize: 32
+                            iconSize: 32 * Appearance.effectiveScale
                             color: Appearance.colors.colPrimary
                         }
 
@@ -95,23 +95,23 @@ Scope {
                         // Password Field Section
                         ColumnLayout {
                             Layout.fillWidth: true
-                            spacing: 8
+                            spacing: 8 * Appearance.effectiveScale
 
                             Rectangle {
                                 id: inputContainer
                                 Layout.fillWidth: true
-                                Layout.preferredHeight: 52
-                                radius: 8 // Reduced rounding as requested
+                                Layout.preferredHeight: 52 * Appearance.effectiveScale
+                                radius: 8 * Appearance.effectiveScale // Reduced rounding as requested
                                 color: "transparent" // Same as background
-                                border.width: passwordInput.activeFocus || PolkitService.failed ? 2 : 1
+                                border.width: passwordInput.activeFocus || PolkitService.failed ? Math.max(1, 2 * Appearance.effectiveScale) : Math.max(1, 1 * Appearance.effectiveScale)
                                 border.color: PolkitService.failed ? Appearance.m3colors.m3error : (passwordInput.activeFocus ? Appearance.m3colors.m3primary : Appearance.m3colors.m3outline)
 
                                 // Floating Label (Simulated)
                                 Rectangle {
-                                    x: 12
-                                    y: -8
-                                    width: labelText.width + 8
-                                    height: 16
+                                    x: 12 * Appearance.effectiveScale
+                                    y: -8 * Appearance.effectiveScale
+                                    width: labelText.width + (8 * Appearance.effectiveScale)
+                                    height: 16 * Appearance.effectiveScale
                                     color: Appearance.m3colors.m3surfaceContainerHigh // Match dialog background
                                     
                                     StyledText {
@@ -127,8 +127,8 @@ Scope {
                                 TextInput {
                                     id: passwordInput
                                     anchors.fill: parent
-                                    anchors.leftMargin: 16
-                                    anchors.rightMargin: 16
+                                    anchors.leftMargin: 16 * Appearance.effectiveScale
+                                    anchors.rightMargin: 16 * Appearance.effectiveScale
                                     verticalAlignment: TextInput.AlignVCenter
                                     font.pixelSize: Appearance.font.pixelSize.normal
                                     color: Appearance.colors.colOnLayer1
@@ -158,21 +158,21 @@ Scope {
                                 color: Appearance.m3colors.m3error
                                 font.pixelSize: Appearance.font.pixelSize.smaller
                                 horizontalAlignment: Text.AlignLeft
-                                leftPadding: 4
+                                leftPadding: 4 * Appearance.effectiveScale
                             }
                         }
 
                         // Buttons
                         RowLayout {
                             Layout.fillWidth: true
-                            Layout.topMargin: 12
-                            spacing: 12
+                            Layout.topMargin: 12 * Appearance.effectiveScale
+                            spacing: 12 * Appearance.effectiveScale
 
                             Item { Layout.fillWidth: true }
 
                             RippleButton {
-                                Layout.preferredWidth: 100
-                                Layout.preferredHeight: 40
+                                Layout.preferredWidth: 100 * Appearance.effectiveScale
+                                Layout.preferredHeight: 40 * Appearance.effectiveScale
                                 buttonRadius: Appearance.rounding.button
                                 buttonText: qsTr("Cancel")
                                 colBackground: "transparent"
@@ -181,8 +181,8 @@ Scope {
                             }
 
                             RippleButton {
-                                Layout.preferredWidth: 100
-                                Layout.preferredHeight: 40
+                                Layout.preferredWidth: 100 * Appearance.effectiveScale
+                                Layout.preferredHeight: 40 * Appearance.effectiveScale
                                 buttonRadius: Appearance.rounding.button
                                 buttonText: qsTr("OK")
                                 colBackground: Appearance.colors.colPrimary

@@ -14,7 +14,7 @@ import Quickshell
  */
 Rectangle {
     id: root
-    implicitHeight: 118
+    implicitHeight: 118 * Appearance.effectiveScale
     radius: Appearance.rounding.card
     color: Functions.ColorUtils.applyAlpha(MprisController.dynLayer0, 1)
     visible: MprisController.activePlayer !== null
@@ -63,8 +63,8 @@ Rectangle {
             
             layer.enabled: true
             layer.effect: GaussianBlur {
-                radius: 64 
-                samples: 48
+                radius: 64 * Appearance.effectiveScale
+                samples: Math.round(48 * Appearance.effectiveScale)
                 cached: true
             }
 
@@ -87,15 +87,15 @@ Rectangle {
     // Layout Container
     Item {
         anchors.fill: parent
-        anchors.margins: 12
+        anchors.margins: 12 * Appearance.effectiveScale
 
         // Left: Album art
         MaterialShape {
             id: artShape
             anchors.left: parent.left
             anchors.verticalCenter: parent.verticalCenter
-            width: 86
-            height: 86
+            width: 86 * Appearance.effectiveScale
+            height: 86 * Appearance.effectiveScale
             image: MprisController.displayedArtFilePath
             shape: MaterialShape.Shape.Square
             color: MprisController.dynLayer0
@@ -103,7 +103,7 @@ Rectangle {
             MaterialSymbol {
                 anchors.centerIn: parent
                 text: "music_note"
-                iconSize: 32
+                iconSize: 32 * Appearance.effectiveScale
                 fill: 1
                 color: MprisController.dynSubtext
                 visible: !parent.image || parent.image.toString() === ""
@@ -128,14 +128,14 @@ Rectangle {
             anchors.right: parent.right
             anchors.top: artShape.top
             anchors.bottom: artShape.bottom
-            anchors.leftMargin: 16
+            anchors.leftMargin: 16 * Appearance.effectiveScale
             spacing: 0
 
             // Top Row: Track Info + Play/Pause
             RowLayout {
                 Layout.fillWidth: true
-                Layout.preferredHeight: 52
-                spacing: 8
+                Layout.preferredHeight: 52 * Appearance.effectiveScale
+                spacing: 8 * Appearance.effectiveScale
 
                 ColumnLayout {
                     Layout.fillWidth: true
@@ -184,10 +184,10 @@ Rectangle {
                 RippleButton {
                     id: playPauseButton
                     padding: 0
-                    implicitWidth: 52
-                    implicitHeight: 52
-                    Layout.preferredWidth: 52
-                    Layout.preferredHeight: 52
+                    implicitWidth: 52 * Appearance.effectiveScale
+                    implicitHeight: 52 * Appearance.effectiveScale
+                    Layout.preferredWidth: 52 * Appearance.effectiveScale
+                    Layout.preferredHeight: 52 * Appearance.effectiveScale
                     Layout.alignment: Qt.AlignTop
                     buttonRadius: MprisController.isPlaying ? Appearance.rounding.large : Appearance.rounding.normal
                     
@@ -200,7 +200,7 @@ Rectangle {
                     MaterialSymbol {
                         anchors.centerIn: parent
                         text: MprisController.isPlaying ? "pause" : "play_arrow"
-                        iconSize: 28
+                        iconSize: 28 * Appearance.effectiveScale
                         fill: 1
                         color: MprisController.isPlaying ? MprisController.dynOnPrimary : MprisController.dynOnSecondaryContainer
                     }
@@ -213,14 +213,14 @@ Rectangle {
             // Bottom Row: Full Width Playback Controls
             RowLayout {
                 Layout.fillWidth: true
-                Layout.preferredHeight: 24
+                Layout.preferredHeight: 24 * Appearance.effectiveScale
                 spacing: 0 // Experimental: Remove base spacing
 
                 // Skip Previous
                 RippleButton {
                     id: prevBtn
                     padding: 0
-                    implicitWidth: 24; implicitHeight: 24; buttonRadius: 12
+                    implicitWidth: 24 * Appearance.effectiveScale; implicitHeight: 24 * Appearance.effectiveScale; buttonRadius: 12 * Appearance.effectiveScale
                     colBackground: "transparent"
                     colBackgroundHover: "transparent"
                     colText: "transparent"
@@ -230,7 +230,7 @@ Rectangle {
                     
                     MaterialSymbol {
                         anchors.centerIn: parent
-                        text: "skip_previous"; iconSize: 18; fill: 1
+                        text: "skip_previous"; iconSize: 18 * Appearance.effectiveScale; fill: 1
                         color: prevBtn.hovered ? MprisController.dynPrimary : MprisController.dynOnSecondaryContainer
                         Behavior on color { ColorAnimation { duration: 150 } }
                     }
@@ -240,21 +240,21 @@ Rectangle {
                 StyledText {
                     id: currentTimeText
                     text: Functions.StringUtils.friendlyTimeForSeconds(MprisController.position)
-                    font.pixelSize: 10
+                    font.pixelSize: Appearance.font.pixelSize.smallest
                     font.family: Appearance.font.family.monospace
                     font.weight: Font.Medium
                     color: MprisController.dynSubtext
                     Layout.alignment: Qt.AlignVCenter
                     verticalAlignment: Text.AlignVCenter
                     Layout.leftMargin: 0 // Menempel ke arrow
-                    Layout.rightMargin: 10 // Menjauh dari slider
+                    Layout.rightMargin: 10 * Appearance.effectiveScale // Menjauh dari slider
                 }
 
                 // Slider
                 StyledSlider {
                     id: progressSlider
                     Layout.fillWidth: true
-                    Layout.preferredHeight: 14
+                    Layout.preferredHeight: 14 * Appearance.effectiveScale
                     handleMargins: 0 
                     configuration: StyledSlider.Configuration.Wavy
                     stopIndicatorValues: []
@@ -285,13 +285,13 @@ Rectangle {
                 StyledText {
                     id: totalTimeText
                     text: Functions.StringUtils.friendlyTimeForSeconds(MprisController.length)
-                    font.pixelSize: 10
+                    font.pixelSize: Appearance.font.pixelSize.smallest
                     font.family: Appearance.font.family.monospace
                     font.weight: Font.Medium
                     color: MprisController.dynSubtext
                     Layout.alignment: Qt.AlignVCenter
                     verticalAlignment: Text.AlignVCenter
-                    Layout.leftMargin: 10 // Menjauh dari slider
+                    Layout.leftMargin: 10 * Appearance.effectiveScale // Menjauh dari slider
                     Layout.rightMargin: 0 // Menempel ke arrow
                 }
 
@@ -299,7 +299,7 @@ Rectangle {
                 RippleButton {
                     id: nextBtn
                     padding: 0
-                    implicitWidth: 24; implicitHeight: 24; buttonRadius: 12
+                    implicitWidth: 24 * Appearance.effectiveScale; implicitHeight: 24 * Appearance.effectiveScale; buttonRadius: 12 * Appearance.effectiveScale
                     colBackground: "transparent"
                     colBackgroundHover: "transparent"
                     colText: "transparent"
@@ -309,7 +309,7 @@ Rectangle {
 
                     MaterialSymbol {
                         anchors.centerIn: parent
-                        text: "skip_next"; iconSize: 18; fill: 1
+                        text: "skip_next"; iconSize: 18 * Appearance.effectiveScale; fill: 1
                         color: nextBtn.hovered ? MprisController.dynPrimary : MprisController.dynOnSecondaryContainer
                         Behavior on color { ColorAnimation { duration: 150 } }
                     }

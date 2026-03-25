@@ -12,8 +12,8 @@ RippleButton {
     Layout.fillHeight: true
     
     // Default size for dock buttons
-    implicitHeight: 64
-    implicitWidth: Math.max(48, implicitHeight - (dockTopInset + dockBottomInset))
+    implicitHeight: 64 * Appearance.effectiveScale
+    implicitWidth: Math.max(48 * Appearance.effectiveScale, implicitHeight - (dockTopInset + dockBottomInset))
     buttonRadius: Appearance.rounding.normal
     
     // Ensure the background is transparent by default if not toggled

@@ -1,4 +1,5 @@
 import QtQuick
+import QtQuick.Layouts
 import Quickshell
 import "../../widgets"
 import "../../core"
@@ -6,8 +7,10 @@ import "../../services"
 
 Rectangle {
     id: root
-    height: 48
-    radius: 12
+    height: 48 * Appearance.effectiveScale
+    implicitHeight: height
+    Layout.preferredHeight: height
+    radius: 12 * Appearance.effectiveScale
     
     readonly property bool isSpotlightMode: root.launcherContent && root.launcherContent.isSpotlight
     
@@ -19,15 +22,15 @@ Rectangle {
 
     Row {
         anchors.fill: parent
-        anchors.leftMargin: 20
-        anchors.rightMargin: 20
-        spacing: 8
+        anchors.leftMargin: 20 * Appearance.effectiveScale
+        anchors.rightMargin: 20 * Appearance.effectiveScale
+        spacing: 8 * Appearance.effectiveScale
         
         TextInput {
             id: input
             anchors.verticalCenter: parent.verticalCenter
             width: parent.width - searchIcon.width - parent.spacing
-            font.pixelSize: root.isSpotlightMode ? 18 : 16
+            font.pixelSize: root.isSpotlightMode ? 18 * Appearance.effectiveScale : 16 * Appearance.effectiveScale
             color: Appearance.m3colors.m3onSurface
             focus: true
 
@@ -93,23 +96,29 @@ Rectangle {
                 if (!root.launcherContent) return;
                 
                 const results = LauncherSearch.results;
-                const total = results.length;
+                const total = results ? results.length : 0;
+                if (total <= 0) return;
+
                 const isGrid = !root.isSpotlightMode && !LauncherSearch.isPluginSearch && !LauncherSearch.query;
                 const cols = isGrid ? (root.launcherContent.gridColumns || 5) : 1;
 
                 if (event.key === Qt.Key_Up) {
+                    root.launcherContent.isKeyboardNavigation = true;
                     root.launcherContent.selectedIndex = Math.max(0, root.launcherContent.selectedIndex - cols);
                     event.accepted = true;
                 } else if (event.key === Qt.Key_Down) {
-                    root.launcherContent.selectedIndex = Math.min(total - 1, root.launcherContent.selectedIndex + cols);
+                    root.launcherContent.isKeyboardNavigation = true;
+                    root.launcherContent.selectedIndex = Math.min(Math.max(0, total - 1), root.launcherContent.selectedIndex + cols);
                     event.accepted = true;
                 } else if (event.key === Qt.Key_Left) {
                     if (isGrid) {
+                        root.launcherContent.isKeyboardNavigation = true;
                         root.launcherContent.selectedIndex = Math.max(0, root.launcherContent.selectedIndex - 1);
                         event.accepted = true;
                     }
                 } else if (event.key === Qt.Key_Right) {
                     if (isGrid) {
+                        root.launcherContent.isKeyboardNavigation = true;
                         root.launcherContent.selectedIndex = Math.min(total - 1, root.launcherContent.selectedIndex + 1);
                         event.accepted = true;
                     }
@@ -125,7 +134,7 @@ Rectangle {
             id: searchIcon
             anchors.verticalCenter: parent.verticalCenter
             text: "search"
-            iconSize: 20
+            iconSize: 20 * Appearance.effectiveScale
             color: Appearance.m3colors.m3onSurfaceVariant
             visible: !root.isSpotlightMode
         }

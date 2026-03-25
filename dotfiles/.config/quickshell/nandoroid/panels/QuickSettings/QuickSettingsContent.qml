@@ -23,7 +23,7 @@ Item {
     signal closed()
     property bool editMode: GlobalStates.quickSettingsEditMode
     implicitWidth: Appearance.sizes.notificationCenterWidth
-    implicitHeight: contentColumn.implicitHeight + 20
+    implicitHeight: contentColumn.implicitHeight + (20 * Appearance.effectiveScale)
 
     focus: true
     Keys.onEscapePressed: close()
@@ -75,13 +75,13 @@ Item {
     // ── Toggle grid constants ──
     // 4 columns: size 1 = 1 col (square icon), size 2 = 2 cols (icon + text)
     readonly property int columns: 4
-    readonly property real toggleSpacing: 6
-    readonly property real togglePadding: 6
+    readonly property real toggleSpacing: 6 * Appearance.effectiveScale
+    readonly property real togglePadding: 6 * Appearance.effectiveScale
     readonly property real baseCellWidth: {
-        const availableWidth = root.implicitWidth - 20 - (togglePadding * 2) - (toggleSpacing * (columns - 1))
-        return Math.max(40, Math.floor(availableWidth / columns))
+        const availableWidth = root.implicitWidth - (20 * Appearance.effectiveScale) - (togglePadding * 2) - (toggleSpacing * (columns - 1))
+        return Math.max(40 * Appearance.effectiveScale, Math.floor(availableWidth / columns))
     }
-    readonly property real baseCellHeight: 56
+    readonly property real baseCellHeight: 56 * Appearance.effectiveScale
 
     // ── Toggle data registry ──
     readonly property var allToggles: ({
@@ -339,28 +339,28 @@ Item {
             top: parent.top
             left: parent.left
             right: parent.right
-            margins: 10
+            margins: 10 * Appearance.effectiveScale
         }
-        spacing: 12
+        spacing: 12 * Appearance.effectiveScale
 
         // Main QS Header
         Rectangle {
             id: qsHeader
             Layout.fillWidth: true
-            implicitHeight: 64
+            implicitHeight: 64 * Appearance.effectiveScale
             radius: Appearance.rounding.panel
             color: Appearance.colors.colLayer1
             
             RowLayout {
                 anchors.fill: parent
-                anchors.leftMargin: 12
-                anchors.rightMargin: 12
-                spacing: 12
+                anchors.leftMargin: 12 * Appearance.effectiveScale
+                anchors.rightMargin: 12 * Appearance.effectiveScale
+                spacing: 12 * Appearance.effectiveScale
 
                 // User avatar
                 Item {
-                    Layout.preferredWidth: 44
-                    Layout.preferredHeight: 44
+                    Layout.preferredWidth: 44 * Appearance.effectiveScale
+                    Layout.preferredHeight: 44 * Appearance.effectiveScale
                     
                     Image {
                         id: avatarImage
@@ -372,7 +372,7 @@ Item {
                             if (!sysPath || sysPath.includes("/var/lib/AccountsService/icons/")) return "";
                             return `file://${sysPath}`;
                         }
-                        sourceSize: Qt.size(44, 44)
+                        sourceSize: Qt.size(44 * Appearance.effectiveScale, 44 * Appearance.effectiveScale)
                         fillMode: Image.PreserveAspectCrop
                         visible: false
                     }
@@ -380,7 +380,7 @@ Item {
                     Rectangle {
                         id: avatarMask
                         anchors.fill: parent
-                        radius: 22
+                        radius: 22 * Appearance.effectiveScale
                         visible: false
                     }
 
@@ -395,7 +395,7 @@ Item {
                         anchors.centerIn: parent
                         visible: avatarImage.status !== Image.Ready
                         text: "person"
-                        iconSize: 24
+                        iconSize: 24 * Appearance.effectiveScale
                         fill: 1
                         color: Appearance.m3colors.m3onPrimaryContainer
                     }
@@ -409,7 +409,7 @@ Item {
 
                 ColumnLayout {
                     Layout.fillWidth: true
-                    spacing: -2
+                    spacing: -2 * Appearance.effectiveScale
 
                     StyledText {
                         text: SystemInfo.realName
@@ -429,12 +429,12 @@ Item {
 
                  // Right-side buttons
                 Row {
-                    spacing: 4
+                    spacing: 4 * Appearance.effectiveScale
 
                     RippleButton {
-                        implicitWidth: 36
-                        implicitHeight: 36
-                        buttonRadius: 18
+                        implicitWidth: 36 * Appearance.effectiveScale
+                        implicitHeight: 36 * Appearance.effectiveScale
+                        buttonRadius: 18 * Appearance.effectiveScale
                         colBackground: Appearance.colors.colLayer2
                         colBackgroundHover: Appearance.colors.colLayer2
                         colRipple: Appearance.colors.colLayer2Active
@@ -444,15 +444,15 @@ Item {
                         MaterialSymbol {
                             anchors.centerIn: parent
                             text: "palette"
-                            iconSize: 18
+                            iconSize: 18 * Appearance.effectiveScale
                             color: Appearance.m3colors.m3onSurface
                         }
                     }
 
                     RippleButton {
-                        implicitWidth: 36
-                        implicitHeight: 36
-                        buttonRadius: 18
+                        implicitWidth: 36 * Appearance.effectiveScale
+                        implicitHeight: 36 * Appearance.effectiveScale
+                        buttonRadius: 18 * Appearance.effectiveScale
                         colBackground: root.editMode ? Appearance.m3colors.m3primaryContainer : Appearance.colors.colLayer2
                         colBackgroundHover: Appearance.colors.colLayer2
                         colRipple: Appearance.colors.colLayer2Active
@@ -460,15 +460,15 @@ Item {
                         MaterialSymbol {
                             anchors.centerIn: parent
                             text: root.editMode ? "check" : "edit"
-                            iconSize: 18
+                            iconSize: 18 * Appearance.effectiveScale
                             color: root.editMode ? Appearance.m3colors.m3onPrimaryContainer : Appearance.m3colors.m3onSurface
                         }
                     }
 
                     RippleButton {
-                        implicitWidth: 36
-                        implicitHeight: 36
-                        buttonRadius: 18
+                        implicitWidth: 36 * Appearance.effectiveScale
+                        implicitHeight: 36 * Appearance.effectiveScale
+                        buttonRadius: 18 * Appearance.effectiveScale
                         colBackground: Appearance.colors.colLayer2
                         colBackgroundHover: Appearance.colors.colLayer2
                         colRipple: Appearance.colors.colLayer2Active
@@ -479,15 +479,15 @@ Item {
                         MaterialSymbol {
                             anchors.centerIn: parent
                             text: "settings"
-                            iconSize: 18
+                            iconSize: 18 * Appearance.effectiveScale
                             color: Appearance.m3colors.m3onSurface
                         }
                     }
 
                     RippleButton {
-                        implicitWidth: 36
-                        implicitHeight: 36
-                        buttonRadius: 18
+                        implicitWidth: 36 * Appearance.effectiveScale
+                        implicitHeight: 36 * Appearance.effectiveScale
+                        buttonRadius: 18 * Appearance.effectiveScale
                         colBackground: Appearance.colors.colLayer2
                         colBackgroundHover: Appearance.colors.colLayer2
                         colRipple: Appearance.colors.colLayer2Active
@@ -498,7 +498,7 @@ Item {
                         MaterialSymbol {
                             anchors.centerIn: parent
                             text: "power_settings_new"
-                            iconSize: 18
+                            iconSize: 18 * Appearance.effectiveScale
                             color: Appearance.m3colors.m3error
                         }
                     }
@@ -516,15 +516,15 @@ Item {
         // ── Sliders Island ──
         Rectangle {
             Layout.fillWidth: true
-            implicitHeight: sliderCol.implicitHeight + 20
+            implicitHeight: sliderCol.implicitHeight + (20 * Appearance.effectiveScale)
             radius: Appearance.rounding.normal
             color: Appearance.colors.colLayer1
 
             ColumnLayout {
                 id: sliderCol
                 anchors.fill: parent
-                anchors.margins: 10
-                spacing: 8
+                anchors.margins: 10 * Appearance.effectiveScale
+                spacing: 8 * Appearance.effectiveScale
 
                 // Brightness (Full Width)
                 QuickSlider {
@@ -549,7 +549,7 @@ Item {
                 // Volume + Mic (Row)
                 RowLayout {
                     Layout.fillWidth: true
-                    spacing: 8
+                    spacing: 8 * Appearance.effectiveScale
 
                         QuickSlider {
                             id: volumeSlider
@@ -591,9 +591,9 @@ Item {
             anchors {
                 verticalCenter: parent.verticalCenter
                 right: nearFull ? quickSlider.handle.right : parent.right
-                rightMargin: icon.nearFull ? 16 : 10
+                rightMargin: icon.nearFull ? 16 * Appearance.effectiveScale : 10 * Appearance.effectiveScale
             }
-            iconSize: 20
+            iconSize: 20 * Appearance.effectiveScale
             color: nearFull ? Appearance.colors.colOnPrimary : Appearance.colors.colOnSecondaryContainer
             text: quickSlider.materialSymbol
 
@@ -619,7 +619,7 @@ Item {
                     fill: parent
                     margins: root.togglePadding
                 }
-                spacing: 12
+                spacing: 12 * Appearance.effectiveScale
 
                 // Active toggles
                 Column {
@@ -687,7 +687,7 @@ Item {
                     active: root.editMode && root.unusedToggles.length > 0
                     visible: active
                     sourceComponent: Column {
-                        spacing: 8
+                        spacing: 8 * Appearance.effectiveScale
 
                         StyledText {
                             text: "Available toggles"
@@ -742,7 +742,7 @@ Item {
         // ── Privacy Info Island ──
         Rectangle {
             Layout.fillWidth: true
-            implicitHeight: privacyCol.implicitHeight + 20
+            implicitHeight: privacyCol.implicitHeight + (20 * Appearance.effectiveScale)
             radius: Appearance.rounding.normal
             color: Appearance.colors.colLayer1
             visible: Privacy.anyActive
@@ -750,17 +750,17 @@ Item {
             ColumnLayout {
                 id: privacyCol
                 anchors.fill: parent
-                anchors.margins: 10
-                spacing: 8
+                anchors.margins: 10 * Appearance.effectiveScale
+                spacing: 8 * Appearance.effectiveScale
 
                 RowLayout {
                     Layout.fillWidth: true
-                    spacing: 12
+                    spacing: 12 * Appearance.effectiveScale
                     visible: Privacy.microphoneActive
 
                     MaterialSymbol {
                         text: "mic"
-                        iconSize: 18
+                        iconSize: 18 * Appearance.effectiveScale
                         color: Appearance.m3colors.m3primary
                         fill: 1
                     }
@@ -775,12 +775,12 @@ Item {
 
                 RowLayout {
                     Layout.fillWidth: true
-                    spacing: 12
+                    spacing: 12 * Appearance.effectiveScale
                     visible: Privacy.screensharingActive
 
                     MaterialSymbol {
                         text: "screen_share"
-                        iconSize: 18
+                        iconSize: 18 * Appearance.effectiveScale
                         color: Appearance.m3colors.m3primary
                         fill: 1
                     }
@@ -798,7 +798,7 @@ Item {
         // ── Interactive Key Helpers (Edit Mode) ──
         Rectangle {
             Layout.fillWidth: true
-            implicitHeight: 40
+            implicitHeight: 40 * Appearance.effectiveScale
             radius: Appearance.rounding.normal
             color: Appearance.colors.colLayer1
             visible: root.editMode
@@ -807,43 +807,43 @@ Item {
 
             RowLayout {
                 anchors.centerIn: parent
-                spacing: 12
+                spacing: 12 * Appearance.effectiveScale
 
                 RowLayout {
-                    spacing: 20
+                    spacing: 20 * Appearance.effectiveScale
                     opacity: 0.8
 
                     // Add/Remove
                     RowLayout {
-                        spacing: 8
-                        StyledText { text: "Add/Remove"; font.pixelSize: 10; color: Appearance.colors.colOnLayer1 }
+                        spacing: 8 * Appearance.effectiveScale
+                        StyledText { text: "Add/Remove"; font.pixelSize: 10 * Appearance.effectiveScale; color: Appearance.colors.colOnLayer1 }
                         Rectangle {
-                            width: 44; height: 18; radius: 4
+                            width: 44 * Appearance.effectiveScale; height: 18 * Appearance.effectiveScale; radius: 4 * Appearance.effectiveScale
                             color: Appearance.m3colors.m3surfaceVariant
-                            StyledText { anchors.centerIn: parent; text: "LClick"; font.pixelSize: 9; font.weight: Font.Bold }
+                            StyledText { anchors.centerIn: parent; text: "LClick"; font.pixelSize: 9 * Appearance.effectiveScale; font.weight: Font.Bold }
                         }
                     }
 
                     // Resize
                     RowLayout {
-                        spacing: 8
-                        StyledText { text: "Resize"; font.pixelSize: 10; color: Appearance.colors.colOnLayer1 }
+                        spacing: 8 * Appearance.effectiveScale
+                        StyledText { text: "Resize"; font.pixelSize: 10 * Appearance.effectiveScale; color: Appearance.colors.colOnLayer1 }
                         Rectangle {
-                            width: 44; height: 18; radius: 4
+                            width: 44 * Appearance.effectiveScale; height: 18 * Appearance.effectiveScale; radius: 4 * Appearance.effectiveScale
                             color: Appearance.m3colors.m3surfaceVariant
-                            StyledText { anchors.centerIn: parent; text: "RClick"; font.pixelSize: 9; font.weight: Font.Bold }
+                            StyledText { anchors.centerIn: parent; text: "RClick"; font.pixelSize: 9 * Appearance.effectiveScale; font.weight: Font.Bold }
                         }
                     }
 
 
                     // Move
                     RowLayout {
-                        spacing: 8
-                        StyledText { text: "Move"; font.pixelSize: 10; color: Appearance.colors.colOnLayer1 }
+                        spacing: 8 * Appearance.effectiveScale
+                        StyledText { text: "Move"; font.pixelSize: 10 * Appearance.effectiveScale; color: Appearance.colors.colOnLayer1 }
                         Rectangle {
-                            width: 38; height: 18; radius: 4
+                            width: 38 * Appearance.effectiveScale; height: 18 * Appearance.effectiveScale; radius: 4 * Appearance.effectiveScale
                             color: Appearance.m3colors.m3surfaceVariant
-                            StyledText { anchors.centerIn: parent; text: "Scroll"; font.pixelSize: 10; font.weight: Font.Bold }
+                            StyledText { anchors.centerIn: parent; text: "Scroll"; font.pixelSize: 10 * Appearance.effectiveScale; font.weight: Font.Bold }
                         }
                     }
                 }

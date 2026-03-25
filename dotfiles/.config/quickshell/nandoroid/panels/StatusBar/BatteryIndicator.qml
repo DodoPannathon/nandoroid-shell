@@ -17,31 +17,28 @@ Item {
     readonly property real percentage: Battery.percentage
     readonly property bool isLow: percentage <= (Config.options.battery?.low ?? 20) / 100
 
-    implicitWidth: batteryProgress.implicitWidth + 4
-    implicitHeight: 24
+    implicitWidth: batteryProgress.implicitWidth + (4 * Appearance.effectiveScale)
+    implicitHeight: 24 * Appearance.effectiveScale
 
     RowLayout {
         anchors.centerIn: parent
-        spacing: 1
+        spacing: 1 * Appearance.effectiveScale
 
         ClippedProgressBar {
             id: batteryProgress
-            valueBarWidth: 26
-            valueBarHeight: 14
+            valueBarWidth: 26 * Appearance.effectiveScale
+            valueBarHeight: 14 * Appearance.effectiveScale
             Layout.alignment: Qt.AlignVCenter
             
-            radius: 4.5 // Soft squircle shape from reference
+            radius: 4.5 * Appearance.effectiveScale // Soft squircle shape from reference
             
             value: percentage
-            // highlightColor: (isLow && !isCharging) ? Appearance.m3colors.m3error : Appearance.colors.colStatusBarText
             highlightColor: {
                  if (isLow && !isCharging) return Appearance.m3colors.m3error
                  return root.color
             }
             trackColor: {
                 if (isLow && !isCharging) return Appearance.m3colors.m3errorContainer
-                // Force a calculated transparency based on the highlight color to ensure it looks "semi-transparent"
-                // 0.2 alpha (80% transparent) gives that subtle look
                 return ColorUtils.applyAlpha(highlightColor, 0.2) 
             }
             
@@ -57,17 +54,17 @@ Item {
                     MaterialSymbol {
                         id: boltIcon
                         Layout.alignment: Qt.AlignVCenter
-                        Layout.leftMargin: -2
-                        Layout.rightMargin: -2
+                        Layout.leftMargin: -2 * Appearance.effectiveScale
+                        Layout.rightMargin: -2 * Appearance.effectiveScale
                         fill: 1
                         text: "bolt"
-                        iconSize: 8
+                        iconSize: 8 * Appearance.effectiveScale
                         visible: isCharging
                         color: (isLow && !isCharging) ? Appearance.m3colors.m3onError : root.color
                     }
                     StyledText {
                         Layout.alignment: Qt.AlignVCenter
-                        font.pixelSize: 10
+                        font.pixelSize: 10 * Appearance.effectiveScale
                         font.weight: Font.DemiBold
                         text: batteryProgress.text
                         color: (isLow && !isCharging) ? Appearance.m3colors.m3onError : root.color
@@ -78,10 +75,10 @@ Item {
 
         // Battery Tip
         Rectangle {
-            Layout.preferredWidth: 2
-            Layout.preferredHeight: 6
+            Layout.preferredWidth: 2 * Appearance.effectiveScale
+            Layout.preferredHeight: 6 * Appearance.effectiveScale
             Layout.alignment: Qt.AlignVCenter
-            radius: 1
+            radius: 1 * Appearance.effectiveScale
             color: (percentage >= 0.98) ? batteryProgress.highlightColor : batteryProgress.trackColor
         }
     }

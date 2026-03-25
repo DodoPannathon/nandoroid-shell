@@ -16,7 +16,7 @@ Item {
     property bool generateThumbnail: true
     required property string sourcePath
     property int fillMode: Image.PreserveAspectCrop
-    property real radius: 10
+    property real radius: 10 * Appearance.effectiveScale
     
     // Robust path encoding for filenames with spaces/quotes/etc.
     readonly property string encodedSourcePath: {
@@ -42,8 +42,8 @@ Item {
         
         // Efficiency: Don't load full resolution. 
         // 512px is a good balance for thumbnails in an 1100px window.
-        sourceSize.width: 512
-        sourceSize.height: 512
+        sourceSize.width: 512 * Appearance.effectiveScale
+        sourceSize.height: 512 * Appearance.effectiveScale
 
         opacity: status === Image.Ready ? 1 : 0
         Behavior on opacity { NumberAnimation { duration: 250 } }

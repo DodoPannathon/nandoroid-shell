@@ -8,8 +8,8 @@ import QtQuick.Controls
  */
 ListView {
     id: root
-    spacing: 5
-    property real removeOvershoot: 20 // Account for gaps and bouncy animations
+    spacing: 5 * Appearance.effectiveScale
+    property real removeOvershoot: 20 * Appearance.effectiveScale // Account for gaps and bouncy animations
     property int dragIndex: -1
     property real dragDistance: 0
     property bool popin: true

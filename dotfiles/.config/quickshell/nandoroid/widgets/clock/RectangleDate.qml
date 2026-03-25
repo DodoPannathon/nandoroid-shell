@@ -21,7 +21,7 @@ Rectangle {
         }
         font {
             family: Appearance.font.family.expressive
-            pixelSize: 20
+            pixelSize: 20 * Appearance.effectiveScale
             weight: Font.Black
             variableAxes: Appearance.font.variableAxes.expressive
         }

@@ -32,8 +32,11 @@ Scope {
         title: "System Monitor"
 
         // Default native window size
-        implicitWidth: Math.min(1100, Appearance.sizes.screen.width * 0.75)
-        implicitHeight: Math.min(820, Appearance.sizes.screen.height * 0.85)
+        implicitWidth: Math.min(1100 * Appearance.effectiveScale, Appearance.sizes.screen.width * 0.75)
+        implicitHeight: Math.min(820 * Appearance.effectiveScale, Appearance.sizes.screen.height * 0.85)
+
+        width: implicitWidth
+        height: implicitHeight
 
         // Main Panel Background
         Rectangle {
@@ -42,7 +45,7 @@ Scope {
             anchors.fill: parent
             color: Appearance.colors.colLayer0
             border.color: Appearance.colors.colLayer1
-            border.width: 1
+            border.width: Math.max(1, 1 * Appearance.effectiveScale)
             clip: true
 
             focus: visible
@@ -78,24 +81,24 @@ Scope {
 
             ColumnLayout {
                 anchors.fill: parent
-                anchors.margins: 12
-                spacing: 12
+                anchors.margins: 12 * Appearance.effectiveScale
+                spacing: 12 * Appearance.effectiveScale
 
                 // ── Global Header ──
                 Item {
                     id: headerWrapper
                     Layout.fillWidth: true
-                    Layout.preferredHeight: 52 // Reduced from 64
+                    Layout.preferredHeight: 52 * Appearance.effectiveScale // Reduced from 64
 
                     RowLayout {
                         anchors.fill: parent
-                        anchors.leftMargin: 20
-                        anchors.rightMargin: 12
-                        spacing: 20
+                        anchors.leftMargin: 20 * Appearance.effectiveScale
+                        anchors.rightMargin: 12 * Appearance.effectiveScale
+                        spacing: 20 * Appearance.effectiveScale
 
                         StyledText {
                             text: "System Monitor"
-                            font.pixelSize: Appearance.font.pixelSize.huge
+                            font.pixelSize: 24 * Appearance.effectiveScale
                             font.weight: Font.Bold
                             color: Appearance.colors.colOnLayer0
                             Layout.alignment: Qt.AlignVCenter
@@ -105,16 +108,16 @@ Scope {
 
                         RippleButton {
                             Layout.alignment: Qt.AlignVCenter
-                            implicitWidth: 36
-                            implicitHeight: 36
-                            buttonRadius: 18
+                            implicitWidth: 36 * Appearance.effectiveScale
+                            implicitHeight: 36 * Appearance.effectiveScale
+                            buttonRadius: 18 * Appearance.effectiveScale
                             colBackground: "transparent"
                             onClicked: GlobalStates.systemMonitorOpen = false
                             
                             MaterialSymbol {
                                 anchors.centerIn: parent
                                 text: "close"
-                                iconSize: 22
+                                iconSize: 22 * Appearance.effectiveScale
                                 color: Appearance.colors.colSubtext
                             }
                         }
@@ -125,25 +128,26 @@ Scope {
                 RowLayout {
                     Layout.fillWidth: true
                     Layout.fillHeight: true
-                    spacing: 12
+                    spacing: 12 * Appearance.effectiveScale
                     
                     // Side Navigation (Matching SettingsSidebar style)
                     Rectangle {
                         id: sidebar
                         Layout.fillHeight: true
-                        width: 220
+                        Layout.preferredWidth: 220 * Appearance.effectiveScale
+                        Layout.fillWidth: false
                         color: Appearance.colors.colLayer0
-                        radius: 20
+                        radius: 20 * Appearance.effectiveScale
                         
                         ColumnLayout {
                             anchors.fill: parent
-                            anchors.margins: 12
-                            spacing: 16
+                            anchors.margins: 12 * Appearance.effectiveScale
+                            spacing: 16 * Appearance.effectiveScale
                             
                             // Navigation Items
                             ColumnLayout {
                                 Layout.fillWidth: true
-                                spacing: 8
+                                spacing: 8 * Appearance.effectiveScale
                                 
                                 Repeater {
                                     model: [
@@ -155,8 +159,8 @@ Scope {
                                     delegate: RippleButton {
                                         visible: modelData.visible !== false
                                         Layout.fillWidth: true
-                                        implicitHeight: visible ? 48 : 0
-                                        buttonRadius: 16
+                                        implicitHeight: visible ? 48 * Appearance.effectiveScale : 0
+                                        buttonRadius: 16 * Appearance.effectiveScale
                                         colBackground: GlobalStates.systemMonitorIndex === modelData.stackIndex 
                                             ? Functions.ColorUtils.transparentize(Appearance.colors.colPrimary, 0.88) 
                                             : "transparent"
@@ -168,12 +172,13 @@ Scope {
                                         
                                         RowLayout {
                                             anchors.fill: parent
-                                            anchors.leftMargin: 16
-                                            spacing: 16
+                                            anchors.leftMargin: 16 * Appearance.effectiveScale
+                                            spacing: 16 * Appearance.effectiveScale
+                                            Layout.alignment: Qt.AlignLeft
                                             
                                             MaterialSymbol {
                                                 text: modelData.icon
-                                                iconSize: 24
+                                                iconSize: 24 * Appearance.effectiveScale
                                                 color: GlobalStates.systemMonitorIndex === modelData.stackIndex 
                                                     ? Appearance.colors.colPrimary 
                                                     : Appearance.colors.colSubtext
@@ -181,11 +186,13 @@ Scope {
                                             
                                             StyledText {
                                                 text: modelData.name
-                                                font.pixelSize: Appearance.font.pixelSize.normal
+                                                font.pixelSize: 14 * Appearance.effectiveScale
                                                 font.weight: GlobalStates.systemMonitorIndex === modelData.stackIndex ? Font.Medium : Font.Normal
                                                 color: GlobalStates.systemMonitorIndex === modelData.stackIndex 
                                                     ? Appearance.colors.colPrimary 
                                                     : Appearance.colors.colOnLayer0
+                                                Layout.fillWidth: true
+                                                horizontalAlignment: Text.AlignLeft
                                             }
                                         }
                                     }
@@ -197,6 +204,7 @@ Scope {
                             // Bottom Profile info (Using universal widget)
                             UserProfile {
                                 compact: false
+                                Layout.fillWidth: true
                             }
                         }
                     }
@@ -206,7 +214,7 @@ Scope {
                     Layout.fillWidth: true
                     Layout.fillHeight: true
                     color: Appearance.colors.colLayer1
-                    radius: 20
+                    radius: 20 * Appearance.effectiveScale
                     clip: true
                     
                     StackLayout {

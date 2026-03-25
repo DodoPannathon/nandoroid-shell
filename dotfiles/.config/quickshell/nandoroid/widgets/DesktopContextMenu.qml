@@ -28,12 +28,12 @@ PopupWindow {
         id: menuContainer
         anchors.fill: parent
         implicitWidth: Appearance.sizes.contextMenuWidth
-        implicitHeight: menuLayout.implicitHeight + 12
+        implicitHeight: menuLayout.implicitHeight + (12 * Appearance.effectiveScale)
         
         radius: Appearance.rounding.normal
         color: Appearance.colors.colLayer0
         border.color: Appearance.colors.colOutlineVariant
-        border.width: 1
+        border.width: Math.max(1, 1 * Appearance.effectiveScale)
         
         // Glassmorphism effect
         opacity: 0
@@ -56,8 +56,8 @@ PopupWindow {
         ColumnLayout {
             id: menuLayout
             anchors.fill: parent
-            anchors.margins: 6
-            spacing: 2
+            anchors.margins: 6 * Appearance.effectiveScale
+            spacing: 2 * Appearance.effectiveScale
 
             // --- Clock Specific Items ---
             MenuItem {
@@ -130,9 +130,9 @@ PopupWindow {
             Rectangle {
                 visible: !root.isClockMenu
                 Layout.fillWidth: true
-                Layout.preferredHeight: 1
-                Layout.leftMargin: 12
-                Layout.rightMargin: 12
+                Layout.preferredHeight: Math.max(1, 1 * Appearance.effectiveScale)
+                Layout.leftMargin: 12 * Appearance.effectiveScale
+                Layout.rightMargin: 12 * Appearance.effectiveScale
                 color: Appearance.colors.colOutlineVariant
                 opacity: 0.3
             }
@@ -188,9 +188,9 @@ PopupWindow {
         
         contentItem: RowLayout {
             anchors.fill: parent
-            anchors.leftMargin: 12
-            anchors.rightMargin: 12
-            spacing: 12
+            anchors.leftMargin: 12 * Appearance.effectiveScale
+            anchors.rightMargin: 12 * Appearance.effectiveScale
+            spacing: 12 * Appearance.effectiveScale
             
             MaterialSymbol {
                 text: itemRoot.menuIcon

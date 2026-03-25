@@ -9,7 +9,7 @@ import Quickshell.Hyprland
 
 /**
  * Android-style workspace dot/pill indicator.
- * Active = primary-colored pill, Occupied = smaller dot, Empty = outline dot.
+ * Refactored for global scaling.
  */
 Item {
     id: root
@@ -17,7 +17,7 @@ Item {
     readonly property int workspacesShown: Config.options.workspaces?.max_shown ?? 5
     readonly property int activeWsId: monitor?.activeWorkspace?.id ?? 1
     
-    // Pagination logic: determine which "page" of workspaces to show
+    // Pagination logic
     readonly property int startWsId: Math.floor((activeWsId - 1) / workspacesShown) * workspacesShown + 1
     
     property list<bool> workspaceOccupied: []
@@ -60,7 +60,6 @@ Item {
         })
     }
 
-    // Layout cycle handlers
     MouseArea {
         anchors.fill: parent
         acceptedButtons: Qt.MiddleButton | Qt.RightButton
@@ -80,7 +79,7 @@ Item {
         }
     }
 
-    // Animated stretch-highlight pill (Ambxst style)
+    // Animated stretch-highlight pill
     Rectangle {
         id: tabHighlight
         visible: root.indicatorStyle === "unified"
@@ -89,10 +88,10 @@ Item {
         property int idx1: (activeWsId - 1) % workspacesShown
         property int idx2: (activeWsId - 1) % workspacesShown
         
-        readonly property real dotWidth: 18
-        readonly property real dotHeight: 18
-        readonly property real spacing: 6
-        readonly property real activeWidth: 18 // Set to same as dotWidth for circular stationary state
+        readonly property real dotWidth: 18 * Appearance.effectiveScale
+        readonly property real dotHeight: 18 * Appearance.effectiveScale
+        readonly property real spacing: 6 * Appearance.effectiveScale
+        readonly property real activeWidth: 18 * Appearance.effectiveScale
         
         function getXForIndex(i) {
             return i * (dotWidth + spacing)
@@ -125,7 +124,7 @@ Item {
     Row {
         id: pillRow
         anchors.verticalCenter: parent.verticalCenter
-        spacing: root.indicatorStyle === "pill" ? 4 : 6
+        spacing: (root.indicatorStyle === "pill" ? 4 : 6) * Appearance.effectiveScale
 
         readonly property var japaneseNumbers: ["一", "二", "三", "四", "五", "六", "七", "八", "九", "十", "十一", "十二", "十三", "十四", "十五", "十六", "十七", "十八", "十九", "二十"]
         readonly property var romanNumbers: ["I", "II", "III", "IV", "V", "VI", "VII", "VIII", "IX", "X", "XI", "XII", "XIII", "XIV", "XV", "XVI", "XVII", "XVIII", "XIX", "XX"]
@@ -140,26 +139,25 @@ Item {
                 property bool isActive: wsId === root.activeWsId
                 property bool isOccupied: root.workspaceOccupied[index] ?? false
                 property bool isHovered: mouseArea.containsMouse
-                z: 1 // Above the highlight
+                z: 1 
 
-                // Mode-aware sizing
                 readonly property bool isUnified: root.indicatorStyle === "unified"
                 readonly property bool hasLabel: root.indicatorLabel !== "none"
 
                 implicitWidth: {
-                    if (isUnified) return 18
+                    if (isUnified) return 18 * Appearance.effectiveScale
                     if (hasLabel) {
-                        return isActive ? 28 : (isHovered ? 20 : (isOccupied ? 8 : 6))
+                        return (isActive ? 28 : (isHovered ? 20 : (isOccupied ? 8 : 6))) * Appearance.effectiveScale
                     }
-                    return isActive ? 16 : (isOccupied ? 8 : 6)
+                    return (isActive ? 16 : (isOccupied ? 8 : 6)) * Appearance.effectiveScale
                 }
                 
                 implicitHeight: {
-                    if (isUnified) return 18
+                    if (isUnified) return 18 * Appearance.effectiveScale
                     if (hasLabel) {
-                        return isActive ? 18 : (isHovered ? 18 : (isOccupied ? 8 : 6))
+                        return (isActive ? 18 : (isHovered ? 18 : (isOccupied ? 8 : 6))) * Appearance.effectiveScale
                     }
-                    return isActive ? 8 : (isOccupied ? 8 : 6)
+                    return (isActive ? 8 : (isOccupied ? 8 : 6)) * Appearance.effectiveScale
                 }
 
                 radius: height / 2
@@ -176,7 +174,6 @@ Item {
                 border.width: (!isUnified && !isActive && !isOccupied && !isHovered) ? 1 : 0
                 border.color: Appearance.colors.colNotchSubtext
 
-                // Label container with clip to hide text when dot is small
                 Item {
                     anchors.fill: parent
                     clip: true
@@ -194,38 +191,20 @@ Item {
                             }
                             return (dot.wsId).toString()
                         }
-                        font.pixelSize: 10
+                        font.pixelSize: 10 * Appearance.effectiveScale
                         font.weight: isActive ? Font.Bold : Font.Normal
                         color: "#1E1E1E" 
                         opacity: (isActive || isHovered || isUnified) ? 1 : 0
-                        Behavior on opacity { NumberAnimation { duration: 150 } }
                     }
                 }
 
-                Behavior on implicitWidth {
-                    NumberAnimation {
-                        duration: 250
-                        easing.type: Easing.OutExpo
-                    }
-                }
-                Behavior on implicitHeight {
-                    NumberAnimation {
-                        duration: 250
-                        easing.type: Easing.OutExpo
-                    }
-                }
-                Behavior on color {
-                    ColorAnimation {
-                        duration: Appearance.animation.elementMoveFast.duration
-                        easing.type: Easing.OutCubic
-                    }
-                }
+                Behavior on implicitWidth { NumberAnimation { duration: 250; easing.type: Easing.OutExpo } }
+                Behavior on implicitHeight { NumberAnimation { duration: 250; easing.type: Easing.OutExpo } }
 
-                // Click to switch workspace
                 MouseArea {
                     id: mouseArea
                     anchors.fill: parent
-                    anchors.margins: -4
+                    anchors.margins: -4 * Appearance.effectiveScale
                     hoverEnabled: true
                     cursorShape: Qt.PointingHandCursor
                     onClicked: Hyprland.dispatch(`workspace ${dot.wsId}`)

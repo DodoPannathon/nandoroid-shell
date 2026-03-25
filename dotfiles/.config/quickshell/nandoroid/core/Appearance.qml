@@ -15,6 +15,39 @@ Singleton {
     property QtObject animation
     property QtObject animationCurves
 
+    // --- REACTIVE SCALING LOGIC ---
+    property real effectiveScale: 1.0
+
+    function updateScale() {
+        if (!Config.ready) {
+            // Try to guess scale from screen height even if config isn't ready
+            const screenHeight = Quickshell.screens[0]?.height ?? 1080;
+            effectiveScale = Math.max(0.5, Math.min(2.5, screenHeight / 1080.0));
+            return;
+        }
+        const appearance = Config.options.appearance;
+        if (!appearance) return;
+        
+        if (appearance.autoScale === true) {
+            const screenHeight = Quickshell.screens[0]?.height ?? 1080;
+            effectiveScale = Math.max(0.5, Math.min(2.5, screenHeight / 1080.0));
+        } else {
+            effectiveScale = appearance.globalScale ?? 1.0;
+        }
+    }
+
+    Component.onCompleted: root.updateScale()
+
+    Connections {
+        target: Config
+        function onReadyChanged() { root.updateScale(); }
+    }
+    
+    Timer {
+        interval: 500; running: true; repeat: true
+        onTriggered: root.updateScale()
+    }
+
     // --- Material 3 Color Tokens (populated by MaterialThemeLoader) ---
     m3colors: QtObject {
         property bool darkmode: true
@@ -298,18 +331,19 @@ Singleton {
     }
 
     rounding: QtObject {
-        property int unsharpen: 2
-        property int unsharpenmore: 6
-        property int verysmall: 8
-        property int small: 12
-        property int normal: 18
-        property int large: 24
-        property int extraLarge: 32
+        readonly property real scale: root.effectiveScale
+        property int unsharpen: Math.round(2 * scale)
+        property int unsharpenmore: Math.round(6 * scale)
+        property int verysmall: Math.round(8 * scale)
+        property int small: Math.round(12 * scale)
+        property int normal: Math.round(18 * scale)
+        property int large: Math.round(24 * scale)
+        property int extraLarge: Math.round(32 * scale)
         property int full: 9999
-        property int statusBar: 0      // Status bar has no rounding (full-width)
-        property int panel: 28         // Quick Settings / Notification panels
-        property int card: 24          // Individual cards within panels
-        property int button: 20        // Buttons and toggles
+        property int statusBar: 0
+        property int panel: Math.round(28 * scale)
+        property int card: Math.round(24 * scale)
+        property int button: Math.round(20 * scale)
     }
 
     // --- Typography ---
@@ -338,52 +372,55 @@ Singleton {
             })
         }
         property QtObject pixelSize: QtObject {
-            property int smallest: 10
-            property int smaller: 12
-            property int small: 14
-            property int normal: 16
-            property int large: 18
-            property int larger: 20
-            property int huge: 24
-            property int title: 22
+            readonly property real scale: root.effectiveScale
+            property int smallest: Math.round(10 * scale)
+            property int smaller: Math.round(12 * scale)
+            property int small: Math.round(14 * scale)
+            property int normal: Math.round(16 * scale)
+            property int large: Math.round(18 * scale)
+            property int larger: Math.round(20 * scale)
+            property int huge: Math.round(24 * scale)
+            property int title: Math.round(22 * scale)
         }
     }
 
     // --- Sizes ---
     sizes: QtObject {
         readonly property var screen: Quickshell.screens[0]
-        property real statusBarHeight: 40
-        property real touchTarget: 48
-        property real elevationMargin: 12
+        readonly property real scale: root.effectiveScale
+
+        property real statusBarHeight: 40 * scale
+        property real touchTarget: 48 * scale
+        property real elevationMargin: 12 * scale
         
         // Dynamic Sidebar Panel sizing
-        property real quickSettingsWidth: Math.min(420, screen.width * 0.35)
-        property real quickSettingsMaxHeight: Math.min(800, screen.height * 0.85)
+        property real quickSettingsWidth: Math.min(420 * scale, screen.width * 0.35)
+        property real quickSettingsMaxHeight: Math.min(800 * scale, screen.height * 0.85)
         
-        property real notificationCenterWidth: Math.min(420, screen.width * 0.35)
-        property real notificationCenterMaxHeight: Math.min(800, screen.height * 0.85)
+        property real notificationCenterWidth: Math.min(420 * scale, screen.width * 0.35)
+        property real notificationCenterMaxHeight: Math.min(800 * scale, screen.height * 0.85)
 
         // New scaling tokens for internal components
-        property real notificationIslandMaxHeight: Math.min(450, screen.height * 0.5)
-        property real lockClockSize: Math.min(120, screen.width * 0.1)
-        property real lockInputWidth: Math.min(300, screen.width * 0.25)
+        property real notificationIslandMaxHeight: Math.min(450 * scale, screen.height * 0.5)
+        property real lockClockSize: Math.min(120 * scale, screen.width * 0.1)
+        property real lockInputWidth: Math.min(300 * scale, screen.width * 0.25)
         
-        property real toggleTileSize: 72
-        property real sliderHeight: 48
-        property real iconSize: 20
+        property real toggleTileSize: 72 * scale
+        property real sliderHeight: 48 * scale
+        property real iconSize: 20 * scale
 
         // Calendar
-        property real calendarWidth: Math.min(360, screen.width * 0.3)
-        property real calendarSpacing: 4
-        property real calendarCellSize: Math.floor((calendarWidth - 48 - (calendarSpacing * 6)) / 7)
+        property real calendarWidth: Math.min(360 * scale, screen.width * 0.3)
+        property real calendarSpacing: 4 * scale
+        property real calendarCellSize: Math.floor((calendarWidth - (48 * scale) - (calendarSpacing * 6)) / 7)
 
         // Dashboard (Calendar panel redesign)
-        property real dashboardWidth: Math.min(860, screen.width * 0.68)
-        property real dashboardHeight: Math.min(450, screen.height * 0.75)
+        property real dashboardWidth: Math.min(860 * scale, screen.width * 0.68)
+        property real dashboardHeight: Math.min(450 * scale, screen.height * 0.75)
 
         // Context Menu
-        property real contextMenuWidth: Math.min(220, screen.width * 0.15)
-        property real contextMenuItemHeight: 40
+        property real contextMenuWidth: Math.min(220 * scale, screen.width * 0.15)
+        property real contextMenuItemHeight: 40 * scale
     }
 
     // --- Animation Curves (M3 Expressive) ---

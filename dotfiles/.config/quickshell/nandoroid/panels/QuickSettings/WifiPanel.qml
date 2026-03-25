@@ -27,24 +27,24 @@ Rectangle {
 
     ColumnLayout {
         anchors.fill: parent
-        anchors.margins: 14
-        spacing: 12
+        anchors.margins: 14 * Appearance.effectiveScale
+        spacing: 12 * Appearance.effectiveScale
 
         // Header
         RowLayout {
             Layout.fillWidth: true
-            spacing: 12
+            spacing: 12 * Appearance.effectiveScale
 
             RippleButton {
-                implicitWidth: 36
-                implicitHeight: 36
-                buttonRadius: 18
+                implicitWidth: 36 * Appearance.effectiveScale
+                implicitHeight: 36 * Appearance.effectiveScale
+                buttonRadius: 18 * Appearance.effectiveScale
                 colBackground: Appearance.colors.colLayer2
                 onClicked: root.dismiss()
                 MaterialSymbol {
                     anchors.centerIn: parent
                     text: "arrow_back"
-                    iconSize: 20
+                    iconSize: 20 * Appearance.effectiveScale
                     color: Appearance.m3colors.m3onSurface
                 }
             }
@@ -59,15 +59,15 @@ Rectangle {
 
             // Refresh Button
             RippleButton {
-                implicitWidth: 36
-                implicitHeight: 36
-                buttonRadius: 18
+                implicitWidth: 36 * Appearance.effectiveScale
+                implicitHeight: 36 * Appearance.effectiveScale
+                buttonRadius: 18 * Appearance.effectiveScale
                 colBackground: Appearance.colors.colLayer2
                 onClicked: Network.rescanWifi()
                 MaterialSymbol {
                     anchors.centerIn: parent
                     text: "refresh"
-                    iconSize: 18
+                    iconSize: 18 * Appearance.effectiveScale
                     color: Appearance.m3colors.m3onSurface
                     
                     RotationAnimation on rotation {
@@ -83,16 +83,16 @@ Rectangle {
 
             // WiFi Power Toggle
             RippleButton {
-                implicitWidth: 56
-                implicitHeight: 36
-                buttonRadius: 18
+                implicitWidth: 56 * Appearance.effectiveScale
+                implicitHeight: 36 * Appearance.effectiveScale
+                buttonRadius: 18 * Appearance.effectiveScale
                 colBackground: Network.wifiEnabled ? Appearance.colors.colPrimary : Appearance.colors.colLayer2
                 colBackgroundHover: Network.wifiEnabled ? Qt.darker(Appearance.colors.colPrimary, 1.12) : Appearance.colors.colLayer2Hover
                 onClicked: Network.toggleWifi()
                 MaterialSymbol {
                     anchors.centerIn: parent
                     text: Network.wifiEnabled ? "wifi" : "wifi_off"
-                    iconSize: 18
+                    iconSize: 18 * Appearance.effectiveScale
                     color: Network.wifiEnabled ? Appearance.colors.colOnPrimary : Appearance.m3colors.m3onSurface
                 }
             }
@@ -109,16 +109,16 @@ Rectangle {
         Rectangle {
             Layout.fillWidth: true
             Layout.fillHeight: true
-            radius: 12
+            radius: 12 * Appearance.effectiveScale
             color: "transparent"
             clip: true
 
             ListView {
                 id: wifiList
                 anchors.fill: parent
-                anchors.margins: 4
+                anchors.margins: 4 * Appearance.effectiveScale
                 clip: true
-                spacing: 2
+                spacing: 2 * Appearance.effectiveScale
                 model: Network.friendlyWifiNetworks
 
                 delegate: Item {
@@ -136,8 +136,8 @@ Rectangle {
                         RippleButton {
                             id: networkItem
                             Layout.fillWidth: true
-                            implicitHeight: 56
-                            buttonRadius: 16
+                            implicitHeight: 56 * Appearance.effectiveScale
+                            buttonRadius: 16 * Appearance.effectiveScale
                             colBackground: {
                                 if (delegateRoot.modelData.active) return Functions.ColorUtils.mix(Appearance.colors.colLayer0, Appearance.colors.colPrimary, 0.85);
                                 if (delegateRoot.modelData.askingPassword) return Appearance.colors.colLayer2;
@@ -167,22 +167,22 @@ Rectangle {
                                 visible: delegateRoot.modelData.askingPassword
                                 color: parent.colBackground
                                 z: -1
-                                radius: 16
+                                radius: 16 * Appearance.effectiveScale
                                 
                                 // Make bottom square
                                 Rectangle {
                                     anchors.bottom: parent.bottom
                                     width: parent.width
-                                    height: 12
+                                    height: 12 * Appearance.effectiveScale
                                     color: parent.color
                                 }
                             }
 
                             contentItem: RowLayout {
                                 anchors.fill: parent
-                                anchors.leftMargin: 12
-                                anchors.rightMargin: 12
-                                spacing: 12
+                                anchors.leftMargin: 12 * Appearance.effectiveScale
+                                anchors.rightMargin: 12 * Appearance.effectiveScale
+                                spacing: 12 * Appearance.effectiveScale
 
                                 MaterialSymbol {
                                     text: {
@@ -193,7 +193,7 @@ Rectangle {
                                         if (s > 20) return "network_wifi_1_bar"
                                         return "signal_wifi_0_bar"
                                     }
-                                    iconSize: 22
+                                    iconSize: 22 * Appearance.effectiveScale
                                     color: (delegateRoot.modelData.active || delegateRoot.modelData.askingPassword) ? Appearance.colors.colPrimary : Appearance.colors.colSubtext
                                 }
 
@@ -218,14 +218,14 @@ Rectangle {
                                 MaterialSymbol {
                                     visible: delegateRoot.modelData.active
                                     text: "check"
-                                    iconSize: 20
+                                    iconSize: 20 * Appearance.effectiveScale
                                     color: Appearance.colors.colPrimary
                                 }
 
                                 MaterialSymbol {
                                     visible: delegateRoot.modelData.isSecure && !delegateRoot.modelData.active
                                     text: "lock"
-                                    iconSize: 18
+                                    iconSize: 18 * Appearance.effectiveScale
                                     color: Appearance.colors.colSubtext
                                 }
                             }
@@ -234,12 +234,12 @@ Rectangle {
                         // Password entry / Connect area
                         Rectangle {
                             Layout.fillWidth: true
-                            Layout.preferredHeight: delegateRoot.modelData.askingPassword ? 56 : 0
+                            Layout.preferredHeight: delegateRoot.modelData.askingPassword ? 56 * Appearance.effectiveScale : 0
 
                             visible: Layout.preferredHeight > 0
                             clip: true
                             color: Appearance.colors.colLayer2
-                            radius: 16
+                            radius: 16 * Appearance.effectiveScale
                             opacity: delegateRoot.modelData.askingPassword ? 1 : 0
                             Behavior on Layout.preferredHeight { NumberAnimation { duration: 250; easing.type: Easing.OutCubic } }
                             Behavior on opacity { NumberAnimation { duration: 200 } }
@@ -247,7 +247,7 @@ Rectangle {
                             // Merge with header by making top square
                             Rectangle {
                                 width: parent.width
-                                height: 12
+                                height: 12 * Appearance.effectiveScale
                                 color: parent.color
                                 visible: delegateRoot.modelData.askingPassword
                                 anchors.top: parent.top
@@ -256,28 +256,28 @@ Rectangle {
 
                             RowLayout {
                                 anchors.fill: parent
-                                anchors.leftMargin: 12
-                                anchors.rightMargin: 12
-                                anchors.topMargin: 8
-                                anchors.bottomMargin: 8
-                                spacing: 8
+                                anchors.leftMargin: 12 * Appearance.effectiveScale
+                                anchors.rightMargin: 12 * Appearance.effectiveScale
+                                anchors.topMargin: 8 * Appearance.effectiveScale
+                                anchors.bottomMargin: 8 * Appearance.effectiveScale
+                                spacing: 8 * Appearance.effectiveScale
 
 
                                 // Password Input Field
                                 Rectangle {
                                     Layout.fillWidth: true
-                                    Layout.preferredHeight: 40
-                                    radius: 20
+                                    Layout.preferredHeight: 40 * Appearance.effectiveScale
+                                    radius: 20 * Appearance.effectiveScale
                                     visible: delegateRoot.modelData.isSecure
                                     color: Appearance.colors.colLayer1
                                     border.color: passwordInput.activeFocus ? Appearance.colors.colPrimary : "transparent"
-                                    border.width: 1
+                                    border.width: Math.max(1, 1 * Appearance.effectiveScale)
 
                                     RowLayout {
                                         anchors.fill: parent
-                                        anchors.leftMargin: 12
-                                        anchors.rightMargin: 4
-                                        spacing: 8
+                                        anchors.leftMargin: 12 * Appearance.effectiveScale
+                                        anchors.rightMargin: 4 * Appearance.effectiveScale
+                                        spacing: 8 * Appearance.effectiveScale
 
                                         TextInput {
                                             id: passwordInput
@@ -307,15 +307,15 @@ Rectangle {
                                         RippleButton {
                                             id: showPasswordBtn
                                             property bool revealed: false
-                                            implicitWidth: 32
-                                            implicitHeight: 32
-                                            buttonRadius: 16
+                                            implicitWidth: 32 * Appearance.effectiveScale
+                                            implicitHeight: 32 * Appearance.effectiveScale
+                                            buttonRadius: 16 * Appearance.effectiveScale
                                             colBackground: "transparent"
                                             onClicked: revealed = !revealed
                                             MaterialSymbol {
                                                 anchors.centerIn: parent
                                                 text: showPasswordBtn.revealed ? "visibility" : "visibility_off"
-                                                iconSize: 18
+                                                iconSize: 18 * Appearance.effectiveScale
                                                 color: showPasswordBtn.revealed ? Appearance.colors.colPrimary : Appearance.colors.colSubtext
                                             }
                                         }
@@ -324,9 +324,9 @@ Rectangle {
 
                                 // Connect Button
                                 RippleButton {
-                                    implicitWidth: 80
-                                    implicitHeight: 40
-                                    buttonRadius: 20
+                                    implicitWidth: 80 * Appearance.effectiveScale
+                                    implicitHeight: 40 * Appearance.effectiveScale
+                                    buttonRadius: 20 * Appearance.effectiveScale
                                     colBackground: Appearance.colors.colPrimary
                                     colBackgroundHover: Qt.darker(Appearance.colors.colPrimary, 1.1)
                                     onClicked: {
@@ -363,11 +363,11 @@ Rectangle {
 
         RowLayout {
             Layout.fillWidth: true
-            spacing: 8
+            spacing: 8 * Appearance.effectiveScale
 
             RippleButton {
-                implicitWidth: detailsText.implicitWidth + 24
-                implicitHeight: 36
+                implicitWidth: detailsText.implicitWidth + (24 * Appearance.effectiveScale)
+                implicitHeight: 36 * Appearance.effectiveScale
                 buttonRadius: height / 2
                 colBackground: Appearance.colors.colLayer1
                 colBackgroundHover: Appearance.colors.colLayer1Hover
@@ -387,8 +387,8 @@ Rectangle {
             Item { Layout.fillWidth: true }
 
             RippleButton {
-                implicitWidth: doneText.implicitWidth + 24
-                implicitHeight: 36
+                implicitWidth: doneText.implicitWidth + (24 * Appearance.effectiveScale)
+                implicitHeight: 36 * Appearance.effectiveScale
                 buttonRadius: height / 2
                 colBackground: Appearance.colors.colPrimary
                 colBackgroundHover: Qt.darker(Appearance.colors.colPrimary, 1.1)

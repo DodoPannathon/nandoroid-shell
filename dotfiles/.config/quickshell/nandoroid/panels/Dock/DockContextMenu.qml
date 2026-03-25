@@ -47,11 +47,11 @@ PanelWindow {
         id: menuContainer
         x: root.targetX; y: root.targetY
         implicitWidth: Appearance.sizes.contextMenuWidth
-        implicitHeight: menuLayout.implicitHeight + 12
+        implicitHeight: menuLayout.implicitHeight + 12 * Appearance.effectiveScale
         radius: Appearance.rounding.small
         color: Appearance.colors.colLayer0
         border.color: Appearance.colors.colOutlineVariant
-        border.width: 1
+        border.width: Math.max(1, 1 * Appearance.effectiveScale)
         opacity: root.visible ? 0.98 : 0
         scale: root.visible ? 1 : 0.95
         visible: opacity > 0
@@ -63,55 +63,55 @@ PanelWindow {
 
         ColumnLayout {
             id: menuLayout
-            anchors.fill: parent; anchors.margins: 4; spacing: 1
+            anchors.fill: parent; anchors.margins: 4 * Appearance.effectiveScale; spacing: 1 * Appearance.effectiveScale
 
             // --- APP MODE ---
             ColumnLayout {
                 visible: !root.isLauncher
-                Layout.fillWidth: true; spacing: 1
+                Layout.fillWidth: true; spacing: 1 * Appearance.effectiveScale
                 
                 // Reordering Row
                 RowLayout {
-                    Layout.fillWidth: true; Layout.margins: 0; spacing: 1
+                    Layout.fillWidth: true; Layout.margins: 0; spacing: 1 * Appearance.effectiveScale
                     
                     RippleButton {
-                        Layout.fillWidth: true; Layout.preferredHeight: 24
+                        Layout.fillWidth: true; Layout.preferredHeight: 24 * Appearance.effectiveScale
                         buttonRadius: Appearance.rounding.verysmall; colBackground: "transparent"
                         contentItem: Item {
                             anchors.fill: parent
                             MaterialSymbol { 
-                                text: "arrow_back"; iconSize: 18; color: Appearance.colors.colOnLayer0; 
+                                text: "arrow_back"; iconSize: 18 * Appearance.effectiveScale; color: Appearance.colors.colOnLayer0; 
                                 anchors.verticalCenter: parent.verticalCenter
-                                anchors.left: parent.left; anchors.leftMargin: 16
+                                anchors.left: parent.left; anchors.leftMargin: 16 * Appearance.effectiveScale
                             }
                         }
                         onClicked: TaskbarApps.moveApp(root.appId, -1)
                     }
                     
-                    Rectangle { Layout.preferredWidth: 1; Layout.preferredHeight: 16; color: Appearance.colors.colOutlineVariant; opacity: 0.1 }
+                    Rectangle { Layout.preferredWidth: Math.max(1, 1 * Appearance.effectiveScale); Layout.preferredHeight: 16 * Appearance.effectiveScale; color: Appearance.colors.colOutlineVariant; opacity: 0.1 }
                     
                     RippleButton {
-                        Layout.fillWidth: true; Layout.preferredHeight: 24
+                        Layout.fillWidth: true; Layout.preferredHeight: 24 * Appearance.effectiveScale
                         buttonRadius: Appearance.rounding.verysmall; colBackground: "transparent"
                         contentItem: Item {
                             anchors.fill: parent
                             MaterialSymbol { 
-                                text: "arrow_forward"; iconSize: 18; color: Appearance.colors.colOnLayer0; 
+                                text: "arrow_forward"; iconSize: 18 * Appearance.effectiveScale; color: Appearance.colors.colOnLayer0; 
                                 anchors.verticalCenter: parent.verticalCenter
-                                anchors.right: parent.right; anchors.rightMargin: 16
+                                anchors.right: parent.right; anchors.rightMargin: 16 * Appearance.effectiveScale
                             }
                         }
                         onClicked: TaskbarApps.moveApp(root.appId, 1)
                     }
                 }
 
-                Rectangle { Layout.fillWidth: true; Layout.preferredHeight: 1; Layout.margins: 4; color: Appearance.colors.colOutlineVariant; opacity: 0.1 }
+                Rectangle { Layout.fillWidth: true; Layout.preferredHeight: Math.max(1, 1 * Appearance.effectiveScale); Layout.margins: 4 * Appearance.effectiveScale; color: Appearance.colors.colOutlineVariant; opacity: 0.1 }
 
                 // Header
                 RowLayout {
-                    Layout.fillWidth: true; Layout.leftMargin: 8; Layout.rightMargin: 8; Layout.topMargin: 4; Layout.bottomMargin: 4; spacing: 8
+                    Layout.fillWidth: true; Layout.leftMargin: 8 * Appearance.effectiveScale; Layout.rightMargin: 8 * Appearance.effectiveScale; Layout.topMargin: 4 * Appearance.effectiveScale; Layout.bottomMargin: 4 * Appearance.effectiveScale; spacing: 8 * Appearance.effectiveScale
                     Item {
-                        Layout.preferredWidth: 20; Layout.preferredHeight: 20
+                        Layout.preferredWidth: 20 * Appearance.effectiveScale; Layout.preferredHeight: 20 * Appearance.effectiveScale
                         IconImage {
                             anchors.fill: parent
                             source: root.appId ? Quickshell.iconPath(AppSearch.guessIcon(root.appId), "application-x-executable") : ""
@@ -125,7 +125,7 @@ PanelWindow {
                     }
                 }
 
-                Rectangle { Layout.fillWidth: true; Layout.preferredHeight: 1; Layout.margins: 4; color: Appearance.colors.colOutlineVariant; opacity: 0.1 }
+                Rectangle { Layout.fillWidth: true; Layout.preferredHeight: Math.max(1, 1 * Appearance.effectiveScale); Layout.margins: 4 * Appearance.effectiveScale; color: Appearance.colors.colOutlineVariant; opacity: 0.1 }
 
                 // Jump List
                 Repeater {
@@ -146,7 +146,7 @@ PanelWindow {
                     }
                 }
 
-                Rectangle { Layout.fillWidth: true; Layout.preferredHeight: 1; Layout.margins: 4; color: Appearance.colors.colOutlineVariant; opacity: 0.1 }
+                Rectangle { Layout.fillWidth: true; Layout.preferredHeight: Math.max(1, 1 * Appearance.effectiveScale); Layout.margins: 4 * Appearance.effectiveScale; color: Appearance.colors.colOutlineVariant; opacity: 0.1 }
 
                 MenuItem {
                     menuText: root.isPinned ? "Unpin from Dock" : "Pin to Dock"
@@ -154,7 +154,7 @@ PanelWindow {
                     onClicked: { TaskbarApps.togglePin(root.appId); root.close() }
                 }
 
-                Rectangle { visible: root.windowCount > 0; Layout.fillWidth: true; Layout.preferredHeight: 1; Layout.margins: 4; color: Appearance.colors.colOutlineVariant; opacity: 0.1 }
+                Rectangle { visible: root.windowCount > 0; Layout.fillWidth: true; Layout.preferredHeight: Math.max(1, 1 * Appearance.effectiveScale); Layout.margins: 4 * Appearance.effectiveScale; color: Appearance.colors.colOutlineVariant; opacity: 0.1 }
 
                 MenuItem {
                     visible: root.windowCount > 0
@@ -187,7 +187,7 @@ PanelWindow {
             // --- LAUNCHER MODE ---
             ColumnLayout {
                 visible: root.isLauncher
-                Layout.fillWidth: true; spacing: 1
+                Layout.fillWidth: true; spacing: 1 * Appearance.effectiveScale
                 MenuItem {
                     menuText: "Restart Shell"; menuIcon: "refresh"
                     onClicked: { Quickshell.execDetached([Directories.home.replace("file://", "") + "/.config/quickshell/nandoroid/scripts/restartshell.sh"]); root.close() }
@@ -200,7 +200,7 @@ PanelWindow {
                     menuText: "System Monitor"; menuIcon: "monitoring"
                     onClicked: { GlobalStates.activateSystemMonitor(); root.close() }
                 }
-                Rectangle { Layout.fillWidth: true; Layout.preferredHeight: 1; Layout.margins: 4; color: Appearance.colors.colOutlineVariant; opacity: 0.1 }
+                Rectangle { Layout.fillWidth: true; Layout.preferredHeight: Math.max(1, 1 * Appearance.effectiveScale); Layout.margins: 4 * Appearance.effectiveScale; color: Appearance.colors.colOutlineVariant; opacity: 0.1 }
                 MenuItem { menuText: "Lock Session"; menuIcon: "lock"; onClicked: { Session.lock(); root.close() } }
                 MenuItem { menuText: "Logout"; menuIcon: "logout"; onClicked: { Session.logout(); root.close() } }
                 MenuItem { menuText: "Reboot"; menuIcon: "restart_alt"; onClicked: { Session.reboot(); root.close() } }
@@ -214,13 +214,13 @@ PanelWindow {
     component MenuItem : RippleButton {
         id: itemRoot
         property string menuText: ""; property string menuIcon: ""
-        Layout.fillWidth: true; Layout.preferredHeight: 32
+        Layout.fillWidth: true; Layout.preferredHeight: 32 * Appearance.effectiveScale
         buttonRadius: Appearance.rounding.verysmall; colBackground: "transparent"
         contentItem: RowLayout {
-            anchors.fill: parent; anchors.leftMargin: 8; anchors.rightMargin: 8; spacing: 8
+            anchors.fill: parent; anchors.leftMargin: 8 * Appearance.effectiveScale; anchors.rightMargin: 8 * Appearance.effectiveScale; spacing: 8 * Appearance.effectiveScale
             MaterialSymbol {
-                text: itemRoot.menuIcon; iconSize: 18
-                Layout.preferredWidth: 18; Layout.preferredHeight: 18
+                text: itemRoot.menuIcon; iconSize: 18 * Appearance.effectiveScale
+                Layout.preferredWidth: 18 * Appearance.effectiveScale; Layout.preferredHeight: 18 * Appearance.effectiveScale
                 fill: (itemRoot.menuIcon === "power_settings_new" || itemRoot.menuIcon === "logout" || itemRoot.menuIcon === "restart_alt") ? 1 : 0
                 color: (itemRoot.menuIcon === "close" || itemRoot.menuIcon === "gavel" || itemRoot.menuIcon === "power_settings_new" || itemRoot.menuIcon === "logout" || itemRoot.menuIcon === "restart_alt") ? Appearance.colors.colError : Appearance.colors.colOnLayer0
             }
@@ -252,11 +252,11 @@ PanelWindow {
             const screenWidth = root.screen.width;
             const screenHeight = root.screen.height;
             const menuWidth = Appearance.sizes.contextMenuWidth;
-            const menuHeight = menuLayout.implicitHeight + 12;
-            root.targetX = Math.min(root._mouseX, screenWidth - menuWidth - 10);
-            if (root._mouseY + menuHeight > screenHeight - 10) root.targetY = root._mouseY - menuHeight;
+            const menuHeight = menuLayout.implicitHeight + 12 * Appearance.effectiveScale;
+            root.targetX = Math.min(root._mouseX, screenWidth - menuWidth - 10 * Appearance.effectiveScale);
+            if (root._mouseY + menuHeight > screenHeight - 10 * Appearance.effectiveScale) root.targetY = root._mouseY - menuHeight;
             else root.targetY = root._mouseY;
-            root.targetY = Math.max(10, root.targetY);
+            root.targetY = Math.max(10 * Appearance.effectiveScale, root.targetY);
             menuContainer.opacity = 0.98; menuContainer.scale = 1;
         });
     }

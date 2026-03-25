@@ -15,8 +15,8 @@ import Quickshell.Io
  */
 Item {
     id: root
-    implicitWidth: 1000
-    implicitHeight: 750
+    implicitWidth: 1000 * Appearance.effectiveScale
+    implicitHeight: 750 * Appearance.effectiveScale
 
     focus: true
     Keys.onEscapePressed: close()
@@ -202,9 +202,9 @@ Item {
         property var cardColors: ["transparent", "transparent", "transparent"]
         property bool isSelected: false
         
-        implicitWidth: 104
-        implicitHeight: 120
-        buttonRadius: 28
+        implicitWidth: 104 * Appearance.effectiveScale
+        implicitHeight: 120 * Appearance.effectiveScale
+        buttonRadius: 28 * Appearance.effectiveScale
         colBackground: Appearance.colors.colLayer2
         colRipple: Appearance.colors.colLayer2Active
 
@@ -235,7 +235,7 @@ Item {
                 }
                 
                 Rectangle {
-                    anchors.bottom: parent.bottom; width: parent.width; height: 48
+                    anchors.bottom: parent.bottom; width: parent.width; height: 48 * Appearance.effectiveScale
                     gradient: Gradient {
                         GradientStop { position: 0.0; color: "transparent" }
                         GradientStop { position: 1.0; color: Qt.rgba(0,0,0,0.6) }
@@ -244,20 +244,20 @@ Item {
             }
             
             Rectangle {
-                anchors.fill: parent; color: "transparent"; border.width: 3; border.color: Appearance.m3colors.m3primary
+                anchors.fill: parent; color: "transparent"; border.width: 3 * Appearance.effectiveScale; border.color: Appearance.m3colors.m3primary
                 radius: card.buttonRadius; visible: card.isSelected; opacity: 0.8
             }
             
             StyledText {
-                anchors.bottom: parent.bottom; anchors.bottomMargin: 8; anchors.horizontalCenter: parent.horizontalCenter
+                anchors.bottom: parent.bottom; anchors.bottomMargin: 8 * Appearance.effectiveScale; anchors.horizontalCenter: parent.horizontalCenter
                 text: card.label; font.pixelSize: Appearance.font.pixelSize.smaller; font.weight: Font.Medium; color: "white"
-                horizontalAlignment: Text.AlignHCenter; wrapMode: Text.WordWrap; width: parent.width - 12
+                horizontalAlignment: Text.AlignHCenter; wrapMode: Text.WordWrap; width: parent.width - (12 * Appearance.effectiveScale)
                 lineHeight: 0.9; maximumLineCount: 2
             }
             
             Rectangle {
-                anchors.centerIn: parent; width: 32; height: 32; radius: 16; color: "#1A1C1E"; visible: card.isSelected
-                MaterialSymbol { anchors.centerIn: parent; text: "check"; iconSize: 20; color: "white" }
+                anchors.centerIn: parent; width: 32 * Appearance.effectiveScale; height: 32 * Appearance.effectiveScale; radius: 16 * Appearance.effectiveScale; color: "#1A1C1E"; visible: card.isSelected
+                MaterialSymbol { anchors.centerIn: parent; text: "check"; iconSize: 20 * Appearance.effectiveScale; color: "white" }
             }
         }
     }
@@ -265,11 +265,11 @@ Item {
     component AndroidToggle: Rectangle {
         property bool checked: false
         signal toggled()
-        implicitWidth: 52; implicitHeight: 28; radius: 14
+        implicitWidth: 52 * Appearance.effectiveScale; implicitHeight: 28 * Appearance.effectiveScale; radius: 14 * Appearance.effectiveScale
         color: checked ? Appearance.colors.colPrimary : Appearance.colors.colLayer2
         Rectangle {
-            width: 20; height: 20; radius: 10; anchors.verticalCenter: parent.verticalCenter
-            x: parent.checked ? parent.width - width - 4 : 4
+            width: 20 * Appearance.effectiveScale; height: 20 * Appearance.effectiveScale; radius: 10 * Appearance.effectiveScale; anchors.verticalCenter: parent.verticalCenter
+            x: parent.checked ? parent.width - width - (4 * Appearance.effectiveScale) : 4 * Appearance.effectiveScale
             color: parent.checked ? Appearance.colors.colOnPrimary : Appearance.colors.colSubtext
             Behavior on x { NumberAnimation { duration: 200; easing.type: Easing.OutCubic } }
         }
@@ -280,13 +280,13 @@ Item {
         id: previewComp
         property string title; property string source; property bool showCheckmark: false; property bool clickable: true
         signal clicked()
-        spacing: 12
+        spacing: 12 * Appearance.effectiveScale
         Item {
             Layout.fillWidth: true; 
             Layout.preferredHeight: width * 9/16
             Rectangle {
                 id: imgContainer
-                anchors.fill: parent; radius: 24; color: Appearance.colors.colLayer1
+                anchors.fill: parent; radius: 24 * Appearance.effectiveScale; color: Appearance.colors.colLayer1
                 
                 layer.enabled: true
                 layer.effect: OpacityMask {
@@ -306,8 +306,8 @@ Item {
                 Rectangle { anchors.fill: parent; color: Appearance.colors.colPrimary; opacity: previewComp.showCheckmark ? 0.3 : 0 }
                 
                 Rectangle {
-                    width: 42; height: 42; radius: 21; anchors.centerIn: parent; color: Appearance.colors.colPrimary
-                    visible: showCheckmark; MaterialSymbol { anchors.centerIn: parent; text: "check"; color: Appearance.colors.colOnPrimary; iconSize: 24 }
+                    width: 42 * Appearance.effectiveScale; height: 42 * Appearance.effectiveScale; radius: 21 * Appearance.effectiveScale; anchors.centerIn: parent; color: Appearance.colors.colPrimary
+                    visible: showCheckmark; MaterialSymbol { anchors.centerIn: parent; text: "check"; color: Appearance.colors.colOnPrimary; iconSize: 24 * Appearance.effectiveScale }
                 }
                 
                 MouseArea { anchors.fill: parent; cursorShape: previewComp.clickable ? Qt.PointingHandCursor : Qt.ArrowCursor; onClicked: if(previewComp.clickable) previewComp.clicked() }
@@ -324,14 +324,14 @@ Item {
         // ── Fixed Header (never scrolls) ──
         RowLayout {
             Layout.fillWidth: true
-            Layout.topMargin: 16
-            Layout.bottomMargin: 12
-            Layout.leftMargin: 32
-            Layout.rightMargin: 24
-            spacing: 16
+            Layout.topMargin: 16 * Appearance.effectiveScale
+            Layout.bottomMargin: 12 * Appearance.effectiveScale
+            Layout.leftMargin: 32 * Appearance.effectiveScale
+            Layout.rightMargin: 24 * Appearance.effectiveScale
+            spacing: 16 * Appearance.effectiveScale
 
             ColumnLayout {
-                spacing: 4
+                spacing: 4 * Appearance.effectiveScale
                 StyledText {
                     text: "Wallpaper & Color"
                     font.pixelSize: Appearance.font.pixelSize.huge
@@ -348,10 +348,10 @@ Item {
             Item { Layout.fillWidth: true }
 
             RippleButton {
-                implicitWidth: 36; implicitHeight: 36; buttonRadius: 18
+                implicitWidth: 36 * Appearance.effectiveScale; implicitHeight: 36 * Appearance.effectiveScale; buttonRadius: 18 * Appearance.effectiveScale
                 colBackground: Appearance.colors.colLayer1
                 onClicked: root.closed()
-                MaterialSymbol { anchors.centerIn: parent; text: "close"; iconSize: 20 }
+                MaterialSymbol { anchors.centerIn: parent; text: "close"; iconSize: 20 * Appearance.effectiveScale }
             }
         }
 
@@ -359,17 +359,17 @@ Item {
         Rectangle {
             Layout.fillWidth: true
             Layout.fillHeight: true
-            Layout.bottomMargin: 12
-            Layout.leftMargin: 12
-            Layout.rightMargin: 12
+            Layout.bottomMargin: 12 * Appearance.effectiveScale
+            Layout.leftMargin: 12 * Appearance.effectiveScale
+            Layout.rightMargin: 12 * Appearance.effectiveScale
             color: Appearance.colors.colLayer1
-            radius: 20
+            radius: 20 * Appearance.effectiveScale
             clip: true
 
             StyledFlickable {
                 anchors.fill: parent
                 contentWidth: width
-                contentHeight: mainCol.implicitHeight + 64
+                contentHeight: mainCol.implicitHeight + (64 * Appearance.effectiveScale)
                 clip: true
 
                 ColumnLayout {
@@ -377,18 +377,18 @@ Item {
                     anchors.left: parent.left
                     anchors.right: parent.right
                     anchors.top: parent.top
-                    anchors.margins: 32
-                    spacing: 24
+                    anchors.margins: 32 * Appearance.effectiveScale
+                    spacing: 24 * Appearance.effectiveScale
 
                     property bool showAllMatugen: false
                     property bool showAllBasic: false
 
                     // Sync Card
                     Rectangle {
-                        Layout.fillWidth: true; implicitHeight: 64; radius: 20; color: Appearance.m3colors.m3surfaceContainerHigh
+                        Layout.fillWidth: true; implicitHeight: 64 * Appearance.effectiveScale; radius: 20 * Appearance.effectiveScale; color: Appearance.m3colors.m3surfaceContainerHigh
                         RowLayout {
-                            anchors.fill: parent; anchors.margins: 16; spacing: 16
-                            MaterialSymbol { text: "sync"; iconSize: 22; color: Appearance.colors.colPrimary }
+                            anchors.fill: parent; anchors.margins: 16 * Appearance.effectiveScale; spacing: 16 * Appearance.effectiveScale
+                            MaterialSymbol { text: "sync"; iconSize: 22 * Appearance.effectiveScale; color: Appearance.colors.colPrimary }
                             StyledText { text: "Use same wallpaper for lock screen"; font.pixelSize: Appearance.font.pixelSize.normal; Layout.fillWidth: true }
                             AndroidToggle {
                                 checked: Config.ready && !Config.options.lock.useSeparateWallpaper
@@ -403,7 +403,7 @@ Item {
 
                     // Previews
                     RowLayout {
-                        Layout.fillWidth: true; spacing: 20
+                        Layout.fillWidth: true; spacing: 20 * Appearance.effectiveScale
                         WallpaperPreview {
                             Layout.fillWidth: true; Layout.preferredWidth: 1
                             title: "Desktop wallpaper"
@@ -422,10 +422,10 @@ Item {
 
                     // Dark Mode Card
                     Rectangle {
-                        Layout.fillWidth: true; implicitHeight: 64; radius: 20; color: Appearance.m3colors.m3surfaceContainerHigh
+                        Layout.fillWidth: true; implicitHeight: 64 * Appearance.effectiveScale; radius: 20 * Appearance.effectiveScale; color: Appearance.m3colors.m3surfaceContainerHigh
                         RowLayout {
-                            anchors.fill: parent; anchors.margins: 16; spacing: 16
-                            MaterialSymbol { text: Config.options.appearance.background.darkmode ? "dark_mode" : "light_mode"; iconSize: 22; color: Appearance.colors.colPrimary }
+                            anchors.fill: parent; anchors.margins: 16 * Appearance.effectiveScale; spacing: 16 * Appearance.effectiveScale
+                            MaterialSymbol { text: Config.options.appearance.background.darkmode ? "dark_mode" : "light_mode"; iconSize: 22 * Appearance.effectiveScale; color: Appearance.colors.colPrimary }
                             StyledText { text: "Dark theme"; font.pixelSize: Appearance.font.pixelSize.normal; Layout.fillWidth: true }
                             AndroidToggle {
                                 checked: Config.ready ? Config.options.appearance.background.darkmode : false
@@ -436,18 +436,18 @@ Item {
 
                     // Color Settings
                     ColumnLayout {
-                        Layout.fillWidth: true; spacing: 20
+                        Layout.fillWidth: true; spacing: 20 * Appearance.effectiveScale
 
                         RowLayout {
                             id: colorSwitcherRow
-                            Layout.fillWidth: true; Layout.preferredHeight: 52; spacing: 4
+                            Layout.fillWidth: true; Layout.preferredHeight: 52 * Appearance.effectiveScale; spacing: 4 * Appearance.effectiveScale
                             property string currentTab: Config.ready && Config.options.appearance.background && Config.options.appearance.background.matugen ? "wallpaper" : "basic"
 
                             SegmentedButton {
                                 Layout.fillWidth: true; Layout.preferredWidth: 1; Layout.fillHeight: true;
                                 isHighlighted: parent.currentTab === "wallpaper"
                                 buttonText: "Wallpaper color"
-                                font.pixelSize: 14
+                                font.pixelSize: 14 * Appearance.effectiveScale
                                 colActive: Appearance.m3colors.m3primary
                                 colActiveText: Appearance.m3colors.m3onPrimary
                                 colInactive: Appearance.m3colors.m3surfaceContainerHigh
@@ -459,7 +459,7 @@ Item {
                                 Layout.fillWidth: true; Layout.preferredWidth: 1; Layout.fillHeight: true;
                                 isHighlighted: parent.currentTab === "basic"
                                 buttonText: "Basic color"
-                                font.pixelSize: 14
+                                font.pixelSize: 14 * Appearance.effectiveScale
                                 colActive: Appearance.m3colors.m3primary
                                 colActiveText: Appearance.m3colors.m3onPrimary
                                 colInactive: Appearance.m3colors.m3surfaceContainerHigh
@@ -471,11 +471,11 @@ Item {
                         // Matugen Grid
                         ColumnLayout {
                             Layout.fillWidth: true
-                            spacing: 16
+                            spacing: 16 * Appearance.effectiveScale
                             visible: colorSwitcherRow.currentTab === "wallpaper"
 
                             GridLayout {
-                                Layout.fillWidth: true; columns: 5; rowSpacing: 16; columnSpacing: 16
+                                Layout.fillWidth: true; columns: 5; rowSpacing: 16 * Appearance.effectiveScale; columnSpacing: 16 * Appearance.effectiveScale
 
                                 Repeater {
                                     model: root.matugenSchemes
@@ -508,17 +508,17 @@ Item {
                             RippleButton {
                                 visible: Config.ready && Config.options.lock.useSeparateWallpaper
                                 Layout.fillWidth: true
-                                Layout.preferredHeight: 48
-                                buttonRadius: 16
+                                Layout.preferredHeight: 48 * Appearance.effectiveScale
+                                buttonRadius: 16 * Appearance.effectiveScale
                                 colBackground: Appearance.m3colors.m3surfaceContainerHigh
                                 onClicked: mainCol.showAllMatugen = !mainCol.showAllMatugen
                                 
                                 RowLayout {
                                     anchors.centerIn: parent
-                                    spacing: 8
+                                    spacing: 8 * Appearance.effectiveScale
                                     MaterialSymbol {
                                         text: mainCol.showAllMatugen ? "expand_less" : "expand_more"
-                                        iconSize: 20
+                                        iconSize: 20 * Appearance.effectiveScale
                                         color: Appearance.colors.colPrimary
                                     }
                                     StyledText {
@@ -533,11 +533,11 @@ Item {
                         // Basic Colors Grid
                         ColumnLayout {
                             Layout.fillWidth: true
-                            spacing: 16
+                            spacing: 16 * Appearance.effectiveScale
                             visible: colorSwitcherRow.currentTab === "basic"
 
                             GridLayout {
-                                Layout.fillWidth: true; columns: 5; rowSpacing: 16; columnSpacing: 16
+                                Layout.fillWidth: true; columns: 5; rowSpacing: 16 * Appearance.effectiveScale; columnSpacing: 16 * Appearance.effectiveScale
                                 Repeater {
                                     model: mainCol.showAllBasic ? root.basicColors : root.basicColors.slice(0, 10)
                                     delegate: ColorCard {
@@ -552,17 +552,17 @@ Item {
                             RippleButton {
                                 visible: root.basicColors.length > 10
                                 Layout.fillWidth: true
-                                Layout.preferredHeight: 48
-                                buttonRadius: 16
+                                Layout.preferredHeight: 48 * Appearance.effectiveScale
+                                buttonRadius: 16 * Appearance.effectiveScale
                                 colBackground: Appearance.m3colors.m3surfaceContainerHigh
                                 onClicked: mainCol.showAllBasic = !mainCol.showAllBasic
                                 
                                 RowLayout {
                                     anchors.centerIn: parent
-                                    spacing: 8
+                                    spacing: 8 * Appearance.effectiveScale
                                     MaterialSymbol {
                                         text: mainCol.showAllBasic ? "expand_less" : "expand_more"
-                                        iconSize: 20
+                                        iconSize: 20 * Appearance.effectiveScale
                                         color: Appearance.colors.colPrimary
                                     }
                                     StyledText {

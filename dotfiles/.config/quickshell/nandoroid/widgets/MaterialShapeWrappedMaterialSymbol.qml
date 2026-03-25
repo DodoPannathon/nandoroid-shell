@@ -10,7 +10,7 @@ MaterialShape {
     property alias colSymbol: symbol.color
     property alias fill: symbol.fill
     property alias animateChange: symbol.animateChange
-    property real padding: 6
+    property real padding: 6 * Appearance.effectiveScale
     
 
     color: Appearance.colors.colSecondaryContainer

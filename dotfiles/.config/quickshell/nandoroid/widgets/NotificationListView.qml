@@ -13,7 +13,7 @@ StyledListView {
     id: root
     property bool popup: false
 
-    spacing: 4
+    spacing: 4 * Appearance.effectiveScale
 
     model: ScriptModel {
         values: root.popup ? Notifications.popupAppNameList : Notifications.appNameList

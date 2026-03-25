@@ -9,7 +9,7 @@ Rectangle {
     id: root
     // Using simple anchoring and margins for now, will refine in Dock.qml
     Layout.fillHeight: true
-    implicitWidth: 1
+    implicitWidth: Math.max(1, 1 * Appearance.effectiveScale)
     color: Appearance.colors.colOutlineVariant
     opacity: 0.5
 }

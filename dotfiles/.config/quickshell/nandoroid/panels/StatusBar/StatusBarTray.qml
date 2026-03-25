@@ -8,8 +8,8 @@ import "../../widgets"
 
 RowLayout {
     id: root
-    spacing: 6
-    implicitHeight: 16
+    spacing: 6 * Appearance.effectiveScale
+    implicitHeight: 16 * Appearance.effectiveScale
     visible: SystemTray.items.values.length > 0
 
     readonly property string trayStyle: Config.options.statusBar.trayStyle
@@ -58,8 +58,8 @@ RowLayout {
     MouseArea {
         id: expandButton
         visible: overflowModel.length > 0
-        implicitWidth: 16
-        implicitHeight: 16
+        implicitWidth: 16 * Appearance.effectiveScale
+        implicitHeight: 16 * Appearance.effectiveScale
         cursorShape: Qt.PointingHandCursor
         
         function updateGlobalPos() {
@@ -76,7 +76,7 @@ RowLayout {
         MaterialSymbol {
             anchors.centerIn: parent
             text: GlobalStates.trayOverflowOpen ? "expand_less" : "expand_more"
-            iconSize: 20
+            iconSize: 20 * Appearance.effectiveScale
         }
 
         onClicked: {
@@ -85,4 +85,3 @@ RowLayout {
         }
     }
 }
-

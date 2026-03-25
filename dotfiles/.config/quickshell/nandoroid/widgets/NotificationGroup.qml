@@ -19,15 +19,15 @@ MouseArea { // Notification group area
     property bool multipleNotifications: notificationCount > 1
     property bool expanded: false
     property bool popup: false
-    property real padding: 10
+    property real padding: 10 * Appearance.effectiveScale
     
     property bool isFirst: false
     property bool isLast: false
     
     implicitHeight: background.implicitHeight
 
-    property real dragConfirmThreshold: 70 // Drag further to discard notification
-    property real dismissOvershoot: 20 // Account for gaps and bouncy animations
+    property real dragConfirmThreshold: 70 * Appearance.effectiveScale // Drag further to discard notification
+    property real dismissOvershoot: 20 * Appearance.effectiveScale // Account for gaps and bouncy animations
     property var qmlParent: root?.parent?.parent // There's something between this and the parent ListView
     property int index: 0
     property var parentDragIndex: qmlParent?.dragIndex
@@ -132,7 +132,7 @@ MouseArea { // Notification group area
         width: parent.width
         color: popup ? Appearance.m3colors.m3surfaceContainer : Appearance.colors.colLayer2
         orientation: Qt.Vertical
-        maxRadius: 24
+        maxRadius: 24 * Appearance.effectiveScale
         
         forceFirst: root.isFirst
         forceLast: root.isLast
@@ -150,7 +150,7 @@ MouseArea { // Notification group area
         
         implicitHeight: root.expanded ? 
             row.implicitHeight + padding * 2 :
-            Math.min(80, row.implicitHeight + padding * 2)
+            Math.min(80 * Appearance.effectiveScale, row.implicitHeight + padding * 2)
 
         Behavior on implicitHeight {
             id: implicitHeightAnim
@@ -163,7 +163,7 @@ MouseArea { // Notification group area
             anchors.left: parent.left
             anchors.right: parent.right
             anchors.margins: root.padding
-            spacing: 10
+            spacing: 10 * Appearance.effectiveScale
 
             NotificationAppIcon { // Icons
                 Layout.alignment: Qt.AlignTop
@@ -178,8 +178,8 @@ MouseArea { // Notification group area
             ColumnLayout { // Content
                 Layout.fillWidth: true
                 spacing: expanded ? (root.multipleNotifications ? 
-                    (notificationGroup?.notifications[root.notificationCount - 1].image != "") ? 35 : 
-                    5 : 0) : 0
+                    (notificationGroup?.notifications[root.notificationCount - 1].image != "") ? 35 * Appearance.effectiveScale : 
+                    5 * Appearance.effectiveScale : 0) : 0
                 
                 Behavior on spacing {
                     animation: Appearance.animation.elementMoveFast.numberAnimation.createObject(this)
@@ -197,7 +197,7 @@ MouseArea { // Notification group area
                         anchors.left: parent.left
                         anchors.right: expandButton.left
                         anchors.verticalCenter: parent.verticalCenter
-                        spacing: 5
+                        spacing: 5 * Appearance.effectiveScale
                         StyledText {
                             id: appName
                             elide: Text.ElideRight
@@ -214,7 +214,7 @@ MouseArea { // Notification group area
                         }
                         StyledText {
                             id: timeText
-                            Layout.rightMargin: 10
+                            Layout.rightMargin: 10 * Appearance.effectiveScale
                             horizontalAlignment: Text.AlignLeft
                             text: NotificationUtils.getFriendlyNotifTimeString(notificationGroup?.time)
                             font.pixelSize: topRow.fontSize
@@ -241,7 +241,7 @@ MouseArea { // Notification group area
                     id: notificationsColumn
                     implicitHeight: contentHeight
                     Layout.fillWidth: true
-                    spacing: expanded ? 5 : 3
+                    spacing: expanded ? 5 * Appearance.effectiveScale : 3 * Appearance.effectiveScale
                     interactive: false
                     Behavior on spacing {
                         animation: Appearance.animation.elementMoveFast.numberAnimation.createObject(this)

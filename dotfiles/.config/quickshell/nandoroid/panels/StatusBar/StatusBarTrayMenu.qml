@@ -13,8 +13,8 @@ PopupWindow {
 
     color: "transparent"
 
-    implicitWidth: Math.max(120, menuLayout.implicitWidth + 8)
-    implicitHeight: menuLayout.implicitHeight + 8
+    implicitWidth: Math.max(120 * Appearance.effectiveScale, menuLayout.implicitWidth + (8 * Appearance.effectiveScale))
+    implicitHeight: menuLayout.implicitHeight + (8 * Appearance.effectiveScale)
 
     onVisibleChanged: {
         if (!visible) menuClosed();
@@ -31,7 +31,7 @@ PopupWindow {
             id: menuLayout
             anchors {
                 fill: parent
-                margins: 4
+                margins: 4 * Appearance.effectiveScale
             }
             spacing: 0
 

@@ -39,21 +39,21 @@ Item {
 
     ColumnLayout {
         anchors.fill: parent
-        anchors.margins: 20
-        spacing: 16
+        anchors.margins: 20 * Appearance.effectiveScale
+        spacing: 16 * Appearance.effectiveScale
 
         RowLayout {
             Layout.fillWidth: true
             StyledText {
                 text: "Processes"
-                font.pixelSize: 24
+                font.pixelSize: Appearance.font.pixelSize.huge
                 font.weight: Font.Bold
                 color: Appearance.m3colors.m3onSurface
             }
             Item { Layout.fillWidth: true }
             StyledText {
                 text: SystemData.processCount + " total processes"
-                font.pixelSize: 12
+                font.pixelSize: Appearance.font.pixelSize.smaller
                 color: Appearance.colors.colSubtext
             }
         }
@@ -61,21 +61,21 @@ Item {
         // Header
         Rectangle {
             Layout.fillWidth: true
-            implicitHeight: 40
+            Layout.preferredHeight: 40 * Appearance.effectiveScale
             color: Appearance.colors.colLayer1
-            radius: 8
+            radius: 8 * Appearance.effectiveScale
             
             RowLayout {
                 anchors.fill: parent
-                anchors.leftMargin: 16
-                anchors.rightMargin: 16
-                spacing: 12
+                anchors.leftMargin: 16 * Appearance.effectiveScale
+                anchors.rightMargin: 16 * Appearance.effectiveScale
+                spacing: 12 * Appearance.effectiveScale
                 
-                HeaderItem { text: "PID"; field: "pid"; Layout.preferredWidth: 60 }
+                HeaderItem { text: "PID"; field: "pid"; Layout.preferredWidth: 60 * Appearance.effectiveScale }
                 HeaderItem { text: "Name"; field: "command"; Layout.fillWidth: true }
-                HeaderItem { text: "CPU %"; field: "cpu"; Layout.preferredWidth: 80; alignment: Text.AlignRight }
-                HeaderItem { text: "Memory"; field: "memoryKB"; Layout.preferredWidth: 100; alignment: Text.AlignRight }
-                HeaderItem { text: "User"; field: "username"; Layout.preferredWidth: 100; alignment: Text.AlignRight }
+                HeaderItem { text: "CPU %"; field: "cpu"; Layout.preferredWidth: 80 * Appearance.effectiveScale; alignment: Text.AlignRight }
+                HeaderItem { text: "Memory"; field: "memoryKB"; Layout.preferredWidth: 100 * Appearance.effectiveScale; alignment: Text.AlignRight }
+                HeaderItem { text: "User"; field: "username"; Layout.preferredWidth: 100 * Appearance.effectiveScale; alignment: Text.AlignRight }
             }
         }
 
@@ -93,28 +93,28 @@ Item {
             clip: true
             boundsBehavior: Flickable.StopAtBounds
             cacheBuffer: 0
-            spacing: 6
+            spacing: 6 * Appearance.effectiveScale
             
             delegate: Rectangle {
                 required property var modelData
                 width: ListView.view.width
-                implicitHeight: 44
-                radius: 12
+                implicitHeight: 44 * Appearance.effectiveScale
+                radius: 12 * Appearance.effectiveScale
                 color: mouseArea.containsMouse ? Appearance.colors.colLayer2 : Appearance.colors.colLayer1
                 border.color: mouseArea.containsMouse ? Appearance.m3colors.m3primary : Functions.ColorUtils.transparentize(Appearance.m3colors.m3primary, 0.85)
-                border.width: 1
+                border.width: 1 * Appearance.effectiveScale
                 
                 RowLayout {
                     anchors.fill: parent
-                    anchors.leftMargin: 16
-                    anchors.rightMargin: 16
-                    spacing: 12
+                    anchors.leftMargin: 16 * Appearance.effectiveScale
+                    anchors.rightMargin: 16 * Appearance.effectiveScale
+                    spacing: 12 * Appearance.effectiveScale
                     
-                    StyledText { text: modelData.pid; Layout.preferredWidth: 60; color: Appearance.colors.colSubtext }
-                    StyledText { text: modelData.command; Layout.fillWidth: true; elide: Text.ElideRight; font.weight: Font.Medium }
-                    StyledText { text: modelData.cpu.toFixed(1) + "%"; Layout.preferredWidth: 80; horizontalAlignment: Text.AlignRight }
-                    StyledText { text: (modelData.memoryKB / 1024).toFixed(1) + " MB"; Layout.preferredWidth: 100; horizontalAlignment: Text.AlignRight }
-                    StyledText { text: modelData.username; Layout.preferredWidth: 100; elide: Text.ElideRight; horizontalAlignment: Text.AlignRight }
+                    StyledText { text: modelData.pid; Layout.preferredWidth: 60 * Appearance.effectiveScale; color: Appearance.colors.colSubtext; font.pixelSize: Appearance.font.pixelSize.smaller }
+                    StyledText { text: modelData.command; Layout.fillWidth: true; elide: Text.ElideRight; font.weight: Font.Medium; font.pixelSize: Appearance.font.pixelSize.small }
+                    StyledText { text: modelData.cpu.toFixed(1) + "%"; Layout.preferredWidth: 80 * Appearance.effectiveScale; horizontalAlignment: Text.AlignRight; font.pixelSize: Appearance.font.pixelSize.smaller }
+                    StyledText { text: (modelData.memoryKB / 1024).toFixed(1) + " MB"; Layout.preferredWidth: 100 * Appearance.effectiveScale; horizontalAlignment: Text.AlignRight; font.pixelSize: Appearance.font.pixelSize.smaller }
+                    StyledText { text: modelData.username; Layout.preferredWidth: 100 * Appearance.effectiveScale; elide: Text.ElideRight; horizontalAlignment: Text.AlignRight; font.pixelSize: Appearance.font.pixelSize.smaller }
                 }
                 
                 MouseArea {
@@ -150,7 +150,7 @@ Item {
             opacity: 0.98
             radius: Appearance.rounding.normal
             border.color: Appearance.colors.colOutlineVariant
-            border.width: 1
+            border.width: Math.max(1, 1 * Appearance.effectiveScale)
         }
 
         component StyledMenuItem: MenuItem {
@@ -159,7 +159,7 @@ Item {
             implicitHeight: Appearance.sizes.contextMenuItemHeight
             
             contentItem: RowLayout {
-                spacing: 12
+                spacing: 12 * Appearance.effectiveScale
                 MaterialSymbol {
                     text: {
                         if (menuItem.text.includes("Kill")) return "delete_forever";
@@ -183,13 +183,13 @@ Item {
             
             background: Rectangle {
                 anchors.fill: parent
-                anchors.margins: 4
+                anchors.margins: 4 * Appearance.effectiveScale
                 color: menuItem.highlighted ? Functions.ColorUtils.applyAlpha(Appearance.colors.colPrimary, 0.12) : "transparent"
                 radius: Appearance.rounding.small
             }
         }
         
-        padding: 6
+        padding: 6 * Appearance.effectiveScale
 
         StyledMenuItem {
             text: "Stop (Pause)"
@@ -202,11 +202,11 @@ Item {
         
         MenuSeparator {
             contentItem: Rectangle { 
-                implicitHeight: 1 
+                implicitHeight: Math.max(1, 1 * Appearance.effectiveScale) 
                 color: Appearance.colors.colOutlineVariant 
                 opacity: 0.3
-                Layout.leftMargin: 12 
-                Layout.rightMargin: 12 
+                Layout.leftMargin: 12 * Appearance.effectiveScale 
+                Layout.rightMargin: 12 * Appearance.effectiveScale 
             }
         }
 
@@ -222,11 +222,11 @@ Item {
 
         MenuSeparator {
             contentItem: Rectangle { 
-                implicitHeight: 1 
+                implicitHeight: Math.max(1, 1 * Appearance.effectiveScale) 
                 color: Appearance.colors.colOutlineVariant 
                 opacity: 0.3
-                Layout.leftMargin: 12 
-                Layout.rightMargin: 12 
+                Layout.leftMargin: 12 * Appearance.effectiveScale 
+                Layout.rightMargin: 12 * Appearance.effectiveScale 
             }
         }
 
@@ -256,12 +256,12 @@ Item {
         
         RowLayout {
             anchors.fill: parent
-            spacing: 4
+            spacing: 4 * Appearance.effectiveScale
             layoutDirection: alignment === Text.AlignRight ? Qt.RightToLeft : Qt.LeftToRight
             
             StyledText {
                 text: parent.parent.text
-                font.pixelSize: 12
+                font.pixelSize: Appearance.font.pixelSize.smaller
                 font.weight: Font.Bold
                 color: root.sortField === parent.parent.field ? Appearance.m3colors.m3primary : Appearance.colors.colSubtext
                 Layout.fillWidth: true
@@ -270,7 +270,7 @@ Item {
             MaterialSymbol {
                 visible: root.sortField === parent.parent.field
                 text: root.sortAscending ? "arrow_upward" : "arrow_downward"
-                iconSize: 12
+                iconSize: 12 * Appearance.effectiveScale
                 color: Appearance.m3colors.m3primary
             }
         }

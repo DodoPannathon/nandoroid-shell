@@ -18,7 +18,7 @@ Item {
 
     readonly property bool timeIndicators: Config.options.appearance.clock.analog.timeIndicators
 
-    property real radius: 90
+    property real radius: 90 * Appearance.effectiveScale
     Behavior on radius {
         animation: ({duration: 300})
     }
@@ -38,7 +38,7 @@ Item {
             color: root.color
             font {
                 family: Appearance.font.family.expressive
-                pixelSize: 30
+                pixelSize: 30 * Appearance.effectiveScale
                 weight: Font.Black
                 variableAxes: Appearance.font.variableAxes.expressive
             }

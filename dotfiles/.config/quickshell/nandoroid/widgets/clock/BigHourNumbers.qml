@@ -6,13 +6,13 @@ import ".."
 
 Item {
     id: root
-    property real numberSize: 80
-    property real margins: 10
+    property real numberSize: 80 * Appearance.effectiveScale
+    property real margins: 10 * Appearance.effectiveScale
     property color color: Appearance.colors.colOnSecondaryContainer || "#FFFFFF"
 
     property int hours: 12
     property int numbers: 4
-    property int fontSize: 80
+    property int fontSize: 80 * Appearance.effectiveScale
 
     Repeater {
         model: root.numbers

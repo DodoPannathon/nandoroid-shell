@@ -19,14 +19,14 @@ DockButton {
     property var appListRoot
     property int index: -1
     property int lastFocused: -1
-    property real iconSize: Config.ready && Config.options.dock.monochromeIcons ? 24 : 32
+    property real iconSize: (Config.ready && Config.options.dock.monochromeIcons ? 24 : 32) * Appearance.effectiveScale
     
     property bool appIsActive: appToplevel && appToplevel.toplevels ? appToplevel.toplevels.some(t => t.activated) : false
     readonly property bool isSeparator: appToplevel && appToplevel.appId === "SEPARATOR"
     readonly property var desktopEntry: appToplevel ? TaskbarApps.getDesktopEntry(appToplevel.appId) : null
     
     enabled: !isSeparator
-    implicitWidth: isSeparator ? 1 : Math.max(48, implicitHeight - (dockTopInset + dockBottomInset))
+    implicitWidth: isSeparator ? Math.max(1, 1 * Appearance.effectiveScale) : Math.max(48 * Appearance.effectiveScale, implicitHeight - (dockTopInset + dockBottomInset))
 
     background: Item {
         anchors.fill: parent
@@ -40,7 +40,7 @@ DockButton {
             Behavior on color { animation: Appearance.animation.elementMoveFast.colorAnimation.createObject(this) }
         }
         MaterialShape {
-            anchors.fill: parent; anchors.margins: 4
+            anchors.fill: parent; anchors.margins: 4 * Appearance.effectiveScale
             visible: Config.ready && Config.options.dock.monochromeIcons
             shapeString: Config.ready && Config.options.search ? Config.options.search.iconShape : "Circle"
             color: root.down ? Appearance.colors.colPrimary : Appearance.colors.colPrimaryContainer
@@ -49,8 +49,8 @@ DockButton {
     }
     
     colBackground: "transparent"
-    dockTopInset: Config.ready && Config.options.dock.monochromeIcons ? 4 : 0
-    dockBottomInset: Config.ready && Config.options.dock.monochromeIcons ? 4 : 0
+    dockTopInset: (Config.ready && Config.options.dock.monochromeIcons ? 4 : 0) * Appearance.effectiveScale
+    dockBottomInset: (Config.ready && Config.options.dock.monochromeIcons ? 4 : 0) * Appearance.effectiveScale
 
     onClicked: {
         if (!appToplevel || !appToplevel.toplevels) return;
@@ -98,28 +98,28 @@ DockButton {
 
             Rectangle {
                 id: badge
-                anchors { top: parent.top; right: parent.right; topMargin: -4; rightMargin: -4 }
-                width: 16; height: 16; radius: 8
+                anchors { top: parent.top; right: parent.right; topMargin: -4 * Appearance.effectiveScale; rightMargin: -4 * Appearance.effectiveScale }
+                width: 16 * Appearance.effectiveScale; height: 16 * Appearance.effectiveScale; radius: 8 * Appearance.effectiveScale
                 color: Appearance.colors.colError
                 visible: appToplevel && notifCount > 0
                 z: 10
                 readonly property int notifCount: appToplevel ? Notifications.getCountForApp(appToplevel.appId) : 0
-                StyledText { anchors.centerIn: parent; text: parent.notifCount > 9 ? "!" : parent.notifCount; font.pixelSize: 10; font.weight: Font.Bold; color: "white" }
+                StyledText { anchors.centerIn: parent; text: parent.notifCount > 9 ? "!" : parent.notifCount; font.pixelSize: 10 * Appearance.effectiveScale; font.weight: Font.Bold; color: "white" }
                 scale: visible ? 1 : 0
                 Behavior on scale { NumberAnimation { duration: 200; easing.type: Easing.OutBack } }
             }
         }
 
         Row {
-            spacing: 2
-            anchors { bottom: parent.bottom; bottomMargin: root.dockBottomInset + 6; horizontalCenter: parent.horizontalCenter }
+            spacing: 2 * Appearance.effectiveScale
+            anchors { bottom: parent.bottom; bottomMargin: root.dockBottomInset + 6 * Appearance.effectiveScale; horizontalCenter: parent.horizontalCenter }
             visible: appToplevel && appToplevel.toplevels && appToplevel.toplevels.length > 0
             Repeater {
                 model: (appToplevel && appToplevel.toplevels) ? Math.min(appToplevel.toplevels.length, 3) : 0
                 delegate: Rectangle {
                     radius: Appearance.rounding.full
-                    width: (appToplevel.toplevels.length === 1) ? 12 : 4
-                    height: 4
+                    width: (appToplevel.toplevels.length === 1) ? 12 * Appearance.effectiveScale : 4 * Appearance.effectiveScale
+                    height: 4 * Appearance.effectiveScale
                     color: root.appIsActive ? Appearance.colors.colPrimary : Functions.ColorUtils.applyAlpha(Appearance.colors.colOnLayer0, 0.4)
                     Behavior on color { animation: Appearance.animation.elementMoveFast.colorAnimation.createObject(this) }
                 }
