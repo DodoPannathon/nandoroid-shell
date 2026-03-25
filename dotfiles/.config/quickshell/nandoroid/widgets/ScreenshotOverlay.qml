@@ -8,6 +8,7 @@ import "."
 import "../core"
 import "../core/functions" as Functions
 import "../services"
+import "../panels/RegionSelector/utils"
 
 /**
  * Android 16 styled screenshot preview overlay.
