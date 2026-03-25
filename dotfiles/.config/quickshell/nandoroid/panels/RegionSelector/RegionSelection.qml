@@ -151,6 +151,16 @@ PanelWindow {
     property bool recordingShouldStop: false
     
     Process {
+        id: cropProcess
+        onExited: (exitCode, exitStatus) => {
+            if (root.action === actionCopy || root.action === actionEdit) {
+                GlobalStates.screenshotTaken(root.screenshotPath);
+            }
+            root.dismiss();
+        }
+    }
+    
+    Process {
         id: checkRecordingProc
         running: isRecording
         command: ["pidof", "wf-recorder"]
@@ -226,11 +236,12 @@ PanelWindow {
             root.regionHeight * root.monitorScale,
             root.screenshotPath,
             actionEnum,
-            savePath
+            root.isRecording ? "" : (Config.options.screenshot.autoSave ? Config.options.screenshot.savePath : "temp")
         )
         
-        Quickshell.execDetached(command);
-        root.dismiss();
+        root.visible = false; // Hide immediately
+        cropProcess.command = command;
+        cropProcess.running = true;
     }
 
     ScreencopyView {

@@ -13,6 +13,8 @@ import Quickshell.Hyprland
 Singleton {
     id: root
 
+    signal screenshotTaken(string path)
+
     property bool statusBarVisible: true
     property bool notificationCenterOpen: false
     property bool quickSettingsOpen: false

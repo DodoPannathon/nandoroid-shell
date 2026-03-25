@@ -55,16 +55,24 @@ Singleton {
 
         switch (action) {
             case ScreenshotAction.Action.Copy:
-                if (saveDir === "") {
-                    // not saving the screenshot, just copy to clipboard
-                    return ["bash", "-c", `${cropToStdout} | wl-copy && ${cleanup}`]
+                const autoSave = (Config.ready && Config.options.screenshot) ? Config.options.screenshot.autoSave : true;
+                const autoCopy = (Config.ready && Config.options.screenshot) ? Config.options.screenshot.autoCopy : true;
+                const rawSaveDir = (Config.ready && Config.options.screenshot) ? Config.options.screenshot.savePath : "~/Pictures/Screenshots";
+                const finalSaveDir = Functions.FileUtils.trimFileProtocol(rawSaveDir);
+                
+                if (!autoSave || saveDir === "temp") {
+                    // Just move to temp and conditionally auto-copy to clipboard
+                    const copyCmd = autoCopy ? `${cropToStdout} | wl-copy && ` : "";
+                    return ["bash", "-c", `${copyCmd}${cropInPlace}`]
                 }
+                
+                const teeCopy = autoCopy ? " | tee >(wl-copy)" : "";
                 return [
                     "bash", "-c",
-                    `mkdir -p '${shellEscape(saveDir)}' && \
-                    saveFileName="screenshot-$(date '+%Y-%m-%d_%H.%M.%S').png" && \
-                    savePath="${saveDir}/$saveFileName" && \
-                    ${cropToStdout} | tee >(wl-copy) > "$savePath" && \
+                    `mkdir -p '${shellEscape(finalSaveDir)}' && \
+                    saveFileName="Screenshot_$(date '+%Y-%m-%d-%H-%M-%S').png" && \
+                    savePath="${finalSaveDir}/$saveFileName" && \
+                    ${cropToStdout}${teeCopy} > "$savePath" && \
                     ${cleanup}`
                 ]
 
@@ -79,13 +87,16 @@ Singleton {
                 return ["bash", "-c", `${cropInPlace} && tesseract '${shellEscape(screenshotPath)}' stdout -l $(tesseract --list-langs | awk 'NR>1{print $1}' | tr '\\n' '+' | sed 's/\\+$/\\n/') | wl-copy && ${cleanup}`]
                 
             case ScreenshotAction.Action.Record:
-                return ["bash", "-c", `'${recordScript}' --region '${slurpRegion}'`]
+                const recPath = (Config.ready && Config.options.screenshot) ? Config.options.screenshot.recordPath : "~/Videos/Recordings";
+                return ["bash", "-c", `'${recordScript}' --region '${slurpRegion}' --path '${shellEscape(recPath)}'`]
                 
             case ScreenshotAction.Action.RecordWithSound:
-                return ["bash", "-c", `'${recordScript}' --region '${slurpRegion}' --sound`]
+                const recPathS = (Config.ready && Config.options.screenshot) ? Config.options.screenshot.recordPath : "~/Videos/Recordings";
+                return ["bash", "-c", `'${recordScript}' --region '${slurpRegion}' --sound --path '${shellEscape(recPathS)}'`]
             
             case ScreenshotAction.Action.RecordFullscreenWithSound:
-                return ["bash", "-c", `'${recordScript}' --fullscreen --sound`]
+                const recPathF = (Config.ready && Config.options.screenshot) ? Config.options.screenshot.recordPath : "~/Videos/Recordings";
+                return ["bash", "-c", `'${recordScript}' --fullscreen --sound --path '${shellEscape(recPathF)}'`]
 
             case ScreenshotAction.Action.QRCode:
                 return ["bash", "-c", `${cropInPlace} && zbarimg --raw '${shellEscape(screenshotPath)}' | wl-copy && notify-send "QR Code" "Content copied to clipboard" && ${cleanup}`]

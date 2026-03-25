@@ -48,3 +48,4 @@ UserProfile UserProfile.qml
 WaveVisualizer WaveVisualizer.qml
 MediaCard MediaCard.qml
 WeatherCard WeatherCard.qml
+ScreenshotOverlay ScreenshotOverlay.qml

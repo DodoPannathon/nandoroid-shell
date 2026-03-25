@@ -50,9 +50,11 @@ Flickable {
             }
         }
 
+        // ── Screenshot Section ──
+        ServicesScreenshot { Layout.fillWidth: true }
+
         // ── Weather Section ──
-        ServicesWeather { Layout.fillWidth: true }
-        ServicesSearch { Layout.fillWidth: true }
+        ServicesWeather { Layout.fillWidth: true }        ServicesSearch { Layout.fillWidth: true }
         ServicesNetwork { Layout.fillWidth: true }
         ServicesDisk { Layout.fillWidth: true }
         ServicesPerformance { Layout.fillWidth: true }

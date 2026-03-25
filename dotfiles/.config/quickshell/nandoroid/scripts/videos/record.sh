@@ -4,28 +4,16 @@
 # Ported from 'ii' with adjustments for nandoroid paths
 
 CONFIG_FILE="$HOME/.config/quickshell/nandoroid/config.json"
-JSON_PATH=".screenRecord.savePath"
-
-STATE_FILE="/tmp/nandoroid_states.json" # NANDOROID might not have a persistent state JSON like ii yet
+STATE_FILE="/tmp/nandoroid_states.json"
 STATE_JSON_PATH=".screenRecord.active"
 
-CUSTOM_PATH=$(jq -r "$JSON_PATH" "$CONFIG_FILE" 2>/dev/null)
-
-RECORDING_DIR=""
 DEBUG_LOG="/tmp/record_debug.log"
-
 exec 2>>"$DEBUG_LOG"
 echo "--- Record script started at $(date) ---" >> "$DEBUG_LOG"
 echo "Args: $@" >> "$DEBUG_LOG"
 
 TIMER_PID=""  
 SECONDS_ELAPSED=-1
-
-if [[ -n "$CUSTOM_PATH" && "$CUSTOM_PATH" != "null" ]]; then
-    RECORDING_DIR="$CUSTOM_PATH"
-else
-    RECORDING_DIR="$HOME/Videos" # Use default path
-fi
 
 # Ensure state file exists
 if [ ! -f "$STATE_FILE" ]; then
@@ -52,7 +40,7 @@ stop_timer() {
         kill "$TIMER_PID" 2>/dev/null
         wait "$TIMER_PID" 2>/dev/null
         TIMER_PID=""
-        jq ".screenRecord.seconds = 0" "$STATE_FILE" > "${STATE_FILE}.tmp" && cat "${STATE_FILE}.tmp" > "$STATE_FILE" # setting it to 0 after killing the timer
+        jq ".screenRecord.seconds = 0" "$STATE_FILE" > "${STATE_FILE}.tmp" && cat "${STATE_FILE}.tmp" > "$STATE_FILE"
     fi
 }
 
@@ -86,37 +74,48 @@ updatestate() {
     fi
 }
 
-mkdir -p "$RECORDING_DIR"
-cd "$RECORDING_DIR" || exit
-
-# parse --region <value> without modifying $@
+# Parse arguments
 ARGS=("$@")
 MANUAL_REGION=""
 SOUND_FLAG=0
 FULLSCREEN_FLAG=0
+RECORDING_DIR=""
 
 for ((i=0;i<${#ARGS[@]};i++)); do
     if [[ "${ARGS[i]}" == "--region" ]]; then
         if (( i+1 < ${#ARGS[@]} )); then
             MANUAL_REGION="${ARGS[i+1]}"
-        else
-            notify-send "Recording cancelled" "No region specified for --region" -a 'Recorder' -i media-record -t 3000 & disown
-            updatestate false
-            exit 1
         fi
     elif [[ "${ARGS[i]}" == "--sound" ]]; then
         SOUND_FLAG=1
     elif [[ "${ARGS[i]}" == "--fullscreen" ]]; then
         FULLSCREEN_FLAG=1
+    elif [[ "${ARGS[i]}" == "--path" ]]; then
+        if (( i+1 < ${#ARGS[@]} )); then
+            RECORDING_DIR="${ARGS[i+1]}"
+        fi
     fi
 done
+
+# Resolve recording directory
+if [[ -z "$RECORDING_DIR" ]]; then
+    CUSTOM_PATH=$(jq -r ".screenshot.recordPath" "$CONFIG_FILE" 2>/dev/null)
+    if [[ -n "$CUSTOM_PATH" && "$CUSTOM_PATH" != "null" ]]; then
+        RECORDING_DIR="$CUSTOM_PATH"
+    else
+        RECORDING_DIR="$HOME/Videos/Recordings"
+    fi
+fi
+
+mkdir -p "$RECORDING_DIR"
+cd "$RECORDING_DIR" || exit
 
 if pgrep wf-recorder > /dev/null; then
     notify-send "Recording Stopped" "Video saved to $RECORDING_DIR" -a 'Recorder' -i media-record -t 5000 &
     updatestate false
     pkill wf-recorder &
 else
-    filename="recording_$(getdate).mp4"
+    filename="Recording_$(date '+%Y-%m-%d-%H-%M-%S').mp4"
     if [[ $FULLSCREEN_FLAG -eq 1 ]]; then
         notify-send "Starting recording" "$filename" -a 'Recorder' -i media-record -t 3000 & disown
         updatestate true "fullscreen"
@@ -126,7 +125,6 @@ else
             wf-recorder -o "$(getactivemonitor)" --pixel-format yuv420p -f "$filename"
         fi
     else
-        # If a manual region was provided via --region, use it; otherwise run slurp as before.
         if [[ -n "$MANUAL_REGION" ]]; then
             region="$MANUAL_REGION"
         else

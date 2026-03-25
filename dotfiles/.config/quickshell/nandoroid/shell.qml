@@ -309,4 +309,27 @@ ShellRoot {
         description: "Records the selected region with sound"
         onPressed: regionSelector.recordWithSound()
     }
+
+    // ── Phase 15: Screenshot Overlay ──
+    Variants {
+        model: Quickshell.screens
+        
+        Loader {
+            id: screenshotOverlayLoader
+            required property var modelData
+            active: true
+            sourceComponent: ScreenshotOverlay {
+                targetScreen: screenshotOverlayLoader.modelData
+            }
+
+            Connections {
+                target: GlobalStates
+                function onScreenshotTaken(path) {
+                    if (Config.options.screenshot.showPreview) {
+                        screenshotOverlayLoader.item.imagePath = path;
+                    }
+                }
+            }
+        }
+    }
 }
