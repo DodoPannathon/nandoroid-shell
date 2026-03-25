@@ -15,8 +15,7 @@ import Quickshell.Io
  */
 Flickable {
     id: root
-    width: parent ? parent.width : 0
-    height: parent ? parent.height : 0
+    anchors.fill: parent
     contentHeight: mainCol.implicitHeight + (48 * Appearance.effectiveScale)
     clip: true
     

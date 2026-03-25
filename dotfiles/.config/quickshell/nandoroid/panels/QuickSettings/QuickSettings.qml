@@ -46,9 +46,6 @@ Variants {
         implicitWidth: content.implicitWidth
         implicitHeight: content.implicitHeight
 
-        width: implicitWidth
-        height: implicitHeight
-
         HyprlandFocusGrab {
             id: focusGrab
             active: GlobalStates.quickSettingsOpen && !GlobalStates.isPickingFile && isActive

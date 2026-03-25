@@ -35,9 +35,6 @@ Scope {
         implicitWidth: Math.min(1100 * Appearance.effectiveScale, Appearance.sizes.screen.width * 0.75)
         implicitHeight: Math.min(820 * Appearance.effectiveScale, Appearance.sizes.screen.height * 0.85)
 
-        width: implicitWidth
-        height: implicitHeight
-
         // Main Panel Background
         Rectangle {
             id: root

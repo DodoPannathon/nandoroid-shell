@@ -29,7 +29,8 @@ Item {
     property color color: "transparent"
     property var maxRadius: undefined
     property real fullRadius: {
-        let r = (height > 0 ? height : (implicitHeight > 0 ? implicitHeight : 40 * Appearance.effectiveScale)) / 2
+        let h = (implicitHeight > 0 ? implicitHeight : 40 * Appearance.effectiveScale)
+        let r = h / 2
         if (maxRadius !== undefined) return Math.min(r, maxRadius);
         return r
     }

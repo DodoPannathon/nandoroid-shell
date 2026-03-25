@@ -64,7 +64,6 @@ Scope {
             color: "transparent"
             implicitHeight: Appearance.sizes.statusBarHeight
                 + (showBackground ? cornerRadius : 0)
-            height: implicitHeight
 
             // Define clickable area mask
             mask: Region {
