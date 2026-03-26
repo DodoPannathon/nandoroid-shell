@@ -8,7 +8,7 @@ Item {
     property var selectionMode
 
     property string description: {
-        const SnipAction = { Copy: 0, Edit: 1, Search: 2, CharRecognition: 3, Record: 4, RecordWithSound: 5 };
+        const SnipAction = { Copy: 0, Edit: 1, Search: 2, CharRecognition: 3, Record: 4, RecordWithSound: 5, RecordFullscreenWithSound: 6, QRCode: 7 };
         switch (root.action) {
             case SnipAction.Copy:
             case SnipAction.Edit:
@@ -19,14 +19,17 @@ Item {
                 return "Recognize text";
             case SnipAction.Record:
             case SnipAction.RecordWithSound:
+            case SnipAction.RecordFullscreenWithSound:
                 return "Record region";
+            case SnipAction.QRCode:
+                return "Scan QR Code";
             default:
                 return "";
         }
     }
     
     property string materialSymbol: {
-        const SnipAction = { Copy: 0, Edit: 1, Search: 2, CharRecognition: 3, Record: 4, RecordWithSound: 5 };
+        const SnipAction = { Copy: 0, Edit: 1, Search: 2, CharRecognition: 3, Record: 4, RecordWithSound: 5, RecordFullscreenWithSound: 6, QRCode: 7 };
         switch (root.action) {
             case SnipAction.Copy:
             case SnipAction.Edit:
@@ -37,7 +40,10 @@ Item {
                 return "document_scanner";
             case SnipAction.Record:
             case SnipAction.RecordWithSound:
+            case SnipAction.RecordFullscreenWithSound:
                 return "videocam";
+            case SnipAction.QRCode:
+                return "qr_code_scanner";
             default:
                 return "";
         }

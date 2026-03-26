@@ -56,9 +56,6 @@ Scope {
         implicitWidth: Math.min(1100 * Appearance.effectiveScale, screen.width * 0.85)
         implicitHeight: Math.min(800 * Appearance.effectiveScale, screen.height * 0.8)
 
-        width: implicitWidth
-        height: implicitHeight
-
         onVisibleChanged: {
             if (!visible) {
                 GlobalStates.settingsOpen = false;

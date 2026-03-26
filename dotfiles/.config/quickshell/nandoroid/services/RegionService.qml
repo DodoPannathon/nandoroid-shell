@@ -11,4 +11,5 @@ Singleton {
     function record() { Quickshell.execDetached(["qs", "-c", "nandoroid", "ipc", "call", "region", "record"]) }
     function recordWithSound() { Quickshell.execDetached(["qs", "-c", "nandoroid", "ipc", "call", "region", "recordWithSound"]) }
     function recordFullscreenWithSound() { Quickshell.execDetached(["qs", "-c", "nandoroid", "ipc", "call", "region", "recordFullscreenWithSound"]) }
+    function qrcode() { Quickshell.execDetached(["qs", "-c", "nandoroid", "ipc", "call", "region", "qrcode"]) }
 }

@@ -253,6 +253,7 @@ Singleton {
             property JsonObject quickSettings: JsonObject {
                 property bool caffeineActive: false
                 property bool showPerformanceStats: true
+                property string quickActionsPosition: "top" // top or bottom
                 property list<var> toggles: [
                     { "type": "wifi", "size": 2 },
                     { "type": "bluetooth", "size": 2 },
@@ -352,6 +353,7 @@ Singleton {
                 property string clipboardPrefix: ";"
                 property string filePrefix: "?"
                 property string commandPrefix: ">"
+                property string toolsPrefix: "."
                 property string iconShape: "Square"
                 property bool enableGrouping: false
                 property bool enableUsageTracking: true
@@ -432,6 +434,15 @@ Singleton {
             property JsonObject github: JsonObject {
                 property string githubUsername: ""
                 property string githubToken: "" // Personal access token (optional, for private repos)
+            }
+
+            // --- Screenshot & Recording ---
+            property JsonObject screenshot: JsonObject {
+                property bool autoSave: true
+                property string savePath: Directories.home + "/Pictures/Screenshots"
+                property string recordPath: Directories.home + "/Videos/Recordings"
+                property bool showPreview: true
+                property bool autoCopy: true
             }
 
         }

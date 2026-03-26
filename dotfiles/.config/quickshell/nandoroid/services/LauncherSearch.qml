@@ -44,7 +44,19 @@ Singleton {
         { name: "Wallpaper & Style", subtitle: "Shell Interface", id: "cmd-wallpaper", icon: "palette", isPlugin: true, category: "Command", emoji: "", execute: () => { GlobalStates.settingsPageIndex = 4; GlobalStates.settingsOpen = true; root.closeAll(); } },
         { name: "Bluetooth Settings", subtitle: "Shell Interface", id: "cmd-bluetooth", icon: "bluetooth", isPlugin: true, category: "Command", emoji: "", execute: () => { GlobalStates.settingsPageIndex = 1; GlobalStates.settingsOpen = true; root.closeAll(); } },
         { name: "Network Settings", subtitle: "Shell Interface", id: "cmd-network", icon: "wifi", isPlugin: true, category: "Command", emoji: "", execute: () => { GlobalStates.settingsPageIndex = 0; GlobalStates.settingsOpen = true; root.closeAll(); } },
+        { name: "Quick Actions", subtitle: "Tools Menu", id: "cmd-tools", icon: "construction", isPlugin: true, category: "Command", emoji: "", execute: () => { GlobalStates.quickActionsOpen = true; root.closeAll(); } },
         { name: "Restart Shell", subtitle: "Maintenance", id: "cmd-shell-restart", icon: "refresh", isPlugin: true, category: "Command", emoji: "", execute: () => { Quickshell.execDetached([Directories.home.replace("file://", "") + "/.config/quickshell/nandoroid/scripts/restartshell.sh"]); root.closeAll(); } }
+    ]
+
+    readonly property var quickTools: [
+        { name: "Screen Snip", subtitle: "Tool", id: "tool-snip", icon: "content_cut", isPlugin: true, category: "Tool", emoji: "", execute: () => { RegionService.screenshot(); root.closeAll(); } },
+        { name: "Color Picker", subtitle: "Tool", id: "tool-picker", icon: "colorize", isPlugin: true, category: "Tool", emoji: "", execute: () => { Quickshell.execDetached(["hyprpicker", "-a"]); root.closeAll(); } },
+        { name: "OCR", subtitle: "Tool", id: "tool-ocr", icon: "text_snippet", isPlugin: true, category: "Tool", emoji: "", execute: () => { RegionService.ocr(); root.closeAll(); } },
+        { name: "QR Scanner", subtitle: "Tool", id: "tool-qr", icon: "qr_code_scanner", isPlugin: true, category: "Tool", emoji: "", execute: () => { RegionService.qrcode(); root.closeAll(); } },
+        { name: "Lens Search", subtitle: "Tool", id: "tool-lens", icon: "image_search", isPlugin: true, category: "Tool", emoji: "", execute: () => { RegionService.search(); root.closeAll(); } },
+        { name: "Screen Record", subtitle: "Tool", id: "tool-record", icon: "videocam", isPlugin: true, category: "Tool", emoji: "", execute: () => { RegionService.record(); root.closeAll(); } },
+        { name: "Record w/ Sound", subtitle: "Tool", id: "tool-record-sound", icon: "mic", isPlugin: true, category: "Tool", emoji: "", execute: () => { RegionService.recordWithSound(); root.closeAll(); } },
+        { name: "Record Fullscreen", subtitle: "Tool", id: "tool-record-full", icon: "fullscreen", isPlugin: true, category: "Tool", emoji: "", execute: () => { RegionService.recordFullscreenWithSound(); root.closeAll(); } }
     ]
 
     Timer {
@@ -324,7 +336,8 @@ Singleton {
             Config.options.search.emojiPrefix,
             Config.options.search.clipboardPrefix,
             Config.options.search.filePrefix,
-            Config.options.search.commandPrefix
+            Config.options.search.commandPrefix,
+            Config.options.search.toolsPrefix
         ].some(p => stripped.startsWith(p));
     }
 
@@ -432,6 +445,22 @@ Singleton {
                 return a.name.localeCompare(b.name);
             });
             results.push(...cmdResults);
+        } else if (strippedQuery.startsWith(Config.options.search.toolsPrefix)) {
+            const toolQuery = strippedQuery.slice(Config.options.search.toolsPrefix.length).toLowerCase().trim();
+            const toolResults = [];
+            for (const tool of root.quickTools) {
+                if (tool.name.toLowerCase().includes(toolQuery) || tool.id.toLowerCase().includes(toolQuery) || toolQuery === "") {
+                    toolResults.push(tool);
+                }
+            }
+            toolResults.sort((a, b) => {
+                const aStarts = a.name.toLowerCase().startsWith(toolQuery);
+                const bStarts = b.name.toLowerCase().startsWith(toolQuery);
+                if (aStarts && !bStarts) return -1;
+                if (!aStarts && bStarts) return 1;
+                return a.name.localeCompare(b.name);
+            });
+            results.push(...toolResults);
         } else if (strippedQuery.startsWith(Config.options.search.filePrefix)) {
             const fileQuery = strippedQuery.slice(Config.options.search.filePrefix.length).toLowerCase().trim();
             const fileResults = fileSearchProc.results.slice();

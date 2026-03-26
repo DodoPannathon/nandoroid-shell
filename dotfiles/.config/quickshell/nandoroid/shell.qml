@@ -24,6 +24,8 @@ import "panels/ScreenCorners"
 import "panels/Overview"
 import "panels/Dock"
 
+import "panels/QuickActions"
+
 import QtQuick
 import Quickshell
 import Quickshell.Io
@@ -61,6 +63,9 @@ ShellRoot {
 
     // ── Phase 5.5: Quick Wallpaper ──
     QuickWallpaper {}
+
+    // ── Phase 5.6: Quick Actions ──
+    QuickActions {}
 
     // ── Phase 6: Wallpaper Selector & Screen Decor ──
     WallpaperSelector {}
@@ -168,6 +173,19 @@ ShellRoot {
     }
 
     IpcHandler {
+        target: "quickactions"
+        function open() { GlobalStates.quickActionsOpen = true }
+        function close() { GlobalStates.quickActionsOpen = false }
+        function toggle() { GlobalStates.quickActionsOpen = !GlobalStates.quickActionsOpen }
+    }
+
+    GlobalShortcut {
+        name: "quickActions"
+        description: "Toggles the quick actions panel"
+        onPressed: GlobalStates.quickActionsOpen = !GlobalStates.quickActionsOpen
+    }
+
+    IpcHandler {
         target: "overview"
         function open() { GlobalStates.overviewOpen = true }
         function close() { GlobalStates.overviewOpen = false }
@@ -214,6 +232,15 @@ ShellRoot {
         description: "Open Spotlight in Command mode"
         onPressed: {
             GlobalStates.initialSpotlightQuery = ">"
+            GlobalStates.spotlightOpen = true
+        }
+    }
+
+    GlobalShortcut {
+        name: "spotlightTools"
+        description: "Open Spotlight in Tools mode"
+        onPressed: {
+            GlobalStates.initialSpotlightQuery = "."
             GlobalStates.spotlightOpen = true
         }
     }
@@ -281,5 +308,33 @@ ShellRoot {
         name: "regionRecordWithSound"
         description: "Records the selected region with sound"
         onPressed: regionSelector.recordWithSound()
+    }
+    GlobalShortcut {
+        name: "regionQRCode"
+        description: "Scans a QR code in the selected region"
+        onPressed: regionSelector.qrcode()
+    }
+
+    // ── Phase 15: Screenshot Overlay ──
+    Variants {
+        model: Quickshell.screens
+        
+        Loader {
+            id: screenshotOverlayLoader
+            required property var modelData
+            active: true
+            sourceComponent: ScreenshotOverlay {
+                targetScreen: screenshotOverlayLoader.modelData
+            }
+
+            Connections {
+                target: GlobalStates
+                function onScreenshotTaken(path) {
+                    if (Config.options.screenshot.showPreview) {
+                        screenshotOverlayLoader.item.imagePath = path;
+                    }
+                }
+            }
+        }
     }
 }

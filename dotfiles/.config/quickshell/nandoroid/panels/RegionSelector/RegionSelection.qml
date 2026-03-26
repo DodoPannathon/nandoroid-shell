@@ -35,6 +35,7 @@ PanelWindow {
     readonly property int actionRecord: 4
     readonly property int actionRecordWithSound: 5
     readonly property int actionRecordFullscreenWithSound: 6
+    readonly property int actionQRCode: 7
     
     readonly property int modeRect: 0
     readonly property int modeCircle: 1
@@ -150,6 +151,16 @@ PanelWindow {
     property bool recordingShouldStop: false
     
     Process {
+        id: cropProcess
+        onExited: (exitCode, exitStatus) => {
+            if (root.action === actionCopy || root.action === actionEdit) {
+                GlobalStates.screenshotTaken(root.screenshotPath);
+            }
+            root.dismiss();
+        }
+    }
+    
+    Process {
         id: checkRecordingProc
         running: isRecording
         command: ["pidof", "wf-recorder"]
@@ -214,6 +225,7 @@ PanelWindow {
             case actionRecord: actionEnum = ScreenshotAction.Action.Record; break;
             case actionRecordWithSound: actionEnum = ScreenshotAction.Action.RecordWithSound; break;
             case actionRecordFullscreenWithSound: actionEnum = ScreenshotAction.Action.RecordFullscreenWithSound; break;
+            case actionQRCode: actionEnum = ScreenshotAction.Action.QRCode; break;
         }
 
         
@@ -224,11 +236,12 @@ PanelWindow {
             root.regionHeight * root.monitorScale,
             root.screenshotPath,
             actionEnum,
-            savePath
+            root.isRecording ? "" : (Config.options.screenshot.autoSave ? Config.options.screenshot.savePath : "temp")
         )
         
-        Quickshell.execDetached(command);
-        root.dismiss();
+        root.visible = false; // Hide immediately
+        cropProcess.command = command;
+        cropProcess.running = true;
     }
 
     ScreencopyView {

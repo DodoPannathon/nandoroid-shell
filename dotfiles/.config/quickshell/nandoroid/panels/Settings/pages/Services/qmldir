@@ -8,3 +8,4 @@ ServicesMedia 1.0 ServicesMedia.qml
 ServicesPower 1.0 ServicesPower.qml
 ServicesSystem 1.0 ServicesSystem.qml
 ServicesGitHub 1.0 ServicesGitHub.qml
+ServicesScreenshot 1.0 ServicesScreenshot.qml
