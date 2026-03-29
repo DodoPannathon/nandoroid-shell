@@ -1,6 +1,7 @@
 import QtQuick
 import QtQuick.Controls
 import QtQuick.Layouts
+import Qt5Compat.GraphicalEffects
 import Quickshell
 import Quickshell.Io
 import Quickshell.Wayland
@@ -178,8 +179,8 @@ PanelWindow {
                 asynchronous: false
                 
                 layer.enabled: true
-                layer.effect: QtObject {
-                    property var mask: Rectangle {
+                layer.effect: OpacityMask {
+                    maskSource: Rectangle {
                         width: previewImg.width
                         height: previewImg.height
                         radius: 12 * Appearance.effectiveScale
