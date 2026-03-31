@@ -46,11 +46,11 @@ Flickable {
 
     FileView {
         id: versionView
-        path: Directories.home.replace("file://", "") + "/.config/quickshell/nandoroid/version.json"
+        path: Directories.home.replace("file://", "") + "/.config/nandoroid/version.json"
         watchChanges: true
         JsonAdapter {
             id: versionData
-            property string version: "1.2.1"
+            property string version: "1.3.0"
         }
     }
 
@@ -91,8 +91,8 @@ Flickable {
                         if (root.currentView === "credits") return "Special Thanks"
                         return "About"
                     }
-                    font.pixelSize: Appearance.font.pixelSize.huge
-                    font.weight: Font.Bold
+                    font.pixelSize: 24 * Appearance.effectiveScale
+                    font.weight: Font.DemiBold
                     color: Appearance.colors.colOnLayer1
                     Layout.fillWidth: true
                 }
