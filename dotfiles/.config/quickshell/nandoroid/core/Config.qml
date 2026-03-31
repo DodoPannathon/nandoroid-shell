@@ -127,6 +127,8 @@ Singleton {
                         property bool isVertical: false
                         property string colorStyle: "primary"
                         property int fontSize: 84
+                        property int dateFontSize: 24
+                        property int dateGap: 4
                         property bool hideAmPm: false
                     }
 
@@ -135,6 +137,8 @@ Singleton {
                         property bool isVertical: false
                         property string colorStyle: "primary"
                         property int fontSize: 84
+                        property int dateFontSize: 24
+                        property int dateGap: 4
                         property bool hideAmPm: false
                     }
 

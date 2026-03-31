@@ -45,8 +45,8 @@ ColumnLayout {
 
     // ── Config props ───────────────────────────────────────────
     readonly property real  cfgSize:       Config.ready ? cfg.fontSize     : 84 * Appearance.effectiveScale
-    readonly property real  cfgDateSize:   14 * Appearance.effectiveScale
-    readonly property int   cfgDateGap:    4 * Appearance.effectiveScale
+    readonly property real  cfgDateSize:   Config.ready ? (cfg.dateFontSize || 24) * Appearance.effectiveScale : 24 * Appearance.effectiveScale
+    readonly property int   cfgDateGap:    Config.ready ? (cfg.dateGap || 4) * Appearance.effectiveScale : 4 * Appearance.effectiveScale
     readonly property string cfgWeight:    "Bold"
     readonly property string cfgDateWeight:"Medium"
     readonly property string cfgFamily:    Appearance.font.family.title
