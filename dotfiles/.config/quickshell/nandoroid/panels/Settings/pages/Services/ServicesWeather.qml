@@ -101,7 +101,77 @@ import Quickshell
                 }
             }
 
-            // 1. Auto Location Card (Top)
+            // 1. Weather Provider Card
+            SegmentedWrapper {
+                Layout.fillWidth: true
+                implicitHeight: providerRow.implicitHeight + 40 * Appearance.effectiveScale
+                orientation: Qt.Vertical
+                color: Appearance.m3colors.m3surfaceContainerHigh
+                smallRadius: 8 * Appearance.effectiveScale
+                fullRadius: 20 * Appearance.effectiveScale
+                
+                enabled: Config.ready && Config.options.weather && Config.options.weather.enable
+                opacity: enabled ? 1.0 : 0.5
+                Behavior on opacity { NumberAnimation { duration: 200 } }
+                
+                RowLayout {
+                    id: providerRow
+                    anchors.fill: parent
+                    anchors.margins: 20 * Appearance.effectiveScale
+                    spacing: 20 * Appearance.effectiveScale
+
+                    ColumnLayout {
+                        spacing: 2 * Appearance.effectiveScale
+                        StyledText {
+                            text: "Weather Provider"
+                            font.pixelSize: Appearance.font.pixelSize.normal
+                            font.weight: Font.Medium
+                            color: Appearance.colors.colOnLayer1
+                        }
+                        StyledText {
+                            text: "Select primary source for weather data."
+                            font.pixelSize: Appearance.font.pixelSize.small
+                            color: Appearance.colors.colSubtext
+                        }
+                    }
+                    
+                    Item { Layout.fillWidth: true }
+                    
+                    RowLayout {
+                        spacing: 4 * Appearance.effectiveScale
+                        Layout.preferredHeight: 52 * Appearance.effectiveScale
+                        Layout.alignment: Qt.AlignRight
+                        
+                        Repeater {
+                            model: [
+                                { label: "Open-Meteo", value: "open-meteo" },
+                                { label: "wttr.in", value: "wttr.in" }
+                            ]
+                            delegate: SegmentedButton {
+                                isHighlighted: (Config.ready && Config.options.weather) ? (Config.options.weather.provider || "open-meteo") === modelData.value : false
+                                Layout.fillHeight: true
+                                
+                                buttonText: modelData.label
+                                leftPadding: 16 * Appearance.effectiveScale
+                                rightPadding: 16 * Appearance.effectiveScale
+                                
+                                colActive: Appearance.m3colors.m3primary
+                                colActiveText: Appearance.m3colors.m3onPrimary
+                                colInactive: Appearance.m3colors.m3surfaceContainerLow
+                                
+                                onClicked: {
+                                    if (Config.ready && Config.options.weather) {
+                                        Config.options.weather.provider = modelData.value;
+                                        Weather.fetch();
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+
+            // 2. Auto Location Card
             SegmentedWrapper {
                 Layout.fillWidth: true
                 implicitHeight: autoLocRow.implicitHeight + 40 * Appearance.effectiveScale

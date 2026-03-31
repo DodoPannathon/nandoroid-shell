@@ -46,6 +46,7 @@ Singleton {
 
     // --- Config Helpers ---
     readonly property string unit: (Config.ready && Config.options.weather) ? (Config.options.weather.unit || "C") : "C"
+    readonly property string provider: (Config.ready && Config.options.weather) ? (Config.options.weather.provider || "open-meteo") : "open-meteo"
     readonly property bool autoLocation: (Config.ready && Config.options.weather) ? Config.options.weather.autoLocation : true
     readonly property string manualLocation: (Config.ready && Config.options.weather) ? (Config.options.weather.location || "") : ""
     readonly property int updateInterval: {
@@ -91,28 +92,24 @@ Singleton {
         }
 
         // Prevent redundant fetching if data is fresh (less than 5 mins old)
-        // unless it's a manual refresh (silent = false)
         if (silent && lastUpdateTime !== null) {
             const diff = (new Date().getTime() - lastUpdateTime.getTime()) / 60000;
             if (diff < 5) return; 
         }
         
-        const now = new Date().getTime();
-        if (!wttrInHealthy && (now - lastWttrInFail > 3600000)) {
-            wttrInHealthy = true;
-        }
-
         root.status = "Connecting...";
         if (!silent) loading = true;
         
+        // Reset processes
         weatherProc.running = false;
         ipLocProc.running = false;
         geocodingProc.running = false;
         openMeteoProc.running = false;
         
-        if (wttrInHealthy) {
+        if (root.provider === "wttr.in") {
             weatherProc.running = true;
         } else {
+            // Default: Open-Meteo (requires location first)
             fallbackTrigger();
         }
     }
@@ -287,8 +284,12 @@ Singleton {
         }
         
         onExited: (exitCode) => {
-            if (exitCode !== 0) root.status = "API Error";
-            root.loading = false;
+            if (exitCode !== 0) {
+                root.status = "API Error, retrying...";
+                weatherProc.running = true; // Try wttr.in as last resort
+            } else {
+                root.loading = false;
+            }
         }
 
         stdout: StdioCollector {

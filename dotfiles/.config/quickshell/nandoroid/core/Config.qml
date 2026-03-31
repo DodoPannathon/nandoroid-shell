@@ -349,6 +349,7 @@ Singleton {
                 property bool autoLocation: true
                 property string location: ""
                 property string unit: "C" // C or F
+                property string provider: "open-meteo" // open-meteo, wttr.in
                 property bool showDailyForecast: true
                 property int updateInterval: 30 // in minutes
             }
