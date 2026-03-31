@@ -105,7 +105,7 @@ ColumnLayout {
                     StyledText {
                         text: projRoot.title
                         font.pixelSize: Appearance.font.pixelSize.large
-                        font.weight: Font.Bold
+                        font.weight: Font.DemiBold
                         color: Appearance.colors.colOnLayer1
                     }
                     StyledText {

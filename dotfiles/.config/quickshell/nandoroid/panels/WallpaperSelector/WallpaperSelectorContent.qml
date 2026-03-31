@@ -195,7 +195,7 @@ Item {
                     StyledText {
                         text: (GlobalStates.wallpaperSelectorTarget === "desktop" ? "Desktop Wallpaper" : "Lock Screen Wallpaper")
                         font.pixelSize: Appearance.font.pixelSize.large
-                        font.weight: Font.Bold
+                        font.weight: Font.DemiBold
                         color: Appearance.colors.colOnLayer0
                         Layout.preferredWidth: 200 * Appearance.effectiveScale
                         Layout.alignment: Qt.AlignVCenter
@@ -342,7 +342,7 @@ Item {
                                 }
                                 StyledText { 
                                     text: "Wallhaven"; Layout.fillWidth: true; 
-                                    font.weight: wallhavenSideBtn.toggled ? Font.Bold : Font.Normal
+                                    font.weight: wallhavenSideBtn.toggled ? Font.DemiBold : Font.Normal
                                     color: wallhavenSideBtn.toggled ? Appearance.colors.colOnPrimary : Appearance.colors.colOnLayer0
                                 }
                             }
@@ -368,7 +368,7 @@ Item {
                                 }
                                 StyledText { 
                                     text: "NA-ive Walls"; Layout.fillWidth: true; 
-                                    font.weight: naiveSideBtn.toggled ? Font.Bold : Font.Normal
+                                    font.weight: naiveSideBtn.toggled ? Font.DemiBold : Font.Normal
                                     color: naiveSideBtn.toggled ? Appearance.colors.colOnPrimary : Appearance.colors.colOnLayer0
                                 }
                             }
@@ -396,7 +396,7 @@ Item {
                                 }
                                 StyledText { 
                                     text: "Favourites"; Layout.fillWidth: true; 
-                                    font.weight: favSideBtn.toggled ? Font.Bold : Font.Normal
+                                    font.weight: favSideBtn.toggled ? Font.DemiBold : Font.Normal
                                     color: favSideBtn.toggled ? Appearance.m3colors.m3onPrimaryContainer : Appearance.colors.colOnLayer0
                                 }
                             }
@@ -434,7 +434,7 @@ Item {
                                     }
                                     StyledText { 
                                         text: modelData.name; Layout.fillWidth: true; 
-                                        font.weight: folderBtn.toggled ? Font.Bold : Font.Normal
+                                        font.weight: folderBtn.toggled ? Font.DemiBold : Font.Normal
                                         color: folderBtn.toggled ? Appearance.m3colors.m3onPrimaryContainer : Appearance.colors.colOnLayer0
                                     }
                                 }
@@ -469,7 +469,7 @@ Item {
                                     }
                                     StyledText { 
                                         text: model.name; Layout.fillWidth: true; elide: Text.ElideRight
-                                        font.weight: customFolderBtn.toggled ? Font.Bold : Font.Normal
+                                        font.weight: customFolderBtn.toggled ? Font.DemiBold : Font.Normal
                                         color: customFolderBtn.toggled ? Appearance.m3colors.m3onPrimaryContainer : Appearance.colors.colOnLayer0
                                     }
                                     
@@ -767,7 +767,7 @@ Item {
                                                 width: resText.implicitWidth + (12 * Appearance.effectiveScale); height: 20 * Appearance.effectiveScale; radius: 10 * Appearance.effectiveScale; color: Qt.rgba(0,0,0, 0.5)
                                                 StyledText {
                                                     id: resText; anchors.centerIn: parent; text: model.resolution || ""
-                                                    font.pixelSize: 10 * Appearance.effectiveScale; font.weight: Font.Bold; color: "white"
+                                                    font.pixelSize: 10 * Appearance.effectiveScale; font.weight: Font.DemiBold; color: "white"
                                                 }
                                             }
                                         }
@@ -876,7 +876,7 @@ Item {
                             StyledText { 
                                 text: modelData.name; Layout.fillWidth: true; 
                                 font.pixelSize: 12 * Appearance.effectiveScale
-                                font.weight: parent.parent.toggled ? Font.Bold : Font.Normal
+                                font.weight: parent.parent.toggled ? Font.DemiBold : Font.Normal
                                 color: parent.parent.toggled ? Appearance.m3colors.m3onPrimaryContainer : Appearance.colors.colOnLayer0
                             }
                         }

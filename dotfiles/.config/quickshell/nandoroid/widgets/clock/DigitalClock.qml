@@ -40,7 +40,7 @@ ColumnLayout {
         if (w === "Medium")   return Font.Medium
         if (w === "DemiBold") return Font.DemiBold
         if (w === "Black")    return Font.Black
-        return Font.Bold
+        return Font.DemiBold
     }
 
     // ── Config props ───────────────────────────────────────────

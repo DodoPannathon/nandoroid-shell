@@ -192,7 +192,7 @@ Item {
                             return (dot.wsId).toString()
                         }
                         font.pixelSize: 10 * Appearance.effectiveScale
-                        font.weight: isActive ? Font.Bold : Font.Normal
+                        font.weight: isActive ? Font.DemiBold : Font.Normal
                         color: "#1E1E1E" 
                         opacity: (isActive || isHovered || isUnified) ? 1 : 0
                     }

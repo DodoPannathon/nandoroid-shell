@@ -162,7 +162,7 @@ Rectangle {
                                 Layout.fillWidth: true
                                 text: Functions.StringUtils.cleanMusicTitle(MprisController.trackTitle) || "No media"
                                 font.pixelSize: Appearance.font.pixelSize.normal
-                                font.weight: Font.Bold
+                                font.weight: Font.DemiBold
                                 color: MprisController.dynOnLayer0
                                 elide: Text.ElideRight
                                 verticalAlignment: Text.AlignTop

@@ -340,7 +340,7 @@ MouseArea {
                             anchors.centerIn: parent
                             text: Notifications.unread > 99 ? "99+" : Notifications.unread.toString()
                             font.pixelSize: 8 * Appearance.effectiveScale
-                            font.weight: Font.Bold
+                            font.weight: Font.DemiBold
                             color: barBg.showBg ? Appearance.m3colors.m3surface : Appearance.colors.colLayer0
                         }
                     }

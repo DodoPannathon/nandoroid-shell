@@ -113,14 +113,14 @@ Rectangle {
                             StyledText {
                                 text: modelData.hasAlias ? `${modelData.label} DISK USAGE` : `"${modelData.label}" DISK USAGE`
                                 font.pixelSize: 10 * Appearance.effectiveScale
-                                font.weight: Font.Bold
+                                font.weight: Font.DemiBold
                                 color: Appearance.m3colors.m3outline
                             }
                             Item { Layout.fillWidth: true }
                             StyledText {
                                 text: `${Math.round(modelData.usage * 100)}%`
                                 font.pixelSize: 10 * Appearance.effectiveScale
-                                font.weight: Font.Bold
+                                font.weight: Font.DemiBold
                                 color: Appearance.m3colors.m3onSurface
                             }
                         }
@@ -178,7 +178,7 @@ Rectangle {
                 StyledText {
                     text: statItem.label
                     font.pixelSize: 10 * Appearance.effectiveScale
-                    font.weight: Font.Bold
+                    font.weight: Font.DemiBold
                     color: Appearance.m3colors.m3outline
                 }
             }

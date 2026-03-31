@@ -76,7 +76,7 @@ Item {
                             StyledText {
                                 text: modelData.name
                                 font.pixelSize: 13 * Appearance.effectiveScale
-                                font.weight: GlobalStates.performanceSubIndex === index ? Font.Bold : Font.Medium
+                                font.weight: GlobalStates.performanceSubIndex === index ? Font.DemiBold : Font.Medium
                                 color: GlobalStates.performanceSubIndex === index ? Appearance.colors.colPrimary : Appearance.colors.colOnLayer0
                             }
                         }

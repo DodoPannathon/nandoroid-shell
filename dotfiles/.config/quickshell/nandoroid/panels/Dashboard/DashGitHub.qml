@@ -97,7 +97,7 @@ Item {
         StyledText {
             Layout.alignment: Qt.AlignHCenter
             text: "GitHub Profile Tracker"
-            font.pixelSize: Appearance.font.pixelSize.large; font.weight: Font.Bold
+            font.pixelSize: Appearance.font.pixelSize.large; font.weight: Font.DemiBold
             color: Appearance.colors.colOnLayer1
         }
         StyledText {
@@ -211,7 +211,7 @@ Item {
                     Layout.fillWidth: true; spacing: 2 * Appearance.effectiveScale
                     StyledText {
                         text: root.profile ? (root.profile.name || root.profile.login) : ""
-                        font.pixelSize: Appearance.font.pixelSize.large; font.weight: Font.Bold
+                        font.pixelSize: Appearance.font.pixelSize.large; font.weight: Font.DemiBold
                         color: Appearance.colors.colOnLayer1; elide: Text.ElideRight; Layout.fillWidth: true
                     }
                     StyledText {

@@ -28,7 +28,7 @@ Item {
         StyledText {
             text: "Disk Performance"
             font.pixelSize: Appearance.font.pixelSize.huge
-            font.weight: Font.Bold
+            font.weight: Font.DemiBold
         }
 
         // Real-time Disk I/O Card
@@ -69,11 +69,11 @@ Item {
                     
                     ColumnLayout {
                         spacing: 2 * Appearance.effectiveScale
-                        StyledText { text: "READ"; font.pixelSize: Appearance.font.pixelSize.smallest; font.weight: Font.Bold; color: Appearance.m3colors.m3outline }
+                        StyledText { text: "READ"; font.pixelSize: Appearance.font.pixelSize.smallest; font.weight: Font.DemiBold; color: Appearance.m3colors.m3outline }
                         StyledText { 
                             text: (SystemData.diskReadRate / (1024 * 1024)).toFixed(2) + " MB/s"
                             font.pixelSize: Appearance.font.pixelSize.small
-                            font.weight: Font.Bold
+                            font.weight: Font.DemiBold
                             color: Appearance.m3colors.m3onSurface
                         }
                     }
@@ -82,11 +82,11 @@ Item {
                     
                     ColumnLayout {
                         spacing: 2 * Appearance.effectiveScale
-                        StyledText { text: "WRITE"; font.pixelSize: Appearance.font.pixelSize.smallest; font.weight: Font.Bold; color: Appearance.m3colors.m3outline }
+                        StyledText { text: "WRITE"; font.pixelSize: Appearance.font.pixelSize.smallest; font.weight: Font.DemiBold; color: Appearance.m3colors.m3outline }
                         StyledText { 
                             text: (SystemData.diskWriteRate / (1024 * 1024)).toFixed(2) + " MB/s"
                             font.pixelSize: Appearance.font.pixelSize.small
-                            font.weight: Font.Bold
+                            font.weight: Font.DemiBold
                             color: Appearance.m3colors.m3onSurface
                         }
                     }
@@ -100,7 +100,7 @@ Item {
             text: "Disk Operations"
             Layout.topMargin: 12 * Appearance.effectiveScale
             font.pixelSize: Appearance.font.pixelSize.large
-            font.weight: Font.Bold
+            font.weight: Font.DemiBold
         }
 
         // Monitors each disk in the list
@@ -125,14 +125,14 @@ Item {
                         StyledText {
                             text: modelData.hasAlias ? `${modelData.label.toUpperCase()} DISK USAGE` : `"${modelData.label.toUpperCase()}" DISK USAGE`
                             font.pixelSize: Appearance.font.pixelSize.smaller
-                            font.weight: Font.Bold
+                            font.weight: Font.DemiBold
                             color: Appearance.m3colors.m3outline
                             Layout.fillWidth: true
                         }
                         StyledText {
                             text: `${Math.round(modelData.usage * 100)}%`
                             font.pixelSize: Appearance.font.pixelSize.smaller
-                            font.weight: Font.Bold
+                            font.weight: Font.DemiBold
                             color: Appearance.m3colors.m3onSurface
                         }
                     }

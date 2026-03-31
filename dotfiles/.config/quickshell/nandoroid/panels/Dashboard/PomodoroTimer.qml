@@ -46,7 +46,7 @@ ColumnLayout {
                         anchors.centerIn: parent
                         text: PomodoroService.rotations
                         font.pixelSize: 10 * Appearance.effectiveScale
-                        font.weight: Font.Bold
+                        font.weight: Font.DemiBold
                         color: Appearance.m3colors.m3onSecondaryContainer
                     }
                 }
@@ -58,7 +58,7 @@ ColumnLayout {
         StyledText {
             text: PomodoroService.timeString
             font.pixelSize: 28 * Appearance.effectiveScale
-            font.weight: Font.Bold
+            font.weight: Font.DemiBold
             color: Appearance.colors.colOnLayer1
         }
     }

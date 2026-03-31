@@ -222,7 +222,7 @@ Item {
                         anchors.fill: parent; anchors.margins: 10 * Appearance.effectiveScale
                         font.family: Appearance.font.family.main
                         font.pixelSize: Appearance.font.pixelSize.large
-                        font.weight: Font.Bold
+                        font.weight: Font.DemiBold
                         color: Appearance.colors.colOnLayer1
                         verticalAlignment: TextInput.AlignVCenter
                         onTextChanged: saveTimer.restart()
@@ -233,7 +233,7 @@ Item {
                             color: Appearance.colors.colSubtext
                             visible: !parent.text && !parent.activeFocus
                             font.pixelSize: Appearance.font.pixelSize.large
-                            font.weight: Font.Bold
+                            font.weight: Font.DemiBold
                             verticalAlignment: Text.AlignVCenter
                         }
                     }

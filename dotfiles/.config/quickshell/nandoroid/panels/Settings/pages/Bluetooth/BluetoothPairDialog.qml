@@ -35,7 +35,7 @@ ColumnLayout {
                 StyledText {
                     text: "Pair new device"
                     font.pixelSize: Appearance.font.pixelSize.huge
-                    font.weight: Font.Bold
+                    font.weight: Font.DemiBold
                     color: Appearance.colors.colOnLayer1
                 }
             }

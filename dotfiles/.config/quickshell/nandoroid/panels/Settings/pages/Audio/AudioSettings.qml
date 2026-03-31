@@ -29,7 +29,7 @@ Flickable {
             StyledText {
                 text: "Audio"
                 font.pixelSize: Appearance.font.pixelSize.huge
-                font.weight: Font.Bold
+                font.weight: Font.DemiBold
                 color: Appearance.colors.colOnLayer1
             }
             StyledText {

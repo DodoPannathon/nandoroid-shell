@@ -114,8 +114,8 @@ Scope {
 
                         StyledText {
                             text: "Settings"
-                            font.pixelSize: Appearance.font.pixelSize.huge
-                            font.weight: Font.Bold
+                            font.pixelSize: 24 * Appearance.effectiveScale
+                            font.weight: Font.DemiBold
                             color: Appearance.colors.colOnLayer0
                             Layout.preferredWidth: 200 * Appearance.effectiveScale
                             Layout.alignment: Qt.AlignVCenter

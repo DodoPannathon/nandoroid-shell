@@ -127,7 +127,7 @@ import Quickshell
                                                     text: ""
                                                     font.pixelSize: Appearance.font.pixelSize.small
                                                     color: Appearance.colors.colPrimary
-                                                    font.weight: Font.Bold
+                                                    font.weight: Font.DemiBold
                                                     Layout.alignment: Qt.AlignVCenter
                                                 }
 

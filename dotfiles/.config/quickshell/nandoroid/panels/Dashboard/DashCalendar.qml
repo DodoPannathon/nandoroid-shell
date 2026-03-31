@@ -159,7 +159,7 @@ RowLayout {
                         Layout.alignment: Qt.AlignHCenter
                         text: PomodoroService.timeString
                         font.pixelSize: 32 * Appearance.effectiveScale
-                        font.weight: Font.Bold
+                        font.weight: Font.DemiBold
                         color: Appearance.colors.colOnLayer1
                     }
                     StyledText {
@@ -180,7 +180,7 @@ RowLayout {
                     StyledText {
                         anchors.centerIn: parent
                         text: PomodoroService.rotations
-                        font.pixelSize: Appearance.font.pixelSize.smallest; font.weight: Font.Bold
+                        font.pixelSize: Appearance.font.pixelSize.smallest; font.weight: Font.DemiBold
                         color: Appearance.m3colors.m3onSecondaryContainer
                     }
                 }

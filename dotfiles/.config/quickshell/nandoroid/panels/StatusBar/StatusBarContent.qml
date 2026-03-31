@@ -285,7 +285,7 @@ Item {
                         anchors.centerIn: parent
                         text: Notifications.unread > 99 ? "99+" : Notifications.unread.toString()
                         font.pixelSize: 8 * Appearance.effectiveScale
-                        font.weight: Font.Bold
+                        font.weight: Font.DemiBold
                         // Inverse color of the badge to ensure contrast
                         color: showBackground ? Appearance.m3colors.m3surface : (Appearance.colors.resolvedStatusBarDarkText ? "#F5F5F5" : "#1E1E1E")
                     }

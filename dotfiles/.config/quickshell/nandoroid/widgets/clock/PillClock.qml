@@ -89,7 +89,7 @@ Rectangle {
             anchors.centerIn: parent
             text: parent.labelText
             font.pixelSize: parent.fontSize
-            font.weight: parent.isBold ? Font.Bold : Font.Medium
+            font.weight: parent.isBold ? Font.DemiBold : Font.Medium
             color: root.dateColor
         }
     }
@@ -108,7 +108,7 @@ Rectangle {
             StyledText {
                 text: DateTime.hours.toString().padStart(2, '0')
                 font.pixelSize: (root.cfg.size * 0.5 || 60) * Appearance.effectiveScale
-                font.weight: Font.Bold
+                font.weight: Font.DemiBold
                 color: root.timeColor
             }
 
@@ -123,7 +123,7 @@ Rectangle {
             StyledText {
                 text: DateTime.minutes.toString().padStart(2, '0')
                 font.pixelSize: (root.cfg.size * 0.5 || 60) * Appearance.effectiveScale
-                font.weight: Font.Bold
+                font.weight: Font.DemiBold
                 color: root.timeColor
                 opacity: 0.8
             }
@@ -138,7 +138,7 @@ Rectangle {
             StyledText {
                 text: Qt.formatDate(new Date(), "dddd")
                 font.pixelSize: (root.cfg.size * 0.18 || 22) * Appearance.effectiveScale
-                font.weight: Font.Bold
+                font.weight: Font.DemiBold
                 color: root.timeColor
                 Layout.alignment: Qt.AlignHCenter
             }
@@ -172,7 +172,7 @@ Rectangle {
         StyledText {
             text: DateTime.hours.toString().padStart(2, '0')
             font.pixelSize: (root.cfg.size * 0.5 || 60) * Appearance.effectiveScale
-            font.weight: Font.Bold
+            font.weight: Font.DemiBold
             color: root.timeColor
             Layout.alignment: Qt.AlignHCenter
         }
@@ -188,7 +188,7 @@ Rectangle {
         StyledText {
             text: DateTime.minutes.toString().padStart(2, '0')
             font.pixelSize: (root.cfg.size * 0.5 || 60) * Appearance.effectiveScale
-            font.weight: Font.Bold
+            font.weight: Font.DemiBold
             color: root.timeColor
             opacity: 0.8
             Layout.alignment: Qt.AlignHCenter

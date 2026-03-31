@@ -293,7 +293,7 @@ Item {
             id: pomoTimeLabel; anchors.centerIn: parent
             text: PomodoroService.timeString
             opacity: parent.width > (10 * Appearance.effectiveScale) ? 1 : 0; Behavior on opacity { NumberAnimation { duration: 200 } }
-            font.pixelSize: 12 * Appearance.effectiveScale; font.weight: Font.Bold; color: Appearance.colors.colNotchText
+            font.pixelSize: 12 * Appearance.effectiveScale; font.weight: Font.DemiBold; color: Appearance.colors.colNotchText
             font.family: Appearance.font.family.numbers; visible: islandState === "pomodoro"
         }
     }

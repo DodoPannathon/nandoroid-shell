@@ -35,7 +35,7 @@ Item {
             StyledText {
                 text: "System Overview"
                 font.pixelSize: Appearance.font.pixelSize.huge
-                font.weight: Font.Bold
+                font.weight: Font.DemiBold
                 color: Appearance.m3colors.m3onSurface
             }
 
@@ -46,19 +46,19 @@ Item {
                 
                 ColumnLayout {
                     spacing: 0
-                    StyledText { text: "UPTIME"; font.pixelSize: Appearance.font.pixelSize.smallest; font.weight: Font.Bold; color: Appearance.m3colors.m3outline }
+                    StyledText { text: "UPTIME"; font.pixelSize: Appearance.font.pixelSize.smallest; font.weight: Font.DemiBold; color: Appearance.m3colors.m3outline }
                     StyledText { text: SystemData.uptime || "--"; font.pixelSize: Appearance.font.pixelSize.small; font.weight: Font.Medium; color: Appearance.m3colors.m3onSurface }
                 }
                 
                 ColumnLayout {
                     spacing: 0
-                    StyledText { text: "LOAD AVG"; font.pixelSize: Appearance.font.pixelSize.smallest; font.weight: Font.Bold; color: Appearance.m3colors.m3outline }
+                    StyledText { text: "LOAD AVG"; font.pixelSize: Appearance.font.pixelSize.smallest; font.weight: Font.DemiBold; color: Appearance.m3colors.m3outline }
                     StyledText { text: SystemData.loadAverage || "--"; font.pixelSize: Appearance.font.pixelSize.small; font.weight: Font.Medium; color: Appearance.m3colors.m3onSurface }
                 }
                 
                 ColumnLayout {
                     spacing: 0
-                    StyledText { text: "PROCESSES"; font.pixelSize: Appearance.font.pixelSize.smallest; font.weight: Font.Bold; color: Appearance.m3colors.m3outline }
+                    StyledText { text: "PROCESSES"; font.pixelSize: Appearance.font.pixelSize.smallest; font.weight: Font.DemiBold; color: Appearance.m3colors.m3outline }
                     StyledText { text: `${SystemData.processCount} (${SystemData.threadCount} threads)`; font.pixelSize: Appearance.font.pixelSize.small; font.weight: Font.Medium; color: Appearance.m3colors.m3onSurface }
                 }
                 
@@ -273,7 +273,7 @@ Item {
                         visible: card.subValue !== ""
                         text: card.subValue
                         font.pixelSize: Appearance.font.pixelSize.smallest
-                        font.weight: Font.Bold
+                        font.weight: Font.DemiBold
                         color: Appearance.colors.colSubtext
                     }
                 }

@@ -99,7 +99,7 @@ Item {
                     anchors.centerIn: parent
                     text: root.name.substring(0, 2).toUpperCase()
                     font.pixelSize: 11 * Appearance.effectiveScale
-                    font.weight: Font.Bold
+                    font.weight: Font.DemiBold
                     color: Appearance.m3colors.m3onSecondaryContainer
                     opacity: 0.8
                     

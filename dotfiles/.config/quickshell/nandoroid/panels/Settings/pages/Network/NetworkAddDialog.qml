@@ -68,7 +68,7 @@ import Quickshell
                         horizontalAlignment: Text.AlignHCenter
                         text: "Add Network"
                         font.pixelSize: Appearance.font.pixelSize.large
-                        font.weight: Font.Bold
+                        font.weight: Font.DemiBold
                         color: Appearance.colors.colOnLayer1
                     }
                     StyledText {

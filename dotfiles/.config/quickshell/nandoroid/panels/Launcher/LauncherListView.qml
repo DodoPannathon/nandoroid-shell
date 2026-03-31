@@ -86,7 +86,7 @@ RippleButton {
             StyledText {
                 text: (result && result.name) ? result.name : ""
                 font.pixelSize: 15 * Appearance.effectiveScale
-                font.weight: root.selected ? Font.Bold : Font.Medium
+                font.weight: root.selected ? Font.DemiBold : Font.Medium
                 color: root.selected ? Appearance.m3colors.m3primary : Appearance.m3colors.m3onSurface
                 elide: Text.ElideRight
             }

@@ -120,7 +120,7 @@ PanelWindow {
                     StyledText {
                         text: root.desktopEntry ? root.desktopEntry.name : (root.appId ? (root.appId.charAt(0).toUpperCase() + root.appId.slice(1)) : "Application")
                         font.pixelSize: Appearance.font.pixelSize.small
-                        font.weight: Font.Bold; color: Appearance.colors.colOnLayer0
+                        font.weight: Font.DemiBold; color: Appearance.colors.colOnLayer0
                         elide: Text.ElideRight; Layout.fillWidth: true
                     }
                 }

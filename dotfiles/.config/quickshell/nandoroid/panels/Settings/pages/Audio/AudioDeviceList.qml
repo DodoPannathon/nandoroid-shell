@@ -62,7 +62,7 @@ Rectangle {
                 StyledText {
                     text: Audio.friendlyDeviceName(modelData)
                     font.pixelSize: Appearance.font.pixelSize.small
-                    font.weight: audioItem.isActive ? Font.Bold : Font.Normal
+                    font.weight: audioItem.isActive ? Font.DemiBold : Font.Normal
                     color: Appearance.colors.colOnLayer1
                     elide: Text.ElideRight
                     Layout.fillWidth: true

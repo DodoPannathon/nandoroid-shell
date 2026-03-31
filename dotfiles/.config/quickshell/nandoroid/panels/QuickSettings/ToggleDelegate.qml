@@ -276,7 +276,7 @@ RippleButton {
             anchors.margins: 6 * Appearance.effectiveScale
             text: root.cellSize === 1 ? "1×" : "2×"
             font.pixelSize: Appearance.font.pixelSize.smaller
-            font.weight: Font.Bold
+            font.weight: Font.DemiBold
             color: Appearance.m3colors.m3error
         }
     }

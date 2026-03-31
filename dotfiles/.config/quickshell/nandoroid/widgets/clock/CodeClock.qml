@@ -101,7 +101,7 @@ ColumnLayout {
             color: root.valueColor
             font.family: root.fontFamily
             font.pixelSize: cl.isValue ? Math.max(root.cfgSize * 1.45, 22 * Appearance.effectiveScale) : root.cfgSize
-            font.weight: Font.Bold
+            font.weight: Font.DemiBold
             renderType: Text.NativeRendering
         }
     }

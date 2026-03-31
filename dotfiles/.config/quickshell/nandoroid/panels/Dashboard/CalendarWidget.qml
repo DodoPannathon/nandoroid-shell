@@ -116,7 +116,7 @@ Item {
                 Layout.fillWidth: true
                 text: eventPopup.dateStr
                 font.pixelSize: Appearance.font.pixelSize.smaller
-                font.weight: Font.Bold
+                font.weight: Font.DemiBold
                 color: Appearance.colors.colSubtext
             }
 

@@ -124,7 +124,7 @@ ColumnLayout {
                         }
                     }
                     font.pixelSize: Appearance.font.pixelSize.small
-                    font.weight: Font.Bold
+                    font.weight: Font.DemiBold
                     color: Appearance.colors.colPrimary
                     opacity: 0.8
                 }
@@ -176,7 +176,7 @@ ColumnLayout {
                                         Layout.fillWidth: true
                                         text: modelData.name
                                         font.pixelSize: Appearance.font.pixelSize.normal
-                                        font.weight: Font.Bold
+                                        font.weight: Font.DemiBold
                                         color: Appearance.colors.colOnLayer1
                                         elide: Text.ElideRight
                                     }
@@ -196,7 +196,7 @@ ColumnLayout {
                                     StyledText {
                                         text: "Not Installed"
                                         color: Appearance.colors.colError
-                                        font.weight: Font.Bold
+                                        font.weight: Font.DemiBold
                                         font.pixelSize: Appearance.font.pixelSize.small
                                         Layout.alignment: Qt.AlignRight
                                     }
@@ -214,7 +214,7 @@ ColumnLayout {
                                     text: "Installed"
                                     color: "#81C995"
                                     Layout.alignment: Qt.AlignRight | Qt.AlignVCenter
-                                    font.weight: Font.Bold
+                                    font.weight: Font.DemiBold
                                     font.pixelSize: Appearance.font.pixelSize.small
                                 }
                             }

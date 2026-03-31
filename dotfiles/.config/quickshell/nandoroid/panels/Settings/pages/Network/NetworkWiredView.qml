@@ -58,7 +58,7 @@ import Quickshell
                                             StyledText {
                                                 text: modelData.name
                                                 font.pixelSize: Appearance.font.pixelSize.normal
-                                                font.weight: modelData.active ? Font.Bold : Font.Normal
+                                                font.weight: modelData.active ? Font.DemiBold : Font.Normal
                                                 color: Appearance.colors.colOnLayer1
                                             }
                                             StyledText {

@@ -102,7 +102,7 @@ Item {
                     text: Math.round(root.value * 100)
                     font.pixelSize: 13 * Appearance.effectiveScale
                     font.family: Appearance.font.family.numbers
-                    font.weight: Font.Bold
+                    font.weight: Font.DemiBold
                     color: Appearance.m3colors.m3onSecondaryContainer
                     
                     horizontalAlignment: Text.AlignHCenter

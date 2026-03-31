@@ -96,7 +96,7 @@ Scope {
                         StyledText {
                             text: "System Monitor"
                             font.pixelSize: 24 * Appearance.effectiveScale
-                            font.weight: Font.Bold
+                            font.weight: Font.DemiBold
                             color: Appearance.colors.colOnLayer0
                             Layout.alignment: Qt.AlignVCenter
                         }

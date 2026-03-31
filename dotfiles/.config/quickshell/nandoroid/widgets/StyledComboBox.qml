@@ -207,7 +207,7 @@ Item {
                     verticalAlignment: Text.AlignVCenter
                     color: delegateRoot.isCurrent ? (Appearance.m3colors.m3primary || Appearance.colors.colPrimary) : Appearance.colors.colOnLayer2
                     font.family: root.searchable ? text : Appearance.font.family.main
-                    font.weight: delegateRoot.isCurrent ? Font.Bold : Font.Normal
+                    font.weight: delegateRoot.isCurrent ? Font.DemiBold : Font.Normal
                 }
                 
                 onClicked: {

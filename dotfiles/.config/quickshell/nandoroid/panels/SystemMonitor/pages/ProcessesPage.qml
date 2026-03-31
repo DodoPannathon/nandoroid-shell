@@ -47,7 +47,7 @@ Item {
             StyledText {
                 text: "Processes"
                 font.pixelSize: Appearance.font.pixelSize.huge
-                font.weight: Font.Bold
+                font.weight: Font.DemiBold
                 color: Appearance.m3colors.m3onSurface
             }
             Item { Layout.fillWidth: true }
@@ -262,7 +262,7 @@ Item {
             StyledText {
                 text: parent.parent.text
                 font.pixelSize: Appearance.font.pixelSize.smaller
-                font.weight: Font.Bold
+                font.weight: Font.DemiBold
                 color: root.sortField === parent.parent.field ? Appearance.m3colors.m3primary : Appearance.colors.colSubtext
                 Layout.fillWidth: true
                 horizontalAlignment: parent.parent.alignment

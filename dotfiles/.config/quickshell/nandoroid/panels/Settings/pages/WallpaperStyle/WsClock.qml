@@ -163,7 +163,7 @@ ColumnLayout {
                                 Layout.alignment: Qt.AlignHCenter
                                 text: modelData.name
                                 font.pixelSize: 12 * Appearance.effectiveScale
-                                font.weight: clockStyleBtn.isSelected ? Font.Bold : Font.Normal
+                                font.weight: clockStyleBtn.isSelected ? Font.DemiBold : Font.Normal
                                 color: clockStyleBtn.isSelected ? Appearance.colors.colOnPrimary : Appearance.m3colors.m3onSurface
                             }
                         }

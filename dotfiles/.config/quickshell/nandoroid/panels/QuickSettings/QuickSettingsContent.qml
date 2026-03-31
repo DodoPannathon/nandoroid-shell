@@ -820,7 +820,7 @@ Item {
                         Rectangle {
                             width: 44 * Appearance.effectiveScale; height: 18 * Appearance.effectiveScale; radius: 4 * Appearance.effectiveScale
                             color: Appearance.m3colors.m3surfaceVariant
-                            StyledText { anchors.centerIn: parent; text: "LClick"; font.pixelSize: 9 * Appearance.effectiveScale; font.weight: Font.Bold }
+                            StyledText { anchors.centerIn: parent; text: "LClick"; font.pixelSize: 9 * Appearance.effectiveScale; font.weight: Font.DemiBold }
                         }
                     }
 
@@ -831,7 +831,7 @@ Item {
                         Rectangle {
                             width: 44 * Appearance.effectiveScale; height: 18 * Appearance.effectiveScale; radius: 4 * Appearance.effectiveScale
                             color: Appearance.m3colors.m3surfaceVariant
-                            StyledText { anchors.centerIn: parent; text: "RClick"; font.pixelSize: 9 * Appearance.effectiveScale; font.weight: Font.Bold }
+                            StyledText { anchors.centerIn: parent; text: "RClick"; font.pixelSize: 9 * Appearance.effectiveScale; font.weight: Font.DemiBold }
                         }
                     }
 
@@ -843,7 +843,7 @@ Item {
                         Rectangle {
                             width: 38 * Appearance.effectiveScale; height: 18 * Appearance.effectiveScale; radius: 4 * Appearance.effectiveScale
                             color: Appearance.m3colors.m3surfaceVariant
-                            StyledText { anchors.centerIn: parent; text: "Scroll"; font.pixelSize: 10 * Appearance.effectiveScale; font.weight: Font.Bold }
+                            StyledText { anchors.centerIn: parent; text: "Scroll"; font.pixelSize: 10 * Appearance.effectiveScale; font.weight: Font.DemiBold }
                         }
                     }
                 }

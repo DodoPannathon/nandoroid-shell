@@ -68,7 +68,7 @@ Item {
                 StyledText {
                     Layout.alignment: Qt.AlignHCenter
                     font.pixelSize: 22 * baseScale
-                    font.weight: Font.Bold
+                    font.weight: Font.DemiBold
                     color: Appearance.m3colors.m3onSurface
                     text: "Session"
                 }
@@ -189,7 +189,7 @@ Item {
                             Rectangle {
                                 width: 54 * baseScale; height: 18 * baseScale; radius: 4 * baseScale
                                 color: Appearance.m3colors.m3surfaceVariant
-                                StyledText { anchors.centerIn: parent; text: "←↑↓→"; font.pixelSize: 10 * baseScale; font.weight: Font.Bold }
+                                StyledText { anchors.centerIn: parent; text: "←↑↓→"; font.pixelSize: 10 * baseScale; font.weight: Font.DemiBold }
                             }
                         }
 
@@ -200,7 +200,7 @@ Item {
                             Rectangle {
                                 width: 38 * baseScale; height: 18 * baseScale; radius: 4 * baseScale
                                 color: Appearance.m3colors.m3surfaceVariant
-                                StyledText { anchors.centerIn: parent; text: "Enter"; font.pixelSize: 10 * baseScale; font.weight: Font.Bold }
+                                StyledText { anchors.centerIn: parent; text: "Enter"; font.pixelSize: 10 * baseScale; font.weight: Font.DemiBold }
                             }
                         }
 
@@ -211,7 +211,7 @@ Item {
                             Rectangle {
                                 width: 28 * baseScale; height: 18 * baseScale; radius: 4 * baseScale
                                 color: Appearance.m3colors.m3surfaceVariant
-                                StyledText { anchors.centerIn: parent; text: "Esc"; font.pixelSize: 10 * baseScale; font.weight: Font.Bold }
+                                StyledText { anchors.centerIn: parent; text: "Esc"; font.pixelSize: 10 * baseScale; font.weight: Font.DemiBold }
                             }
                         }
                     }

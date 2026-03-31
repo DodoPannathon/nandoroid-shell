@@ -48,7 +48,7 @@ RowLayout {
             RowLayout {
                 Layout.fillWidth: true
                 MaterialSymbol { text: "translate"; iconSize: 22 * Appearance.effectiveScale; color: Appearance.colors.colPrimary }
-                StyledText { text: "Source"; font.pixelSize: 15 * Appearance.effectiveScale; font.weight: Font.Bold; color: Appearance.colors.colOnLayer1 }
+                StyledText { text: "Source"; font.pixelSize: 15 * Appearance.effectiveScale; font.weight: Font.DemiBold; color: Appearance.colors.colOnLayer1 }
                 Item { Layout.fillWidth: true }
                 
                 StyledComboBox {
@@ -115,7 +115,7 @@ RowLayout {
 
             RowLayout {
                 Layout.fillWidth: true
-                StyledText { text: "Translation"; font.pixelSize: 15 * Appearance.effectiveScale; font.weight: Font.Bold; color: Appearance.colors.colPrimary }
+                StyledText { text: "Translation"; font.pixelSize: 15 * Appearance.effectiveScale; font.weight: Font.DemiBold; color: Appearance.colors.colPrimary }
                 Item { Layout.fillWidth: true }
                 
                 StyledComboBox {

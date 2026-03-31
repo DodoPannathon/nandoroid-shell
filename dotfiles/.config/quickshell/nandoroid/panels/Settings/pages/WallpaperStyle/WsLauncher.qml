@@ -135,7 +135,7 @@ ColumnLayout {
                                     Layout.alignment: Qt.AlignHCenter
                                     text: modelData
                                     font.pixelSize: 10 * Appearance.effectiveScale
-                                    font.weight: shapeBtn.isSelected ? Font.Bold : Font.Normal
+                                    font.weight: shapeBtn.isSelected ? Font.DemiBold : Font.Normal
                                     color: shapeBtn.isSelected ? Appearance.colors.colOnPrimary : Appearance.colors.colOnLayer1
                                 }
                             }

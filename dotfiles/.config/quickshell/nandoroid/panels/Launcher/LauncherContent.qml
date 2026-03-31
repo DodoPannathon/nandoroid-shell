@@ -130,7 +130,7 @@ Rectangle {
                         anchors.centerIn: parent
                         text: modelData
                         font.pixelSize: 12 * Appearance.effectiveScale
-                        font.weight: LauncherSearch.selectedCategory === modelData ? Font.Bold : Font.Normal
+                        font.weight: LauncherSearch.selectedCategory === modelData ? Font.DemiBold : Font.Normal
                         color: LauncherSearch.selectedCategory === modelData ? Appearance.m3colors.m3onPrimary : Appearance.m3colors.m3onSurface
                     }
                 }

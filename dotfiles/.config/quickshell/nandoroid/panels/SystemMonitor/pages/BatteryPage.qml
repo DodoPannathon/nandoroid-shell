@@ -254,7 +254,7 @@ Flickable {
             StyledText {
                 text: cardRoot.value
                 font.pixelSize: Appearance.font.pixelSize.huge
-                font.weight: Font.Bold
+                font.weight: Font.DemiBold
                 color: Appearance.colors.colOnLayer0
                 elide: Text.ElideRight
                 Layout.fillWidth: true

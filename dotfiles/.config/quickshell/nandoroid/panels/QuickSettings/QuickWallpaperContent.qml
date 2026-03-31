@@ -335,7 +335,7 @@ Item {
                 StyledText {
                     text: "Wallpaper & Color"
                     font.pixelSize: Appearance.font.pixelSize.huge
-                    font.weight: Font.Bold
+                    font.weight: Font.DemiBold
                     color: Appearance.colors.colOnLayer0
                 }
                 StyledText {

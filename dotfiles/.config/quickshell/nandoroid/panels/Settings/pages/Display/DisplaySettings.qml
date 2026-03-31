@@ -156,7 +156,7 @@ Item {
             StyledText {
                 text: "Display"
                 font.pixelSize: Appearance.font.pixelSize.huge
-                font.weight: Font.Bold
+                font.weight: Font.DemiBold
                 color: Appearance.colors.colOnLayer1
             }
             StyledText {
@@ -629,7 +629,7 @@ Item {
                             anchors.centerIn: parent
                             text: "Apply"
                             font.pixelSize: 13 * Appearance.effectiveScale
-                            font.weight: Font.Bold
+                            font.weight: Font.DemiBold
                             color: Appearance.colors.colPrimary
                         }
                         onClicked: root.applyChanges()
@@ -935,66 +935,74 @@ Item {
                             spacing: 20 * Appearance.effectiveScale
 
                             ColumnLayout {
-                            spacing: 0
-                            StyledText {
-                            text: "Automatic Scaling"
-                            font.pixelSize: Appearance.font.pixelSize.normal
-                            font.weight: Font.Medium
-                            color: Appearance.colors.colOnLayer1
-                            }
-                            StyledText {
-                            text: "Detect scale based on screen resolution (Base 1080p)"
-                            font.pixelSize: Appearance.font.pixelSize.small
-                            color: Appearance.colors.colSubtext
-                            }
+                                spacing: 0
+                                StyledText {
+                                    text: "Automatic Scaling"
+                                    font.pixelSize: Appearance.font.pixelSize.normal
+                                    font.weight: Font.Medium
+                                    color: Appearance.colors.colOnLayer1
+                                }
+                                StyledText {
+                                    text: "Adjust interface size automatically based on display resolution"
+                                    font.pixelSize: Appearance.font.pixelSize.small
+                                    color: Appearance.colors.colSubtext
+                                }
                             }
 
                             Item { Layout.fillWidth: true }
 
                             AndroidToggle {
-                            checked: Config.ready && Config.options.appearance ? Config.options.appearance.autoScale : true
-                            onToggled: {
-                            if (Config.ready && Config.options.appearance) {
-                            Config.options.appearance.autoScale = !Config.options.appearance.autoScale;
+                                checked: Config.ready && Config.options.appearance ? Config.options.appearance.autoScale : true
+                                onToggled: {
+                                    if (Config.ready && Config.options.appearance) {
+                                        Config.options.appearance.autoScale = !Config.options.appearance.autoScale;
+                                    }
+                                }
                             }
-                            }
-                            }
-                            }
-                            }
+                        }
+                    }
 
-                            // Card 2: Manual Scale Slider (Separated)
-                            SegmentedWrapper {
-                            Layout.fillWidth: true
-                            implicitHeight: manualScaleCol.implicitHeight + (40 * Appearance.effectiveScale)
-                            orientation: Qt.Vertical
-                            color: Appearance.m3colors.m3surfaceContainerHigh
-                            smallRadius: 8 * Appearance.effectiveScale
-                            fullRadius: 20 * Appearance.effectiveScale
+                    // Card 2: Manual Scale Slider (Separated)
+                    SegmentedWrapper {
+                        Layout.fillWidth: true
+                        implicitHeight: manualScaleCol.implicitHeight + (40 * Appearance.effectiveScale)
+                        orientation: Qt.Vertical
+                        color: Appearance.m3colors.m3surfaceContainerHigh
+                        smallRadius: 8 * Appearance.effectiveScale
+                        fullRadius: 20 * Appearance.effectiveScale
 
-                            enabled: Config.ready && Config.options.appearance ? !Config.options.appearance.autoScale : false
-                            opacity: enabled ? 1 : 0.5
-                            Behavior on opacity { NumberAnimation { duration: 200 } }
+                        enabled: Config.ready && Config.options.appearance ? !Config.options.appearance.autoScale : false
+                        opacity: enabled ? 1 : 0.5
+                        Behavior on opacity { NumberAnimation { duration: 200 } }
 
-                            ColumnLayout {
+                        ColumnLayout {
                             id: manualScaleCol
                             anchors.fill: parent
                             anchors.margins: 20 * Appearance.effectiveScale
                             spacing: 12 * Appearance.effectiveScale
 
                             RowLayout {
-                            width: parent.width
-                            StyledText {
-                            text: "Manual Scale"
-                            font.pixelSize: Appearance.font.pixelSize.normal
-                            font.weight: Font.Medium
-                            color: Appearance.colors.colOnLayer1
-                            }
-                            Item { Layout.fillWidth: true }
-                            StyledText {
-                            text: Math.round((Config.ready && Config.options.appearance ? Config.options.appearance.globalScale : 1.0) * 100) + "%"
-                            font.pixelSize: Appearance.font.pixelSize.small
-                            color: Appearance.colors.colPrimary
-                            }
+                                width: parent.width
+                                ColumnLayout {
+                                    spacing: 0
+                                    StyledText {
+                                        text: "Manual Scale"
+                                        font.pixelSize: Appearance.font.pixelSize.normal
+                                        font.weight: Font.Medium
+                                        color: Appearance.colors.colOnLayer1
+                                    }
+                                    StyledText {
+                                        text: "Manually adjust the size of the interface and text."
+                                        font.pixelSize: Appearance.font.pixelSize.small
+                                        color: Appearance.colors.colSubtext
+                                    }
+                                }
+                                Item { Layout.fillWidth: true }
+                                StyledText {
+                                    text: Math.round((Config.ready && Config.options.appearance ? Config.options.appearance.globalScale : 1.0) * 100) + "%"
+                                    font.pixelSize: Appearance.font.pixelSize.small
+                                    color: Appearance.colors.colPrimary
+                                }
                             }
 
                             StyledSlider {

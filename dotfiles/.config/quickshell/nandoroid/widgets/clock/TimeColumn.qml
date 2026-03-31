@@ -29,7 +29,7 @@ Column {
             text: isAmPm ? modelData : modelData.padStart(2, "0")
             color: root.color
             font.family: Appearance.font.family.title
-            font.weight: Font.Bold
+            font.weight: Font.DemiBold
             font.pixelSize: baseSize
             font.hintingPreference: Font.PreferDefaultHinting
             renderType: Text.NativeRendering

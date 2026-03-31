@@ -59,7 +59,7 @@ Item {
                 StyledText {
                     text: "Bluetooth"
                     font.pixelSize: Appearance.font.pixelSize.huge
-                    font.weight: Font.Bold
+                    font.weight: Font.DemiBold
                     color: Appearance.colors.colOnLayer1
                     Layout.fillWidth: true
                 }
@@ -213,7 +213,7 @@ Item {
                                         StyledText {
                                             text: modelData.name || modelData.address
                                             font.pixelSize: Appearance.font.pixelSize.normal
-                                            font.weight: modelData.connected ? Font.Bold : Font.Normal
+                                            font.weight: modelData.connected ? Font.DemiBold : Font.Normal
                                             color: Appearance.colors.colOnLayer1
                                             elide: Text.ElideRight
                                             Layout.fillWidth: true

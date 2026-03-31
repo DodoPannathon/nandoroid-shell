@@ -40,7 +40,7 @@ Item {
             StyledText {
                 text: Functions.General.formatDuration(ScreenRecord.seconds)
                 font.pixelSize: 12 * Appearance.effectiveScale
-                font.weight: Font.Bold
+                font.weight: Font.DemiBold
                 color: Appearance.m3colors.m3onPrimary
             }
         }
