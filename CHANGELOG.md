@@ -1,7 +1,46 @@
+# Nandoroid Shell v1.3.0 Release Notes
+
+## Overview
+This major update introduces a comprehensive global scaling system, enhancing usability across high-resolution displays. It features a new Quick Actions HUD for rapid system tasks, a revamped Wallpaper Selector with online collection support and custom folder management, and an enhanced Weather service with primary provider selection.
+
+## Changelog
+
+**Global Scaling & UI**
+- Implement comprehensive global scaling across all panels, widgets, and sub-components
+- Refine visualizers and layout constraints to maintain fill behavior when scaled
+- Ensure precise interaction zones for autohide panels through dynamic input masking
+
+**Quick Actions & HUD**
+- Implement floating Quick Actions HUD with keyboard navigation and animated stretch-highlights
+- Add Super+G shortcut for rapid access to common system tools and screen utilities
+
+**Wallpaper Selector**
+- Integrate NA-ive Walls online collection with lightweight webp thumbnails
+- Implement persistent custom folder management with automated system-dialog workflow
+- Add stable A-Z/Z-A sorting and separate search states for different categories
+- Refine UI with a unique Sunny-shaped sorting button and improved vertical alignment
+
+**Weather Service**
+- Implement weather provider selection (Open-Meteo or wttr.in) in system settings
+- Set Open-Meteo as the new high-accuracy primary option with automatic location detection
+- Implement robust fallback cycles for maximum data reliability
+
+**Clock & Kustomization**
+- Add Pill and Text clock styles for further desktop personalization
+- Implement date font size customization for digital clocks
+- Refine analog clock face shapes and UI markers for sliders
+
+**System & Stability**
+- Implement smart dependency management and categorization in About page
+- General maintenance including memory optimization and QML warning cleanup
+- Improve contrast for notification counters and system tray icons
+
+---
+
 # Nandoroid Shell v1.2.2 Release Notes
 
 ## Overview
-This update introduces a fully integrated Wallhaven service with smart features, enhances audio device management by filtering virtual nodes, and provides several UI/UX refinements across the lockscreen and system panels. Stability remains a core focus with improved CAVA visualizer logic, OTA metadata handling, and secure command execution.
+This update introduces a fully integrated Wallhaven service with smart features, enhances audio device management by filtering virtual nodes, and provides several UI/UX refinements across the lockscreen and system panels. Stability remains a focus with improved CAVA visualizer logic, OTA metadata handling, and secure command execution.
 
 ## Changelog
 

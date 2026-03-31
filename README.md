@@ -4,7 +4,7 @@ A Quickshell-based desktop shell for Hyprland adopting Android 16 design element
 
 > **Note**: This shell and its dependencies are designed strictly for **Arch Linux based distributions** (Arch, CachyOS, EndeavourOS, etc.).
 
-**Version:** v1.2.2
+**Version:** v1.3.0
 **License:** AGPL-3.0
 
 ## Key Features
@@ -12,7 +12,7 @@ A Quickshell-based desktop shell for Hyprland adopting Android 16 design element
 - **Universal Dynamic Island:** Displays media playback indicators, workspace switching, pomodoro timers, and popup notifications inside a single central notch.
 - **Deep Customizability:** Extensive personalization options (clocks, lockscreen visuals, UI sizing) accessible directly via the built-in Settings panel.
 - **Auto-generated Colors:** Entire shell theme dynamically generated from your wallpaper's colors using Material 3 design tokens (via Matugen).
-- **Wallhaven Integration:** Browse, favorite, and apply thousands of high-quality wallpapers directly from the shell with infinite scroll and smart downloading.
+- **Online Wallpaper Collections:** Browse and apply wallpapers from Wallhaven and personal GitHub collections directly from the shell.
 
 ## Screenshots
 
@@ -212,9 +212,8 @@ This project is a personal creation heavily inspired by the following developers
 - **[end-4](https://github.com/end-4)** - Architecture and shell logic inspired by [dots-hyprland](https://github.com/end-4/dots-hyprland).
 - **[vaguesyntax (Vynx)](https://github.com/vaguesyntax)** - Quickshell translation references from [ii-vynx](https://github.com/vaguesyntax/ii-vynx).
 - **[AvengeMedia](https://github.com/AvengeMedia)** - System monitoring logic from [DankMaterialShell](https://github.com/AvengeMedia/DankMaterialShell) and [dgop](https://github.com/AvengeMedia/dgop).
-- **[Axenide](https://github.com/Axenide)** - Notch concept and spatial references from [Ambxst](https://github.com/Axenide/Ambxst) (AGPL-3.0).
+- **[Axenide](https://github.com/Axenide)** - Notch concept and spatial references from [Ambxst](https://github.com/Axenide/Ambxst).
 
 ### Assets
 
 - **Weather Icons:** Sourced from [mrdarrengriffin/google-weather-icons](https://github.com/mrdarrengriffin/google-weather-icons).
-  - _Disclaimer: These icons are property of Google. Used here for aesthetic purposes in this community project._
