@@ -34,17 +34,61 @@ Item {
     property bool favMode: false
     property bool wallhavenMode: false
     property bool naiveMode: false
+    
+    // Independent search states
+    property string localSearch: ""
+    property string wallhavenSearch: ""
+    property string naiveSearch: ""
+    
+    // Internal lock to prevent recursion during switching
+    property bool _switchingMode: false
+
+    function switchMode(mode) {
+        if (_switchingMode) return;
+        _switchingMode = true;
+        
+        // Save current search state
+        if (wallhavenMode) wallhavenSearch = headerSearch.text;
+        else if (naiveMode) naiveSearch = headerSearch.text;
+        else localSearch = headerSearch.text;
+        
+        // Update modes
+        wallhavenMode = (mode === "wallhaven");
+        naiveMode = (mode === "naive");
+        favMode = (mode === "fav");
+        
+        // Restore search state
+        if (wallhavenMode) {
+            headerSearch.text = wallhavenSearch;
+            // If empty, fetch defaults
+            if (headerSearch.text === "") WallhavenService.search("");
+        } else if (naiveMode) {
+            headerSearch.text = naiveSearch;
+            NaIveWallpaperService.fetch();
+        } else {
+            headerSearch.text = localSearch;
+            if (favMode) {
+                // favModel refreshes itself
+            } else {
+                Wallpapers.searchQuery = localSearch;
+            }
+        }
+        
+        _switchingMode = false;
+    }
+
     property alias searchFilter: headerSearch.text
     
     onSearchFilterChanged: {
+        if (_switchingMode) return;
+        
         if (wallhavenMode) {
             if (searchFilter.startsWith("wallhaven-")) {
                 const id = searchFilter.substring(10).trim();
                 if (id !== "" && id.length > 3) WallhavenService.search(id, true);
             }
         } else if (naiveMode) {
-            // Local search on naive results is handled by searchFilter binding in model if needed
-            // but for now we just show all newest first
+            // ...
         } else {
             Wallpapers.searchQuery = searchFilter
         }
@@ -136,10 +180,17 @@ Item {
                                 clip: true
                                 
                                 onTextChanged: {
+                                    if (mainSelector._switchingMode) return;
+                                    
+                                    // Save state immediately on change
+                                    if (mainSelector.wallhavenMode) mainSelector.wallhavenSearch = text;
+                                    else if (mainSelector.naiveMode) mainSelector.naiveSearch = text;
+                                    else mainSelector.localSearch = text;
+
                                     if (!mainSelector.wallhavenMode && !mainSelector.naiveMode) {
                                         Wallpapers.searchQuery = text
-                                    } else if (text === "") {
-                                        if (mainSelector.wallhavenMode) WallhavenService.search("");
+                                    } else if (text === "" && mainSelector.wallhavenMode) {
+                                        WallhavenService.search("");
                                     }
                                 }
                                 
@@ -201,13 +252,7 @@ Item {
                             colBackground: toggled ? Appearance.colors.colPrimary : Appearance.colors.colLayer1
                             colBackgroundHover: toggled ? Appearance.colors.colPrimaryHover : Appearance.colors.colLayer1Hover
                             
-                            onClicked: {
-                                mainSelector.wallhavenMode = true;
-                                mainSelector.naiveMode = false;
-                                mainSelector.favMode = false;
-                                // Always search for fresh random results
-                                WallhavenService.search("");
-                            }
+                            onClicked: mainSelector.switchMode("wallhaven")
 
                             RowLayout {
                                 anchors.fill: parent; anchors.leftMargin: 20 * Appearance.effectiveScale; spacing: 16 * Appearance.effectiveScale
@@ -223,7 +268,7 @@ Item {
                             }
                         }
 
-                        // --- Na-ive Collection Button ---
+                        // --- NA-ive Walls Collection Button ---
                         RippleButton {
                             id: naiveSideBtn
                             Layout.fillWidth: true
@@ -233,12 +278,7 @@ Item {
                             colBackground: toggled ? Appearance.colors.colPrimary : Appearance.colors.colLayer1
                             colBackgroundHover: toggled ? Appearance.colors.colPrimaryHover : Appearance.colors.colLayer1Hover
                             
-                            onClicked: {
-                                mainSelector.wallhavenMode = false;
-                                mainSelector.naiveMode = true;
-                                mainSelector.favMode = false;
-                                NaIveWallpaperService.fetch();
-                            }
+                            onClicked: mainSelector.switchMode("naive")
 
                             RowLayout {
                                 anchors.fill: parent; anchors.leftMargin: 20 * Appearance.effectiveScale; spacing: 16 * Appearance.effectiveScale
@@ -282,12 +322,10 @@ Item {
                                 colBackgroundToggled: Appearance.m3colors.m3primaryContainer
                                 
                                 onClicked: {
-                                    mainSelector.wallhavenMode = false;
-                                    mainSelector.naiveMode = false;
                                     if (isFavBtn) {
-                                        mainSelector.favMode = true;
+                                        mainSelector.switchMode("fav");
                                     } else {
-                                        mainSelector.favMode = false;
+                                        mainSelector.switchMode("local");
                                         Wallpapers.directory = "file://" + mainSelector.normalizePath(modelData.path);
                                     }
                                 }
@@ -486,9 +524,7 @@ Item {
                                                     }
                                                     onClicked: {
                                                         let s = delegateRoot.selector;
-                                                        s.wallhavenMode = true;
-                                                        s.naiveMode = false;
-                                                        s.favMode = false;
+                                                        s.switchMode("wallhaven");
                                                         s.searchFilter = "wallhaven-" + delegateRoot.wallhavenId;
                                                         WallhavenService.search(delegateRoot.wallhavenId, true);
                                                     }
