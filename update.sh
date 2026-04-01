@@ -3,6 +3,8 @@
 # Nandoroid Shell State-Aware OTA Update Script
 set -e
 
+# Get the directory where the script is located to use as project root
+PROJECT_ROOT="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 MODE=$1
 CHANNEL=$2
 
@@ -14,12 +16,12 @@ if [ ! -f "$STATE_FILE" ]; then
 fi
 
 # Use regular expressions to extract values, since jq might not be installed
+# We still read INSTALL_DIR but will prefer PROJECT_ROOT for file operations
 INSTALL_DIR=$(grep -oP '"install_dir": "\K[^"]*' "$STATE_FILE" || echo "")
 JSON_CHANNEL=$(grep -oP '"channel": "\K[^"]*' "$STATE_FILE" || echo "")
 
 if [ -z "$INSTALL_DIR" ]; then
-    echo "Error: install_dir not found in install_state.json."
-    exit 1
+    INSTALL_DIR="$PROJECT_ROOT"
 fi
 
 if [ -z "$CHANNEL" ]; then
@@ -60,11 +62,11 @@ fi
 
 if [ "$MODE" == "all" ]; then
     echo "Updating all configs..."
-    cp -r dotfiles/.config/* "$HOME/.config/"
+    cp -r "$PROJECT_ROOT/dotfiles/.config/"* "$HOME/.config/"
 elif [ "$MODE" == "shell" ]; then
     echo "Updating shell only..."
     mkdir -p "$HOME/.config/quickshell/nandoroid"
-    cp -r dotfiles/.config/quickshell/nandoroid/* "$HOME/.config/quickshell/nandoroid/"
+    cp -r "$PROJECT_ROOT/dotfiles/.config/quickshell/nandoroid/"* "$HOME/.config/quickshell/nandoroid/"
 else
     echo "Usage: $0 [all|shell] [stable|canary]"
     exit 1
@@ -73,9 +75,9 @@ fi
 # Ensure version.json and dependencies.json are always copied as real files from project root
 echo "Updating shell metadata (version & dependencies)..."
 mkdir -p "$HOME/.config/nandoroid"
-cp version.json "$HOME/.config/nandoroid/version.json"
+cp "$PROJECT_ROOT/version.json" "$HOME/.config/nandoroid/version.json"
 mkdir -p "$HOME/.config/quickshell/nandoroid/data"
-cp data/dependencies.json "$HOME/.config/quickshell/nandoroid/data/dependencies.json"
+cp "$PROJECT_ROOT/data/dependencies.json" "$HOME/.config/quickshell/nandoroid/data/dependencies.json"
 
 # Migration / Config Injection
 HYPR_CONF="$HOME/.config/hypr/hyprland.conf"
