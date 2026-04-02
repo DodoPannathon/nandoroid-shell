@@ -14,28 +14,64 @@ Singleton {
     
     readonly property list<string> imagePatterns: ["*.jpg", "*.jpeg", "*.png", "*.webp", "*.avif"]
 
-    property list<string> favorites: Config.ready ? Config.options.appearance.background.favorites : []
+    property list<string> favorites: []
 
     function isFavorite(path) {
-        if (!Config.ready) return false;
         const cleanPath = path.toString().startsWith("file://") ? path.toString().substring(7) : path.toString();
-        return favorites.includes(cleanPath);
+        // Case-insensitive check for favorites
+        for (let i = 0; i < favorites.length; i++) {
+            if (favorites[i].toLowerCase() === cleanPath.toLowerCase()) return true;
+        }
+        return false;
     }
 
     function toggleFavorite(path) {
-        if (!Config.ready) return;
         const cleanPath = path.toString().startsWith("file://") ? path.toString().substring(7) : path.toString();
         let currentFavs = favorites.slice();
-        const index = currentFavs.indexOf(cleanPath);
         
-        if (index === -1) {
-            currentFavs.push(cleanPath);
-        } else {
-            currentFavs.splice(index, 1);
+        let foundIndex = -1;
+        for (let i = 0; i < currentFavs.length; i++) {
+            if (currentFavs[i].toLowerCase() === cleanPath.toLowerCase()) {
+                foundIndex = i;
+                break;
+            }
         }
         
-        Config.options.appearance.background.favorites = currentFavs;
-        favorites = currentFavs;
+        if (foundIndex === -1) {
+            currentFavs.push(cleanPath);
+        } else {
+            currentFavs.splice(foundIndex, 1);
+        }
+        
+        root.favorites = currentFavs;
+        saveFavorites();
+    }
+
+    function saveFavorites() {
+        const data = JSON.stringify(root.favorites);
+        const path = Directories.favoritesPathRaw;
+        Quickshell.execDetached(["sh", "-c", 'printf "%s" "$1" > "$2"', "sh", data, path]);
+    }
+
+    FileView {
+        id: favsFile
+        path: Directories.favoritesPath
+        watchChanges: true
+        onLoaded: {
+            try {
+                const parsed = JSON.parse(text());
+                if (Array.isArray(parsed)) {
+                    root.favorites = parsed;
+                }
+            } catch(e) {
+
+            }
+        }
+        onLoadFailed: error => {
+            if (error == FileViewError.FileNotFound) {
+                saveFavorites(); // Create it empty
+            }
+        }
     }
 
     // Helper process to generate material colors
