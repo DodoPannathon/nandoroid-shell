@@ -375,6 +375,9 @@ Flickable {
         // ── Clock Style Section ──
         WsClock { Layout.fillWidth: true }
 
+        // ── Visualizer Section ──
+        WsCava { Layout.fillWidth: true }
+
         // ── Lockscreen Section ──
         WsLockscreen { Layout.fillWidth: true }
 

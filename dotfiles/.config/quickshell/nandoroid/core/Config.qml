@@ -107,6 +107,8 @@ Singleton {
                     property string autoCycleDirectory: Directories.home + "/Pictures/Wallpapers"
                     property int autoCycleInterval: 30 // in minutes
                     property list<string> customFolders: []
+                    property bool showCava: false
+                    property real cavaOpacity: 0.15
                 }
                 property JsonObject screenCorners: JsonObject {
                     // mode: 0 (Off), 1 (On, hide on fullscreen), 2 (Always On)
@@ -408,9 +410,10 @@ Singleton {
                 property string wallpaperPath: ""
                 property bool useSeparateWallpaper: false
                 property bool showCava: true
+                property real cavaOpacity: 0.15
                 property bool showMediaCard: true
-                property JsonObject weather: JsonObject {
-                    property string textColorMode: "adaptive" // adaptive, light, dark
+                property bool showWeather: true
+                property JsonObject weather: JsonObject {                    property string textColorMode: "adaptive" // adaptive, light, dark
                 }
                 property JsonObject security: JsonObject {
                     property bool requirePasswordToPower: true

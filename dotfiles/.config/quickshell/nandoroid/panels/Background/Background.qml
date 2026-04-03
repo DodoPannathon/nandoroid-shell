@@ -46,6 +46,28 @@ Variants {
             return windowsOnWs.length === 0;
         }
 
+        // ── Background Cava ──
+        property bool _cavaActive: false
+        readonly property bool shouldVisualize: {
+            if (!Config.ready || !Config.options.appearance.background.showCava) return false;
+            if (GlobalStates.screenLocked) return false; // Handled by LockSurface
+            return bgRoot.isDesktopEmpty && MprisController.isPlaying;
+        }
+
+        onShouldVisualizeChanged: {
+            if (shouldVisualize && !_cavaActive) {
+                CavaService.refCount++;
+                _cavaActive = true;
+            } else if (!shouldVisualize && _cavaActive) {
+                CavaService.refCount--;
+                _cavaActive = false;
+            }
+        }
+
+        Component.onDestruction: {
+            if (_cavaActive) CavaService.refCount--;
+        }
+
         // Auto-dismiss on workspace change
         Connections {
             target: HyprlandData
@@ -177,6 +199,22 @@ Variants {
                 }
             }
             ScriptAction { script: { wallpaper1.visible = false; wallpaper1.opacity = 0; wallpaper1.scale = 1.0; wallpaper1.x = 0; wallpaper1.y = 0; } }
+        }
+
+        WaveVisualizer {
+            id: desktopWave
+            anchors.bottom: parent.bottom
+            anchors.left: parent.left
+            anchors.right: parent.right
+            height: parent.height * 0.4
+            z: 5 // Above wallpaper, below clock (z: 10)
+            
+            color: Appearance.m3colors.m3primary
+            opacityMultiplier: Config.options.appearance.background.cavaOpacity
+            opacity: bgRoot.shouldVisualize ? 1.0 : 0
+            visible: opacity > 0
+            
+            Behavior on opacity { NumberAnimation { duration: 800; easing.type: Easing.InOutQuad } }
         }
 
         Rectangle {

@@ -116,7 +116,7 @@ MouseArea {
         z: -1 // Behind Jam and Password input
         
         color: Appearance.m3colors.m3primary
-        opacityMultiplier: 0.15
+        opacityMultiplier: (Config.ready && Config.options.lock) ? Config.options.lock.cavaOpacity : 0.15
         opacity: root.shouldVisualize ? root.islandOpacity : 0
         visible: opacity > 0
         
@@ -409,7 +409,7 @@ MouseArea {
         ColumnLayout {
             anchors.horizontalCenter: parent.horizontalCenter
             spacing: 6 * Appearance.effectiveScale
-            visible: Config.ready && (Config.options.weather?.enable ?? true)
+            visible: Config.ready && (Config.options.weather?.enable ?? true) && (Config.options.lock?.showWeather ?? true)
 
             RowLayout {
                 Layout.alignment: Qt.AlignHCenter
