@@ -103,6 +103,7 @@ Singleton {
                     property string matugenCustomColor: "#3F51B5"
                     property string matugenThemeFile: ""
                     property string matugenSource: "desktop"
+                    property string liveWallpaperPath: ""
                     property bool autoCycleEnabled: false
                     property string autoCycleDirectory: Directories.home + "/Pictures/Wallpapers"
                     property int autoCycleInterval: 30 // in minutes

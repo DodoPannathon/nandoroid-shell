@@ -303,6 +303,14 @@ Singleton {
         Config.options.lock.wallpaperPath = "file://" + cleanPath
     }
 
+    function generateColors(path) {
+        const cleanPath = path.toString().startsWith("file://") ? path.toString().substring(7) : path.toString()
+        if (Config.options.appearance.background.matugen) {
+            matugenProc.filePath = cleanPath
+            matugenProc.running = true
+        }
+    }
+
     // --- Local state for better reactivity ---
     property bool _autoCycleEnabled: false
     property string _autoCycleDirectory: ""

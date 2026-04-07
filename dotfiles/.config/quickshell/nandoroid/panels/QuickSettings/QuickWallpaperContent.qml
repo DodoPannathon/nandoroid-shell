@@ -394,7 +394,13 @@ Item {
                                 checked: Config.ready && !Config.options.lock.useSeparateWallpaper
                                 onToggled: {
                                     Config.options.lock.useSeparateWallpaper = !Config.options.lock.useSeparateWallpaper;
-                                    if (!Config.options.lock.useSeparateWallpaper) Wallpapers.selectForLockscreen(Config.options.appearance.background.wallpaperPath)
+                                    if (!Config.options.lock.useSeparateWallpaper) {
+                                        let targetPath = Config.options.appearance.background.wallpaperPath;
+                                        if (WallpaperEngineService.active) {
+                                            targetPath = "file://" + WallpaperEngineService.screenshotPath;
+                                        }
+                                        Wallpapers.selectForLockscreen(targetPath)
+                                    }
                                     refreshPreviews();
                                 }
                             }
@@ -407,13 +413,16 @@ Item {
                         WallpaperPreview {
                             Layout.fillWidth: true; Layout.preferredWidth: 1
                             title: "Desktop wallpaper"
-                            source: Config.ready ? Config.options.appearance.background.wallpaperPath : ""
+                            source: {
+                                if (WallpaperEngineService.active) return "file://" + WallpaperEngineService.screenshotPath;
+                                return Config.ready ? Config.options.appearance.background.wallpaperPath : "";
+                            }
                             onClicked: { GlobalStates.wallpaperSelectorTarget = "desktop"; GlobalStates.wallpaperSelectorOpen = true; }
                         }
                         WallpaperPreview {
                             Layout.fillWidth: true; Layout.preferredWidth: 1
                             title: "Lock screen wallpaper"
-                            source: Config.ready ? (Config.options.lock.useSeparateWallpaper ? Config.options.lock.wallpaperPath : Config.options.appearance.background.wallpaperPath) : ""
+                            source: Config.ready ? (Config.options.lock.useSeparateWallpaper ? Config.options.lock.wallpaperPath : (WallpaperEngineService.active ? "file://" + WallpaperEngineService.screenshotPath : Config.options.appearance.background.wallpaperPath)) : ""
                             showCheckmark: !Config.options.lock.useSeparateWallpaper
                             clickable: Config.options.lock.useSeparateWallpaper
                             onClicked: { GlobalStates.wallpaperSelectorTarget = "lock"; GlobalStates.wallpaperSelectorOpen = true; }

@@ -160,12 +160,24 @@ Item {
     }
 
     function selectWallpaper(path) {
+        // Stop Wallpaper Engine if switching to static on desktop
         if (GlobalStates.wallpaperSelectorTarget === "desktop") {
+            WallpaperEngineService.stop();
             Wallpapers.select(path)
         } else {
             Wallpapers.selectForLockscreen(path)
         }
         mainSelector.close()
+    }
+
+    Connections {
+        target: GlobalStates
+        function onWallpaperSelectorTargetChanged() {
+            // Revert to local mode if target becomes lockscreen while in live mode
+            if (GlobalStates.wallpaperSelectorTarget === "lock" && mainSelector.liveMode) {
+                mainSelector.switchMode("local");
+            }
+        }
     }
 
     function normalizePath(p) {
@@ -354,6 +366,9 @@ Item {
                                     implicitHeight: 52 * Appearance.effectiveScale
                                     buttonRadius: 16 * Appearance.effectiveScale
                                     toggled: mainSelector.liveMode
+                                    enabled: GlobalStates.wallpaperSelectorTarget === "desktop" && WallpaperEngineService.isInstalled
+                                    opacity: enabled ? 1 : 0.4
+                                    
                                     colBackground: toggled ? Appearance.colors.colPrimary : Appearance.colors.colLayer1
                                     colBackgroundHover: toggled ? Appearance.colors.colPrimaryHover : Appearance.colors.colLayer1Hover
                                     
@@ -369,6 +384,14 @@ Item {
                                             text: "Live Wallpaper"; Layout.fillWidth: true; 
                                             font.weight: liveSideBtn.toggled ? Font.DemiBold : Font.Normal
                                             color: liveSideBtn.toggled ? Appearance.colors.colOnPrimary : Appearance.colors.colOnLayer0
+                                        }
+                                    }
+                                    
+                                    StyledToolTip {
+                                        text: {
+                                            if (!WallpaperEngineService.isInstalled) return "linux-wallpaperengine not found";
+                                            if (GlobalStates.wallpaperSelectorTarget !== "desktop") return "Live wallpapers only supported on desktop";
+                                            return "Browse Wallpaper Engine collection";
                                         }
                                     }
                                 }
@@ -397,6 +420,7 @@ Item {
                                             color: wallhavenSideBtn.toggled ? Appearance.colors.colOnPrimary : Appearance.colors.colOnLayer0
                                         }
                                     }
+                                    StyledToolTip { text: "Search and download from Wallhaven.cc" }
                                 }
 
                                 // --- NA-ive Walls Collection Button ---
@@ -423,6 +447,7 @@ Item {
                                             color: naiveSideBtn.toggled ? Appearance.colors.colOnPrimary : Appearance.colors.colOnLayer0
                                         }
                                     }
+                                    StyledToolTip { text: "Browse the curated NA-ive wallpaper collection" }
                                 }
 
                                 Item { width: parent.width; height: 12 * Appearance.effectiveScale } // Gap separator
@@ -451,6 +476,7 @@ Item {
                                             color: favSideBtn.toggled ? Appearance.m3colors.m3onPrimaryContainer : Appearance.colors.colOnLayer0
                                         }
                                     }
+                                    StyledToolTip { text: "View your favorite wallpapers" }
                                 }
 
                                 // --- Local Group (Standard Folders) ---
@@ -490,6 +516,7 @@ Item {
                                                 color: folderBtn.toggled ? Appearance.m3colors.m3onPrimaryContainer : Appearance.colors.colOnLayer0
                                             }
                                         }
+                                        StyledToolTip { text: "Browse wallpapers in " + modelData.name }
                                     }
                                 }
 
@@ -892,6 +919,7 @@ Item {
                                         return "No wallpapers in collection";
                                     }
                                     if (mainSelector.liveMode) {
+                                        if (!WallpaperEngineService.isInstalled) return "linux-wallpaperengine-git is required for this feature";
                                         if (WallpaperEngineService.errorMessage !== "") return WallpaperEngineService.errorMessage;
                                         if (WallpaperEngineService.loading) return "Scanning Steam Workshop...";
                                         return "No Wallpaper Engine wallpapers found";
@@ -1007,7 +1035,10 @@ Item {
                             colBackground: Appearance.colors.colPrimary
                             colText: Appearance.colors.colOnPrimary
                             onClicked: {
-                                // TODO: Implement apply logic for Wallpaper Engine
+                                if (mainSelector.selectedWallpaper) {
+                                    WallpaperEngineService.apply(mainSelector.selectedWallpaper.folder, mainSelector.selectedWallpaper.preview);
+                                    mainSelector.close();
+                                }
                             }
                         }
                     }
