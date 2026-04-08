@@ -386,7 +386,7 @@ print(json.dumps(wallpapers))
     function updatePauseState() {
         if (root.isApplying || !root.autoPause || !root.isRunning || !HyprlandData.activeWorkspace) return;
         const currentWsId = HyprlandData.activeWorkspace.id;
-        const shellClasses = ["Quickshell", "nandoroid-settings", "nandoroid-monitor", "wayland-dashboard", "waybar", "ags", "fuzzel"];
+        const shellClasses = ["Quickshell", "nandoroid-settings", "nandoroid-monitor", "wayland-dashboard", "waybar", "ags", "fuzzel", "linux-wallpaperengine"];
         const realWindows = HyprlandData.windowList.filter(win => {
             return win.workspace.id === currentWsId && !shellClasses.includes(win.class) && win.mapped && win.class !== ""; 
         });

@@ -461,7 +461,7 @@ Singleton {
                 property bool disableMouse: false
                 property bool disableAudioProcessing: false
                 property string scaling: "fill" // stretch, fit, fill, cover
-                property bool noPbo: true
+                property bool noPbo: false
             }
         }
     }
