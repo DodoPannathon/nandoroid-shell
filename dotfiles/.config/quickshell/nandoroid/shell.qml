@@ -61,9 +61,6 @@ ShellRoot {
     // ── Phase 5: Quick Settings ──
     QuickSettings {}
 
-    // ── Phase 5.5: Quick Wallpaper ──
-    QuickWallpaper {}
-
     // ── Phase 5.6: Quick Actions ──
     QuickActions {}
 
@@ -197,13 +194,6 @@ ShellRoot {
         function open() { GlobalStates.overviewOpen = true }
         function close() { GlobalStates.overviewOpen = false }
         function toggle() { GlobalStates.overviewOpen = !GlobalStates.overviewOpen }
-    }
-
-    IpcHandler {
-        target: "quickwallpaper"
-        function open() { GlobalStates.quickWallpaperOpen = true }
-        function close() { GlobalStates.quickWallpaperOpen = false }
-        function toggle() { GlobalStates.quickWallpaperOpen = !GlobalStates.quickWallpaperOpen }
     }
 
     IpcHandler {

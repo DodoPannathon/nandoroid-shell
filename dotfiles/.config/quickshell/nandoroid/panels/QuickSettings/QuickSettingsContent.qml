@@ -439,7 +439,9 @@ Item {
                         colBackgroundHover: Appearance.colors.colLayer2
                         colRipple: Appearance.colors.colLayer2Active
                         onClicked: {
-                            GlobalStates.quickWallpaperOpen = !GlobalStates.quickWallpaperOpen
+                            root.close()
+                            GlobalStates.wallpaperSelectorTarget = "desktop"
+                            GlobalStates.wallpaperSelectorOpen = true
                         }
                         MaterialSymbol {
                             anchors.centerIn: parent
@@ -447,6 +449,7 @@ Item {
                             iconSize: 18 * Appearance.effectiveScale
                             color: Appearance.m3colors.m3onSurface
                         }
+                        StyledToolTip { text: "Wallpaper & Style" }
                     }
 
                     RippleButton {
