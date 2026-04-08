@@ -108,7 +108,11 @@ Singleton {
             if (exitCode === 0) {
                 // File exists
                 if (apply) {
-                    Wallpapers.select("file://" + fullPath);
+                    if (GlobalStates.wallpaperSelectorTarget === "desktop") {
+                        Wallpapers.select("file://" + fullPath);
+                    } else {
+                        Wallpapers.selectForLockscreen("file://" + fullPath);
+                    }
                     root.sendNotification("Wallhaven", "Already exists. Applied!");
                 } else {
                     root.sendNotification("Wallhaven", "Already downloaded: " + fileName);
@@ -123,7 +127,11 @@ Singleton {
                     });
                     p.exited.connect((exitCode) => {
                         if (exitCode === 0) {
-                            Wallpapers.select("file://" + fullPath);
+                            if (GlobalStates.wallpaperSelectorTarget === "desktop") {
+                                Wallpapers.select("file://" + fullPath);
+                            } else {
+                                Wallpapers.selectForLockscreen("file://" + fullPath);
+                            }
                             root.sendNotification("Wallhaven", "Wallpaper applied successfully!");
                         } else {
                             root.sendNotification("Wallhaven", "Download failed.");

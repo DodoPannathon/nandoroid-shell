@@ -75,6 +75,10 @@ MouseArea {
         id: wallpaper
         anchors.fill: parent
         z: -2
+        
+        readonly property bool usingLiveWallpaper: !Config.options.lock.useSeparateWallpaper && WallpaperEngineService.active
+        visible: !usingLiveWallpaper
+        
         source: {
             if (!Config.ready) return ""
             if (Config.options.lock.useSeparateWallpaper && Config.options.lock.wallpaperPath !== "") {

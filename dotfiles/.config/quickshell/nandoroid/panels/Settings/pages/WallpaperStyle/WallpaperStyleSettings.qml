@@ -307,7 +307,12 @@ Flickable {
                                 const current = Config.options.lock.useSeparateWallpaper
                                 Config.options.lock.useSeparateWallpaper = !current
                                 if (current) { // Was true (separate), now false (synced)
-                                    Wallpapers.selectForLockscreen(Config.options.appearance.background.wallpaperPath)
+                                    // If Live Wallpaper is active, sync with the sharp screenshot instead of thumbnail
+                                    let targetPath = Config.options.appearance.background.wallpaperPath;
+                                    if (WallpaperEngineService.active) {
+                                        targetPath = "file://" + WallpaperEngineService.screenshotPath;
+                                    }
+                                    Wallpapers.selectForLockscreen(targetPath)
                                 }
                             }
                         }
@@ -333,7 +338,10 @@ Flickable {
                     Layout.fillWidth: true
                     Layout.preferredWidth: 1
                     title: "Desktop wallpaper"
-                    source: (Config.ready && Config.options.appearance && Config.options.appearance.background) ? Config.options.appearance.background.wallpaperPath : ""
+                    source: {
+                        if (WallpaperEngineService.active) return "file://" + WallpaperEngineService.screenshotPath + "?v=" + WallpaperEngineService.screenshotVersion;
+                        return (Config.ready && Config.options.appearance && Config.options.appearance.background) ? Config.options.appearance.background.wallpaperPath : "";
+                    }
                     showCheckmark: false
                     clickable: true
                     onClicked: {
@@ -346,11 +354,14 @@ Flickable {
                     Layout.fillWidth: true
                     Layout.preferredWidth: 1
                     title: "Lock screen wallpaper"
-                    source: (Config.ready && Config.options.lock)
-                        ? (Config.options.lock.useSeparateWallpaper
-                            ? Config.options.lock.wallpaperPath
-                            : (Config.options.appearance && Config.options.appearance.background ? Config.options.appearance.background.wallpaperPath : ""))
-                        : ""
+                    source: {
+                        if (!Config.ready || !Config.options.lock) return "";
+                        if (!Config.options.lock.useSeparateWallpaper) {
+                            if (WallpaperEngineService.active) return "file://" + WallpaperEngineService.screenshotPath + "?v=" + WallpaperEngineService.screenshotVersion;
+                            return (Config.options.appearance && Config.options.appearance.background ? Config.options.appearance.background.wallpaperPath : "");
+                        }
+                        return Config.options.lock.wallpaperPath;
+                    }
                      showCheckmark: Config.ready && (Config.options.lock ? !Config.options.lock.useSeparateWallpaper : false)
                      clickable: Config.ready && (Config.options.lock ? Config.options.lock.useSeparateWallpaper : true)
                      onClicked: {

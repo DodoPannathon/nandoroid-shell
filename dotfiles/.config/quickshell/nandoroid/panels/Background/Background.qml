@@ -25,7 +25,7 @@ Variants {
         // Basic positioning
         screen: modelData
         exclusionMode: ExclusionMode.Ignore
-        WlrLayershell.layer: WlrLayer.Background
+        WlrLayershell.layer: WlrLayer.Bottom
         WlrLayershell.namespace: "quickshell:background"
         anchors {
             top: true
@@ -34,9 +34,18 @@ Variants {
             right: true
         }
 
-        // Color handling
-        color: Appearance.colors.colLayer0
+        // Window level transparency is ALWAYS ON for stability.
+        // We handle background color via an internal Rectangle instead.
+        color: "transparent"
 
+        // Base background color (only visible when live wallpaper is OFF)
+        Rectangle {
+            id: baseColor
+            anchors.fill: parent
+            color: Appearance.colors.colLayer0
+            z: -1
+            visible: !WallpaperEngineService.active
+        }
 
         // Desktop status tracking
         readonly property bool isDesktopEmpty: {
@@ -50,7 +59,7 @@ Variants {
         property bool _cavaActive: false
         readonly property bool shouldVisualize: {
             if (!Config.ready || !Config.options.appearance.background.showCava) return false;
-            if (GlobalStates.screenLocked) return false; // Handled by LockSurface
+            if (GlobalStates.screenLocked) return false;
             return bgRoot.isDesktopEmpty && MprisController.isPlaying;
         }
 
@@ -68,7 +77,6 @@ Variants {
             if (_cavaActive) CavaService.refCount--;
         }
 
-        // Auto-dismiss on workspace change
         Connections {
             target: HyprlandData
             function onActiveWorkspaceChanged() {
@@ -76,17 +84,13 @@ Variants {
             }
         }
 
-        // Simplified polished cross-fade logic
         property string currentPath: (Config.ready && Config.options.appearance && Config.options.appearance.background && Config.options.appearance.background.wallpaperPath) ? Config.options.appearance.background.wallpaperPath : ""
         
-        // Random Transition Logic
         property string currentTransitionMode: "fade"
         readonly property var transitionModes: ["fade", "zoomIn", "zoomOut", "slideUp", "slideDown", "slideLeft", "slideRight"]
 
         onCurrentPathChanged: {
             if (currentPath === "" || currentPath === undefined) return;
-            
-            // Pick a random transition mode
             currentTransitionMode = transitionModes[Math.floor(Math.random() * transitionModes.length)];
 
             if (wallpaper1.visible) {
@@ -116,33 +120,40 @@ Variants {
             }
         }
 
-        // --- Wallpaper Layers ---
-        Image {
-            id: wallpaper1
-            width: bgRoot.width
-            height: bgRoot.height
-            source: bgRoot.currentPath
-            fillMode: Image.PreserveAspectCrop
-            visible: true
+        // --- Container for Static Wallpapers ---
+        Item {
+            id: staticWallpaperContainer
+            anchors.fill: parent
             z: 1
-            opacity: 1
-            scale: 1.0
-            transformOrigin: Item.Center
+            opacity: WallpaperEngineService.active ? 0 : 1
+            visible: opacity > 0
+            // No behavior here to prevent twitching during rapid changes
+            
+            Image {
+                id: wallpaper1
+                anchors.fill: parent
+                source: bgRoot.currentPath
+                fillMode: Image.PreserveAspectCrop
+                visible: true
+                z: 1
+                opacity: 1
+                scale: 1.0
+                transformOrigin: Item.Center
+            }
+
+            Image {
+                id: wallpaper2
+                anchors.fill: parent
+                fillMode: Image.PreserveAspectCrop
+                visible: false
+                z: 1
+                opacity: 0
+                scale: 1.0
+                transformOrigin: Item.Center
+            }
         }
 
-        Image {
-            id: wallpaper2
-            width: bgRoot.width
-            height: bgRoot.height
-            fillMode: Image.PreserveAspectCrop
-            visible: false
-            z: 1
-            opacity: 0
-            scale: 1.0
-            transformOrigin: Item.Center
-        }
-
-        // --- Polished Transitions (Randomized & Optimized) ---
+        // --- Transitions ---
         SequentialAnimation {
             id: transAnim1
             ScriptAction { 
@@ -207,13 +218,11 @@ Variants {
             anchors.left: parent.left
             anchors.right: parent.right
             height: parent.height * 0.4
-            z: 5 // Above wallpaper, below clock (z: 10)
-            
+            z: 5
             color: Appearance.m3colors.m3primary
             opacityMultiplier: Config.options.appearance.background.cavaOpacity
             opacity: bgRoot.shouldVisualize ? 1.0 : 0
             visible: opacity > 0
-            
             Behavior on opacity { NumberAnimation { duration: 800; easing.type: Easing.InOutQuad } }
         }
 
@@ -225,17 +234,14 @@ Variants {
             Behavior on opacity { NumberAnimation { duration: 300 } }
         }
 
-        // Swipe-up gesture area - BELOW clock (z: 0)
         MouseArea {
             id: gestureArea
             anchors.fill: parent
             hoverEnabled: true
             z: 0
             acceptedButtons: Qt.LeftButton | Qt.RightButton
-
             property int startY: 0
             property bool isDragging: false
-
             onPressed: (mouse) => {
                 if (mouse.button === Qt.RightButton && bgRoot.isDesktopEmpty) {
                     desktopContextMenu.anchor.window = bgRoot;
@@ -243,15 +249,10 @@ Variants {
                     mouse.accepted = true;
                     return;
                 }
-
-                if (mouse.button === Qt.LeftButton) {
-                    desktopContextMenu.close();
-                }
-
+                if (mouse.button === Qt.LeftButton) desktopContextMenu.close();
                 startY = mouse.y;
                 isDragging = true;
             }
-
             onPositionChanged: (mouse) => {
                 if (isDragging) {
                     let deltaY = startY - mouse.y;
@@ -261,17 +262,13 @@ Variants {
                     }
                 }
             }
-
-            onReleased: {
-                isDragging = false;
-            }
+            onReleased: { isDragging = false; }
         }
 
-        // Clock is placed directly in PanelWindow, ABOVE gestureArea (z: 10)
         NandoClock {
             z: 10
             isLockscreen: false
-            interactive: true // Always interactive for clock menu
+            interactive: true
             opacity: (!GlobalStates.screenLocked && visible) ? 1 : 0
             Behavior on opacity { NumberAnimation { duration: 300 } }
             onRequestContextMenu: (x, y, isClock) => {
