@@ -20,11 +20,18 @@ Singleton {
     property var activeProperties: ({}) 
     property var savedConfigs: ({})
     property string selectedWallpaperId: ""
-    
-    property int targetFps: 30
-    property int volume: 15
-    property bool silent: false
-    property bool autoPause: true
+    // Settings (Bound to Config)
+    property int targetFps: Config.ready ? Config.options.wallpaperEngine.fps : 30
+    property int volume: Config.ready ? Config.options.wallpaperEngine.volume : 15
+    property bool silent: Config.ready ? Config.options.wallpaperEngine.silent : false
+    property bool autoPause: Config.ready ? Config.options.wallpaperEngine.autoPause : true
+    property bool disableParticles: Config.ready ? Config.options.wallpaperEngine.disableParticles : true
+    property bool disableParallax: Config.ready ? Config.options.wallpaperEngine.disableParallax : false
+    property bool disableMouse: Config.ready ? Config.options.wallpaperEngine.disableMouse : false
+    property bool disableAudioProcessing: Config.ready ? Config.options.wallpaperEngine.disableAudioProcessing : false
+    property string scaling: Config.ready ? Config.options.wallpaperEngine.scaling : "fill"
+    property bool noPbo: Config.ready ? Config.options.wallpaperEngine.noPbo : true
+
 
     readonly property string cacheDir: Directories.home.replace("file://", "") + "/.cache/nandoroid"
     readonly property string cacheFile: cacheDir + "/we_configs.json"
@@ -219,7 +226,15 @@ print(json.dumps(props))
             Quickshell.execDetached(["hyprctl", "keyword", "windowrule", "stopanim,linux-wallpaperengine"]);
             Quickshell.execDetached(["hyprctl", "keyword", "windowrule", "noinitialfocus,linux-wallpaperengine"]);
             
-            let args = ["linux-wallpaperengine", "--screen-root", monitorName, "--use-gl", "--no-pbo", "--disable-particles", "--scaling", "stretch", "--clamp", "border", "--no-fullscreen-pause"];
+            let args = ["linux-wallpaperengine", "--screen-root", monitorName, "--use-gl", "--clamp", "border", "--no-fullscreen-pause"];
+            
+            args.push("--scaling", root.scaling);
+            if (root.noPbo) args.push("--no-pbo");
+            if (root.disableParticles) args.push("--disable-particles");
+            if (root.disableParallax) args.push("--disable-parallax");
+            if (root.disableMouse) args.push("--disable-mouse");
+            if (root.disableAudioProcessing) args.push("--no-audio-processing");
+            
             args.push("--fps", fpsStr, "--volume", volStr);
             if (isSilent) args.push("--silent");
             args.push("--screenshot", sPath, "--screenshot-delay", "30");

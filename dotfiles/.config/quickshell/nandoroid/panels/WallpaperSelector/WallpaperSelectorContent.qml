@@ -302,13 +302,13 @@ Item {
                         Layout.preferredWidth: 44 * Appearance.effectiveScale
                         Layout.preferredHeight: 44 * Appearance.effectiveScale
                         Layout.alignment: Qt.AlignVCenter
-                        Layout.leftMargin: -12 * Appearance.effectiveScale // Negative margin to bring it closer
-                        visible: !mainSelector.wallhavenMode && !mainSelector.naiveMode
+                        Layout.leftMargin: -12 * Appearance.effectiveScale 
+                        visible: !mainSelector.wallhavenMode && !mainSelector.naiveMode && !mainSelector.liveMode
 
                         RippleButton {
                             id: sortBtn
                             anchors.fill: parent
-                            buttonRadius: 8 * Appearance.effectiveScale // Even smaller to match Sunny shape
+                            buttonRadius: 8 * Appearance.effectiveScale 
                             colBackground: "transparent"
                             onClicked: sortPopup.visible = !sortPopup.visible
                             
@@ -323,6 +323,36 @@ Item {
                                 rotation: sortPopup.visible ? 45 : 0
                             }
                             StyledToolTip { text: "Sort Options" }
+                        }
+                    }
+
+                    // Global Wallpaper Engine Settings Button
+                    Item {
+                        id: weSettingsBtnContainer
+                        Layout.preferredWidth: 44 * Appearance.effectiveScale
+                        Layout.preferredHeight: 44 * Appearance.effectiveScale
+                        Layout.alignment: Qt.AlignVCenter
+                        Layout.leftMargin: -12 * Appearance.effectiveScale 
+                        visible: mainSelector.liveMode
+
+                        RippleButton {
+                            id: weSettingsBtn
+                            anchors.fill: parent
+                            buttonRadius: 8 * Appearance.effectiveScale 
+                            colBackground: "transparent"
+                            onClicked: weSettingsPopup.visible = !weSettingsPopup.visible
+                            
+                            MaterialShapeWrappedMaterialSymbol {
+                                anchors.centerIn: parent
+                                implicitSize: 42 * Appearance.effectiveScale
+                                shapeString: "Sunny"
+                                color: Appearance.colors.colSecondary
+                                colSymbol: Appearance.colors.colOnSecondary
+                                text: "settings"
+                                iconSize: 20 * Appearance.effectiveScale
+                                rotation: weSettingsPopup.visible ? 45 : 0
+                            }
+                            StyledToolTip { text: "Global Engine Settings" }
                         }
                     }
 
@@ -1240,6 +1270,178 @@ Item {
                             }
                         }
                     }
+                }
+            }
+        }
+
+        // --- Global Wallpaper Engine Settings Popup ---
+        MouseArea {
+            id: weSettingsOverlay
+            anchors.fill: parent
+            visible: weSettingsPopup.visible
+            z: 99
+            onPressed: weSettingsPopup.visible = false
+        }
+
+        Rectangle {
+            id: weSettingsPopup
+            visible: false
+            z: 100
+            width: 280 * Appearance.effectiveScale
+            height: weSettingsCol.implicitHeight + (24 * Appearance.effectiveScale)
+            
+            x: {
+                let p = weSettingsBtn.mapToItem(bgContainer, 0, 0);
+                return Math.min(bgContainer.width - width - 12 * Appearance.effectiveScale, p.x + weSettingsBtn.width - width);
+            }
+            y: {
+                let p = weSettingsBtn.mapToItem(bgContainer, 0, 0);
+                return p.y + weSettingsBtn.height + (8 * Appearance.effectiveScale);
+            }
+
+            color: Appearance.colors.colLayer1
+            radius: 20 * Appearance.effectiveScale
+            border.width: 1
+            border.color: Appearance.colors.colOutlineVariant
+            
+            ColumnLayout {
+                id: weSettingsCol
+                anchors.fill: parent
+                anchors.margins: 16 * Appearance.effectiveScale
+                spacing: 12 * Appearance.effectiveScale
+                
+                StyledText {
+                    text: "Global Engine Settings"
+                    font.pixelSize: 14 * Appearance.effectiveScale
+                    font.weight: Font.DemiBold
+                    color: Appearance.colors.colOnLayer1
+                }
+
+                // FPS Slider
+                ColumnLayout {
+                    Layout.fillWidth: true; spacing: 4 * Appearance.effectiveScale
+                    RowLayout {
+                        Layout.fillWidth: true
+                        StyledText { text: "Target FPS"; font.pixelSize: 12 * Appearance.effectiveScale; color: Appearance.colors.colOnLayer1; Layout.fillWidth: true }
+                        StyledText { text: Math.round(fpsSlider.value); font.pixelSize: 12 * Appearance.effectiveScale; color: Appearance.colors.colPrimary; font.weight: Font.Bold }
+                    }
+                    StyledSlider {
+                        id: fpsSlider
+                        Layout.fillWidth: true
+                        from: 10; to: 144
+                        value: Config.ready ? Config.options.wallpaperEngine.fps : 30
+                        onMoved: if (Config.ready) Config.options.wallpaperEngine.fps = Math.round(value)
+                    }
+                }
+
+                // Volume Slider
+                ColumnLayout {
+                    Layout.fillWidth: true; spacing: 4 * Appearance.effectiveScale
+                    RowLayout {
+                        Layout.fillWidth: true
+                        StyledText { text: "Global Volume"; font.pixelSize: 12 * Appearance.effectiveScale; color: Appearance.colors.colOnLayer1; Layout.fillWidth: true }
+                        StyledText { text: Math.round(volSlider.value) + "%"; font.pixelSize: 12 * Appearance.effectiveScale; color: Appearance.colors.colPrimary; font.weight: Font.Bold }
+                    }
+                    StyledSlider {
+                        id: volSlider
+                        Layout.fillWidth: true
+                        from: 0; to: 100
+                        value: Config.ready ? Config.options.wallpaperEngine.volume : 15
+                        onMoved: if (Config.ready) Config.options.wallpaperEngine.volume = Math.round(value)
+                    }
+                }
+
+                // Scaling Mode
+                ColumnLayout {
+                    Layout.fillWidth: true; spacing: 4 * Appearance.effectiveScale
+                    StyledText { text: "Scaling Mode"; font.pixelSize: 12 * Appearance.effectiveScale; color: Appearance.colors.colOnLayer1 }
+                    StyledComboBox {
+                        id: scalingCombo
+                        Layout.fillWidth: true
+                        searchable: false
+                        text: Config.ready ? Config.options.wallpaperEngine.scaling.charAt(0).toUpperCase() + Config.options.wallpaperEngine.scaling.slice(1) : "Fill"
+                        model: ["Fill", "Stretch", "Fit", "Cover"]
+                        onAccepted: (val) => {
+                            if (Config.ready) Config.options.wallpaperEngine.scaling = val.toLowerCase();
+                        }
+                    }
+                }
+
+                // Toggles
+                ColumnLayout {
+                    Layout.fillWidth: true; spacing: 8 * Appearance.effectiveScale
+                    
+                    RowLayout {
+                        Layout.fillWidth: true
+                        StyledText { text: "Mute Audio"; font.pixelSize: 12 * Appearance.effectiveScale; color: Appearance.colors.colOnLayer1; Layout.fillWidth: true }
+                        AndroidToggle {
+                            checked: Config.ready ? Config.options.wallpaperEngine.silent : false
+                            onToggled: if (Config.ready) Config.options.wallpaperEngine.silent = !checked
+                        }
+                    }
+
+                    RowLayout {
+                        Layout.fillWidth: true
+                        StyledText { text: "Disable Audio Processing"; font.pixelSize: 12 * Appearance.effectiveScale; color: Appearance.colors.colOnLayer1; Layout.fillWidth: true }
+                        AndroidToggle {
+                            checked: Config.ready ? Config.options.wallpaperEngine.disableAudioProcessing : false
+                            onToggled: if (Config.ready) Config.options.wallpaperEngine.disableAudioProcessing = !checked
+                        }
+                    }
+
+                    RowLayout {
+                        Layout.fillWidth: true
+                        StyledText { text: "Auto-Pause (Windows)"; font.pixelSize: 12 * Appearance.effectiveScale; color: Appearance.colors.colOnLayer1; Layout.fillWidth: true }
+                        AndroidToggle {
+                            checked: Config.ready ? Config.options.wallpaperEngine.autoPause : true
+                            onToggled: if (Config.ready) Config.options.wallpaperEngine.autoPause = !checked
+                        }
+                    }
+
+                    RowLayout {
+                        Layout.fillWidth: true
+                        StyledText { text: "Disable Particles"; font.pixelSize: 12 * Appearance.effectiveScale; color: Appearance.colors.colOnLayer1; Layout.fillWidth: true }
+                        AndroidToggle {
+                            checked: Config.ready ? Config.options.wallpaperEngine.disableParticles : true
+                            onToggled: if (Config.ready) Config.options.wallpaperEngine.disableParticles = !checked
+                        }
+                    }
+
+                    RowLayout {
+                        Layout.fillWidth: true
+                        StyledText { text: "Disable Parallax"; font.pixelSize: 12 * Appearance.effectiveScale; color: Appearance.colors.colOnLayer1; Layout.fillWidth: true }
+                        AndroidToggle {
+                            checked: Config.ready ? Config.options.wallpaperEngine.disableParallax : false
+                            onToggled: if (Config.ready) Config.options.wallpaperEngine.disableParallax = !checked
+                        }
+                    }
+
+                    RowLayout {
+                        Layout.fillWidth: true
+                        StyledText { text: "Disable Mouse Interaction"; font.pixelSize: 12 * Appearance.effectiveScale; color: Appearance.colors.colOnLayer1; Layout.fillWidth: true }
+                        AndroidToggle {
+                            checked: Config.ready ? Config.options.wallpaperEngine.disableMouse : false
+                            onToggled: if (Config.ready) Config.options.wallpaperEngine.disableMouse = !checked
+                        }
+                    }
+
+                    RowLayout {
+                        Layout.fillWidth: true
+                        StyledText { text: "Disable PBO (Texture Fix)"; font.pixelSize: 12 * Appearance.effectiveScale; color: Appearance.colors.colOnLayer1; Layout.fillWidth: true }
+                        AndroidToggle {
+                            checked: Config.ready ? Config.options.wallpaperEngine.noPbo : true
+                            onToggled: if (Config.ready) Config.options.wallpaperEngine.noPbo = !checked
+                        }
+                    }
+                }
+                
+                Item { Layout.preferredHeight: 4 * Appearance.effectiveScale }
+                
+                StyledText {
+                    text: "* Requires Apply to take full effect"
+                    font.pixelSize: 10 * Appearance.effectiveScale
+                    color: Appearance.colors.colSubtext
+                    horizontalAlignment: Text.AlignRight; Layout.fillWidth: true
                 }
             }
         }
