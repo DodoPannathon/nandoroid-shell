@@ -50,11 +50,23 @@ Singleton {
     }
 
     Component.onCompleted: {
-        cavaCheck.running = true;
+        // Cleanup any orphan cava processes from previous session
+        Quickshell.execDetached(["pkill", "-9", "cava"]);
+        
+        // Wait for system audio to stabilize before checking availability
+        startupTimer.start();
+        
         // Initialize values
         let arr = [];
         for (let i = 0; i < barCount; i++) arr.push(0);
         root.values = arr;
+    }
+
+    Timer {
+        id: startupTimer
+        interval: 2500 // 2.5 seconds delay for startup stability
+        repeat: false
+        onTriggered: cavaCheck.running = true;
     }
 
     Process {
