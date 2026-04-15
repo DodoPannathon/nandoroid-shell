@@ -42,6 +42,21 @@ Singleton {
     readonly property ListModel currentProperties: ListModel { id: propsModel }
     readonly property ListModel results: ListModel { id: resultsModel }
 
+    Timer {
+        id: lowerTimer
+        interval: 1000
+        repeat: true
+        property int count: 0
+        onTriggered: {
+            Quickshell.execDetached(["hyprctl", "dispatch", "lower", "class:.*wallpaperengine.*"]);
+            count++;
+            if (count > 5) {
+                count = 0;
+                stop();
+            }
+        }
+    }
+
     // --- Persistence Logic ---
 
     Process {
@@ -223,8 +238,25 @@ print(json.dumps(props))
             let props = root.activeProperties;
             
             Quickshell.execDetached(["rm", "-f", sPath]);
-            Quickshell.execDetached(["hyprctl", "keyword", "windowrule", "stopanim,linux-wallpaperengine"]);
-            Quickshell.execDetached(["hyprctl", "keyword", "windowrule", "noinitialfocus,linux-wallpaperengine"]);
+            
+            // Force linux-wallpaperengine into the background layer using layerrule
+            Quickshell.execDetached(["hyprctl", "keyword", "layerrule", "layer:background,linux-wallpaperengine"]);
+            Quickshell.execDetached(["hyprctl", "keyword", "layerrule", "layer:background,class:.*wallpaperengine.*"]);
+            
+            // Basic window rules for older versions or non-layer-shell modes
+            Quickshell.execDetached(["hyprctl", "keyword", "windowrule", "workspace -1,class:.*wallpaperengine.*"]);
+            Quickshell.execDetached(["hyprctl", "keyword", "windowrule", "noanim,class:.*wallpaperengine.*"]);
+            Quickshell.execDetached(["hyprctl", "keyword", "windowrule", "noinitialfocus,class:.*wallpaperengine.*"]);
+            Quickshell.execDetached(["hyprctl", "keyword", "windowrule", "pin,class:.*wallpaperengine.*"]);
+            Quickshell.execDetached(["hyprctl", "keyword", "windowrule", "float,class:.*wallpaperengine.*"]);
+            Quickshell.execDetached(["hyprctl", "keyword", "windowrule", "size 100% 100%,class:.*wallpaperengine.*"]);
+            Quickshell.execDetached(["hyprctl", "keyword", "windowrule", "move 0 0,class:.*wallpaperengine.*"]);
+            Quickshell.execDetached(["hyprctl", "keyword", "windowrule", "nofocus,class:.*wallpaperengine.*"]);
+            Quickshell.execDetached(["hyprctl", "keyword", "windowrule", "noshadow,class:.*wallpaperengine.*"]);
+            Quickshell.execDetached(["hyprctl", "keyword", "windowrule", "noblur,class:.*wallpaperengine.*"]);
+            
+            // Failsafe: force it to the bottom after it spawns
+            lowerTimer.start();
             
             let args = ["linux-wallpaperengine", "--screen-root", monitorName, "--use-gl", "--clamp", "border", "--no-fullscreen-pause"];
             
@@ -237,7 +269,7 @@ print(json.dumps(props))
             
             args.push("--fps", fpsStr, "--volume", volStr);
             if (isSilent) args.push("--silent");
-            args.push("--screenshot", sPath, "--screenshot-delay", "30");
+            args.push("--screenshot", sPath, "--screenshot-delay", "1500");
             for (let key in props) {
                 let val = props[key];
                 let valStr = String(val);
@@ -312,6 +344,13 @@ print(json.dumps(wallpapers))
         }
     }
 
+    onIsRunningChanged: {
+        if (isRunning) {
+            lowerTimer.count = 0;
+            lowerTimer.start();
+        }
+    }
+
     Process {
         id: activeProcess
         onExited: (exitCode) => { root.isPaused = false; }
@@ -329,7 +368,7 @@ print(json.dumps(wallpapers))
             if (code === 0) {
                 console.log("[WallpaperEngine] Screenshot detected, processing Matugen...");
                 matugenWatchTimer.stop();
-                root.screenshotVersion++;
+                root.screenshotVersion = root.screenshotVersion + 1; // Explicit increment
                 Wallpapers.generateColors(root.screenshotPath);
                 
                 // CRITICAL: Now we can safely allow the process to be auto-paused
@@ -423,4 +462,8 @@ print(json.dumps(wallpapers))
     }
 
     Component.onCompleted: { if (Config.ready) root.loadCache(); }
+
+    Component.onDestruction: {
+        root.stopInternal();
+    }
 }

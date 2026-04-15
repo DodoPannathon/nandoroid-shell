@@ -34,11 +34,13 @@ import Quickshell.Hyprland
 ShellRoot {
     id: root
 
+    // Reference singleton to ensure it is instantiated
+    readonly property var _caffeine: Caffeine
+
     Component.onCompleted: {
         MaterialThemeLoader.reapplyTheme()
         Wallpapers.syncSettings() // Ensure Wallpapers service is active and synced
         SmartAutomation.runAutomationCycle() // Kickstart smart automation
-        if (Caffeine.active) console.log("Caffeine active on startup")
     }
 
     // ── Phase 0: Lock Screen ──
@@ -46,6 +48,7 @@ ShellRoot {
 
     // ── Phase 1: Background ──
     Background {}
+    DesktopWidgets {}
 
     // ── Phase 2: Status Bar ──
     StatusBar {}
