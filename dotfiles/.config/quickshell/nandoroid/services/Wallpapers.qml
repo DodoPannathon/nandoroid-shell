@@ -93,9 +93,9 @@ Singleton {
 
     Process {
         id: matugenColorProc
-        command: ["bash", "-c", `matugen -c ~/.config/matugen/config.toml -t "$1" -m "$2" color hex "$3" --source-color-index 0 && sh -c "~/.config/quickshell/nandoroid/scripts/colors/apply_system_theme.sh"`, "matugen", scheme, (Config.options.appearance.background.darkmode ? "dark" : "light"), hexColor]
+        command: ["bash", "-c", `matugen -c ~/.config/matugen/config.toml -t "$1" -m "$2" color hex "$3" && sh -c "~/.config/quickshell/nandoroid/scripts/colors/apply_system_theme.sh"`, "matugen", scheme, (Config.options.appearance.background.darkmode ? "dark" : "light"), hexColor]
         property string hexColor
-        property string scheme: "scheme-tonal-spot"
+        property string scheme: Config.options.appearance.background.matugenScheme || "scheme-tonal-spot"
 
         stderr: StdioCollector {
             onStreamFinished: {
@@ -168,16 +168,55 @@ Singleton {
         }
     }
 
-    function applyColor(hex) {
+    function applyColor(hex, source = "desktop") {
         if (!Config.ready) return;
         Config.options.appearance.background.matugen = false // Disable wallpaper-based matugen
         Config.options.appearance.background.matugenCustomColor = hex
-        matugenColorProc.hexColor = hex
-        matugenColorProc.running = true
+        Config.options.appearance.background.matugenThemeFile = ""
+        Config.options.appearance.background.matugenSource = source
         
-        // We don't save single colors to the material theme file yet 
-        // because we don't have a full Material 3 JSON for a single color 
-        // in a simple way without running matugen.
+        matugenColorProc.running = false;
+        matugenColorProc.hexColor = hex;
+        // Small delay to ensure process state reset
+        Qt.callLater(() => { matugenColorProc.running = true; });
+    }
+
+    function pickAccent(target = "desktop") {
+        // Normalize target name to "lockscreen" if it's "lock"
+        const finalTarget = target === "lock" ? "lockscreen" : target;
+        const cmd = `
+            pkill hyprpicker || true
+            sleep 0.5
+            HEX=$(hyprpicker --no-fancy)
+            if [[ "$HEX" =~ ^#[0-9A-Fa-f]{6}$ ]]; then
+                qs -c nandoroid ipc call wallpaper_accent apply_accent "$HEX" "${finalTarget}"
+            else
+                qs -c nandoroid ipc call wallpaper_accent close_accent
+            fi
+        `;
+        Quickshell.execDetached(["bash", "-c", cmd]);
+    }
+
+    IpcHandler {
+        target: "wallpaper_accent"
+        function apply_accent(hex: string, source: string): void {
+            console.log("[Wallpapers] Accent color picked: " + hex + " for " + source);
+            root.applyColor(hex, source);
+            GlobalStates.accentPickerOpen = false;
+        }
+        function close_accent(): void {
+            GlobalStates.accentPickerOpen = false;
+        }
+    }
+
+    // Kill hyprpicker if the overlay is closed through other means (shortcut, launcher, etc)
+    Connections {
+        target: GlobalStates
+        function onAccentPickerOpenChanged() {
+            if (!GlobalStates.accentPickerOpen) {
+                Quickshell.execDetached(["pkill", "hyprpicker"]);
+            }
+        }
     }
 
     Process {
@@ -355,6 +394,8 @@ Singleton {
             const theme = bg.matugenThemeFile;
             if (theme && theme !== "") {
                 root.applyTheme(theme);
+            } else if (bg.matugenCustomColor && bg.matugenCustomColor !== "") {
+                root.applyColor(bg.matugenCustomColor);
             } else {
                 root.applyTheme("mocha.json");
             }
@@ -479,12 +520,15 @@ Singleton {
         ignoreUnknownSignals: true
         function onMatugenChanged() {
             if (!Config.ready) return;
-            if (Config.options.appearance.background.matugen) {
+            const bg = Config.options.appearance.background;
+            if (bg.matugen) {
                 root.initializeMatugen();
             } else {
-                const theme = Config.options.appearance.background.matugenThemeFile;
+                const theme = bg.matugenThemeFile;
                 if (theme && theme !== "") {
                     root.applyTheme(theme);
+                } else if (bg.matugenCustomColor && bg.matugenCustomColor !== "") {
+                    root.applyColor(bg.matugenCustomColor);
                 } else {
                     root.applyTheme("mocha.json");
                 }

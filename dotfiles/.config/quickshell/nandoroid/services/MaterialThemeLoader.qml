@@ -39,12 +39,7 @@ Singleton {
         repeat: false
         running: false
         onTriggered: {
-            // Only auto-apply from generated file if matugen (wallpaper mode) is active
-            if (Config.ready && Config.options.appearance.background.matugen) {
-                root.applyColors(themeFileView.text())
-            } else {
-
-            }
+            root.applyColors(themeFileView.text())
         }
     }
 
@@ -59,10 +54,7 @@ Singleton {
         onLoadedChanged: {
             const fileContent = themeFileView.text()
             if (fileContent.trim() !== "") {
-                // Only auto-apply from generated file if matugen (wallpaper mode) is active
-                if (Config.ready && Config.options.appearance.background.matugen) {
-                    root.applyColors(fileContent)
-                }
+                root.applyColors(fileContent)
             }
         }
         onLoadFailed: error => {

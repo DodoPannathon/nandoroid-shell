@@ -49,3 +49,5 @@ WaveVisualizer WaveVisualizer.qml
 MediaCard MediaCard.qml
 WeatherCard WeatherCard.qml
 ScreenshotOverlay ScreenshotOverlay.qml
+AccentPicker AccentPicker.qml
+AccentPickerOverlay AccentPickerOverlay.qml

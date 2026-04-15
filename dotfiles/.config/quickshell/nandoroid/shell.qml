@@ -313,6 +313,8 @@ ShellRoot {
     }
 
     // ── Phase 15: Screenshot Overlay ──
+    AccentPicker {}
+
     Variants {
         model: Quickshell.screens
         

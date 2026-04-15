@@ -27,6 +27,21 @@ Singleton {
     property bool spotlightOpen: false
     property string initialSpotlightQuery: ""
     property bool settingsOpen: false
+    property bool accentPickerOpen: false
+    onAccentPickerOpenChanged: {
+        if (accentPickerOpen) {
+            // When opening picker, ensure other distracting panels are closed
+            launcherOpen = false;
+            dashboardOpen = false;
+            spotlightOpen = false;
+            notificationCenterOpen = false;
+            quickSettingsOpen = false;
+            quickActionsOpen = false;
+            sessionOpen = false;
+        }
+    }
+
+    property string accentPickerTarget: "desktop" // "desktop" or "lockscreen"
     property bool dashboardOpen: false
     property bool systemMonitorOpen: false
     property bool regionSelectorOpen: false
@@ -84,6 +99,7 @@ Singleton {
 
     onNotificationCenterOpenChanged: {
         if (notificationCenterOpen) {
+            accentPickerOpen = false
             quickSettingsOpen = false
             quickActionsOpen = false
             launcherOpen = false
@@ -95,6 +111,7 @@ Singleton {
 
     onQuickSettingsOpenChanged: {
         if (quickSettingsOpen) {
+            accentPickerOpen = false
             notificationCenterOpen = false
             quickActionsOpen = false
             launcherOpen = false
@@ -106,6 +123,7 @@ Singleton {
 
     onQuickActionsOpenChanged: {
         if (quickActionsOpen) {
+            accentPickerOpen = false
             notificationCenterOpen = false
             quickSettingsOpen = false
             launcherOpen = false
@@ -117,6 +135,7 @@ Singleton {
 
     onLauncherOpenChanged: {
         if (launcherOpen) {
+            accentPickerOpen = false
             notificationCenterOpen = false
             quickSettingsOpen = false
             spotlightOpen = false
@@ -139,6 +158,7 @@ Singleton {
 
     onDashboardOpenChanged: {
         if (dashboardOpen) {
+            accentPickerOpen = false
             notificationCenterOpen = false
             quickSettingsOpen = false
             quickActionsOpen = false
@@ -162,6 +182,7 @@ Singleton {
 
     onSpotlightOpenChanged: {
         if (spotlightOpen) {
+            accentPickerOpen = false
             notificationCenterOpen = false
             quickSettingsOpen = false
             quickActionsOpen = false
@@ -173,6 +194,7 @@ Singleton {
 
     onSessionOpenChanged: {
         if (sessionOpen) {
+            accentPickerOpen = false
             notificationCenterOpen = false
             quickSettingsOpen = false
             quickActionsOpen = false
@@ -215,6 +237,7 @@ Singleton {
         overviewOpen = false
         mediaNotchOpen = false
         trayOverflowOpen = false
+        accentPickerOpen = false
         // Note: wallpaperSelectorOpen and regionSelectorOpen are excluded
     }
 
