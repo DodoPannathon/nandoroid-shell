@@ -102,14 +102,16 @@ Flickable {
 
     Process {
         id: previewMatugen
-        command: ["bash", "-c", `matugen -c ~/.config/matugen/config.toml -t "$1" -m "$2" image "$3" --dry-run -j hex --old-json-output --source-color-index 0`, "matugen", currentScheme, (Config.options.appearance.background.darkmode ? "dark" : "light"), currentPath]
+        command: ["bash", "-c", `[ -f "$3" ] && matugen -c ~/.config/matugen/config.toml -t "$1" -m "$2" image "$3" --dry-run -j hex --old-json-output --source-color-index 0`, "matugen", currentScheme, (Config.options.appearance.background.darkmode ? "dark" : "light"), currentPath]
         property string currentScheme: ""
         property string currentPath: ""
         property string currentSource: ""
         
         stderr: StdioCollector {
             onStreamFinished: {
-                if (this.text.includes("Error:") || this.text.includes("Invalid")) {
+                // Only notify on actual fatal errors to avoid spam during transitions
+                // We check if the text is long enough to be a real error message
+                if (this.text.length > 50 && (this.text.includes("Failed to generate base16 color schemes") || this.text.includes("Invalid PNG signature"))) {
                     root.sendNotification("Preview Error", "Failed to generate preview for this wallpaper.");
                 }
             }
@@ -163,7 +165,7 @@ Flickable {
         interval: 50
         repeat: false
         onTriggered: {
-            if (!Config.ready || !Config.options.lock || !Config.options.appearance) {
+            if (!Config.ready || !Config.options.lock || !Config.options.appearance || WallpaperEngineService.isApplying) {
                 previewIterateTimer.start();
                 return;
             }
@@ -178,9 +180,13 @@ Flickable {
             }
             
             const scheme = matugenSchemes[previewIndex].id;
-            const path = (previewSource === "lockscreen" && Config.options.lock) 
+            let path = (previewSource === "lockscreen" && Config.options.lock) 
                 ? Config.options.lock.wallpaperPath 
                 : (Config.options.appearance && Config.options.appearance.background ? Config.options.appearance.background.wallpaperPath : "");
+            
+            if (previewSource === "desktop" && WallpaperEngineService.active) {
+                path = WallpaperEngineService.screenshotPath;
+            }
             
             if (!path) {
                 previewIndex++;
@@ -205,7 +211,7 @@ Flickable {
     }
 
     function refreshPreviews() {
-        if (!Config.ready || previewIterateTimer.running || previewMatugen.running) return;
+        if (!Config.ready || previewIterateTimer.running || previewMatugen.running || WallpaperEngineService.isApplying) return;
         previewIndex = 0;
         previewSource = "desktop";
         root.pendingPreviews = {};
@@ -229,6 +235,11 @@ Flickable {
         target: Config.ready ? Config.options.lock : null
         function onWallpaperPathChanged() { refreshPreviews() }
         function onUseSeparateWallpaperChanged() { refreshPreviews() }
+    }
+
+    Connections {
+        target: WallpaperEngineService
+        function onScreenshotVersionChanged() { refreshPreviews() }
     }
 
 

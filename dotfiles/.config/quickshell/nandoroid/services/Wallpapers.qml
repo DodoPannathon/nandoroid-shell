@@ -123,6 +123,18 @@ Singleton {
         Quickshell.execDetached(cmd);
     }
 
+    function getWallpaperPath(source = "desktop") {
+        if (source === "lockscreen") {
+            return Config.options.lock.wallpaperPath;
+        }
+        
+        if (WallpaperEngineService.active) {
+            return WallpaperEngineService.screenshotPath;
+        }
+        
+        return Config.options.appearance.background.wallpaperPath;
+    }
+
     function toggleDarkMode() {
         if (!Config.ready) return;
         Config.options.appearance.background.darkmode = !Config.options.appearance.background.darkmode;
@@ -130,7 +142,7 @@ Singleton {
         // Re-run colors generation
         if (Config.options.appearance.background.matugen) {
             const source = Config.options.appearance.background.matugenSource || "desktop"
-            const path = source === "lockscreen" ? Config.options.lock.wallpaperPath : Config.options.appearance.background.wallpaperPath
+            const path = root.getWallpaperPath(source)
             const cleanPath = path.toString().startsWith("file://") ? path.toString().substring(7) : path.toString()
             if (cleanPath !== "") {
                 matugenProc.filePath = cleanPath
@@ -152,6 +164,8 @@ Singleton {
         }
         
         if (Config.options.appearance.background.matugen) {
+            // When selecting a static wallpaper, we use the cleanPath directly 
+            // but we can also use getWallpaperPath which will return the new wallpaperPath since WE is not active
             matugenProc.filePath = cleanPath
             matugenProc.running = true
         }
@@ -164,7 +178,7 @@ Singleton {
         Config.options.appearance.background.matugenSource = source
         
         if (Config.options.appearance.background.matugen) {
-            const path = source === "lockscreen" ? Config.options.lock.wallpaperPath : Config.options.appearance.background.wallpaperPath
+            const path = root.getWallpaperPath(source)
             const cleanPath = path.toString().startsWith("file://") ? path.toString().substring(7) : path.toString()
             if (cleanPath === "") return
             matugenProc.filePath = cleanPath
@@ -290,7 +304,7 @@ Singleton {
         
         if (Config.options.appearance.background.matugen) {
             const source = Config.options.appearance.background.matugenSource || "desktop"
-            const path = (source === "lockscreen" && Config.options.lock) ? Config.options.lock.wallpaperPath : Config.options.appearance.background.wallpaperPath;
+            const path = root.getWallpaperPath(source);
             const cleanPath = path.toString().startsWith("file://") ? path.toString().substring(7) : path.toString();
             if (cleanPath !== "") {
                 matugenProc.filePath = cleanPath;

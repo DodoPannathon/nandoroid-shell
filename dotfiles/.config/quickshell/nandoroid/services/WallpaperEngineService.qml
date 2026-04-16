@@ -269,7 +269,7 @@ print(json.dumps(props))
             
             args.push("--fps", fpsStr, "--volume", volStr);
             if (isSilent) args.push("--silent");
-            args.push("--screenshot", sPath, "--screenshot-delay", "1500");
+            args.push("--screenshot", sPath, "--screenshot-delay", "100");
             for (let key in props) {
                 let val = props[key];
                 let valStr = String(val);
