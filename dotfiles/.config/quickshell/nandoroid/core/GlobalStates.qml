@@ -47,6 +47,7 @@ Singleton {
     property bool regionSelectorOpen: false
     property bool overviewOpen: false
     property bool dockMenuOpen: false
+    property bool desktopContextMenuOpen: false
     property bool mediaNotchOpen: false
     property bool trayOverflowOpen: false
     property real trayPosX: 0

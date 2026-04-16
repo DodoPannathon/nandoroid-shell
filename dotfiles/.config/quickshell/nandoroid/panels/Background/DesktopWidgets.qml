@@ -103,7 +103,6 @@ Variants {
             
             onPressed: (mouse) => {
                 if (mouse.button === Qt.RightButton && widgetRoot.isDesktopEmpty) {
-                    desktopContextMenu.anchor.window = widgetRoot;
                     desktopContextMenu.openAt(mouse.x, mouse.y, false);
                     mouse.accepted = true;
                     return;
@@ -165,15 +164,14 @@ Variants {
             opacity: (!GlobalStates.screenLocked && visible) ? 1 : 0
             Behavior on opacity { NumberAnimation { duration: 300 } }
             onRequestContextMenu: (x, y, isClock) => {
-                desktopContextMenu.anchor.window = widgetRoot;
                 desktopContextMenu.openAt(x, y, isClock);
             }
         }
 
         DesktopContextMenu {
             id: desktopContextMenu
+            screen: widgetRoot.modelData
             visible: false
-            anchor.edges: Edges.Top | Edges.Left
         }
 
         Connections {
