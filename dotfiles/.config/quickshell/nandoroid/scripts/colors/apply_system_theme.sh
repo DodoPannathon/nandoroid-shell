@@ -56,6 +56,19 @@ if [[ -d "$VENV_PATH" && -f "$COLOR_FILE" ]]; then
     MODE_FLAG="-l"
     [[ "$DARK_MODE" == "true" ]] && MODE_FLAG="-d"
 
+    # Wait for any previous instance to finish to avoid lock issues or pile-up
+    # but don't wait forever, kill if it takes too long (> 15s)
+    MAX_WAIT=15
+    WAIT_COUNT=0
+    while pgrep -f "kde-material-you-colors" > /dev/null; do
+        if [ $WAIT_COUNT -ge $MAX_WAIT ]; then
+            pkill -f "kde-material-you-colors"
+            break
+        fi
+        sleep 1
+        ((WAIT_COUNT++))
+    done
+
     # Run in background as it might take a moment to apply
     "$VENV_PATH/bin/kde-material-you-colors" "$MODE_FLAG" --color "$COLOR" -sv "$sv_num" &
 fi

@@ -77,7 +77,7 @@ Singleton {
     // Helper process to generate material colors
     Process {
         id: matugenProc
-        command: ["bash", "-c", `matugen -c ~/.config/matugen/config.toml -t "$1" -m "$2" image "$3" --source-color-index 0 && sh -c "~/.config/quickshell/nandoroid/scripts/colors/apply_system_theme.sh"`, "matugen", scheme, (Config.options.appearance.background.darkmode ? "dark" : "light"), filePath]
+        command: ["bash", "-c", `matugen -c ~/.config/matugen/config.toml -t "$1" -m "$2" image "$3" --source-color-index 0`, "matugen", scheme, (Config.options.appearance.background.darkmode ? "dark" : "light"), filePath]
         property string filePath
         property string scheme: Config.options.appearance.background.matugenScheme || "scheme-tonal-spot"
         
@@ -93,7 +93,7 @@ Singleton {
 
     Process {
         id: matugenColorProc
-        command: ["bash", "-c", `matugen -c ~/.config/matugen/config.toml -t "$1" -m "$2" color hex "$3" && sh -c "~/.config/quickshell/nandoroid/scripts/colors/apply_system_theme.sh"`, "matugen", scheme, (Config.options.appearance.background.darkmode ? "dark" : "light"), hexColor]
+        command: ["bash", "-c", `matugen -c ~/.config/matugen/config.toml -t "$1" -m "$2" color hex "$3"`, "matugen", scheme, (Config.options.appearance.background.darkmode ? "dark" : "light"), hexColor]
         property string hexColor
         property string scheme: {
             // When in Basic mode, always use tonal-spot for the system generation
