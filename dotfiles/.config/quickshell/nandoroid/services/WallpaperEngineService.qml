@@ -239,21 +239,23 @@ print(json.dumps(props))
             
             Quickshell.execDetached(["rm", "-f", sPath]);
             
-            // Force linux-wallpaperengine into the background layer using layerrule
-            Quickshell.execDetached(["hyprctl", "keyword", "layerrule", "layer:background,linux-wallpaperengine"]);
-            Quickshell.execDetached(["hyprctl", "keyword", "layerrule", "layer:background,class:.*wallpaperengine.*"]);
+            // Batch Hyprland commands to reduce IPC overhead
+            const batchCmd = [
+                "keyword layerrule 'layer:background,linux-wallpaperengine'",
+                "keyword layerrule 'layer:background,class:.*wallpaperengine.*'",
+                "keyword windowrule 'workspace -1,class:.*wallpaperengine.*'",
+                "keyword windowrule 'noanim,class:.*wallpaperengine.*'",
+                "keyword windowrule 'noinitialfocus,class:.*wallpaperengine.*'",
+                "keyword windowrule 'pin,class:.*wallpaperengine.*'",
+                "keyword windowrule 'float,class:.*wallpaperengine.*'",
+                "keyword windowrule 'size 100% 100%,class:.*wallpaperengine.*'",
+                "keyword windowrule 'move 0 0,class:.*wallpaperengine.*'",
+                "keyword windowrule 'nofocus,class:.*wallpaperengine.*'",
+                "keyword windowrule 'noshadow,class:.*wallpaperengine.*'",
+                "keyword windowrule 'noblur,class:.*wallpaperengine.*'"
+            ].join(" ; ");
             
-            // Basic window rules for older versions or non-layer-shell modes
-            Quickshell.execDetached(["hyprctl", "keyword", "windowrule", "workspace -1,class:.*wallpaperengine.*"]);
-            Quickshell.execDetached(["hyprctl", "keyword", "windowrule", "noanim,class:.*wallpaperengine.*"]);
-            Quickshell.execDetached(["hyprctl", "keyword", "windowrule", "noinitialfocus,class:.*wallpaperengine.*"]);
-            Quickshell.execDetached(["hyprctl", "keyword", "windowrule", "pin,class:.*wallpaperengine.*"]);
-            Quickshell.execDetached(["hyprctl", "keyword", "windowrule", "float,class:.*wallpaperengine.*"]);
-            Quickshell.execDetached(["hyprctl", "keyword", "windowrule", "size 100% 100%,class:.*wallpaperengine.*"]);
-            Quickshell.execDetached(["hyprctl", "keyword", "windowrule", "move 0 0,class:.*wallpaperengine.*"]);
-            Quickshell.execDetached(["hyprctl", "keyword", "windowrule", "nofocus,class:.*wallpaperengine.*"]);
-            Quickshell.execDetached(["hyprctl", "keyword", "windowrule", "noshadow,class:.*wallpaperengine.*"]);
-            Quickshell.execDetached(["hyprctl", "keyword", "windowrule", "noblur,class:.*wallpaperengine.*"]);
+            Quickshell.execDetached(["hyprctl", "--batch", batchCmd]);
             
             // Failsafe: force it to the bottom after it spawns
             lowerTimer.start();
@@ -435,7 +437,7 @@ print(json.dumps(wallpapers))
         else root.resume();
     }
 
-    Timer { id: pauseDebounceTimer; interval: 350; repeat: false; onTriggered: updatePauseState() }
+    Timer { id: pauseDebounceTimer; interval: 500; repeat: false; onTriggered: updatePauseState() }
 
     Connections {
         target: HyprlandData; enabled: root.autoPause && root.isRunning

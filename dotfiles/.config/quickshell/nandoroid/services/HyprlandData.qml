@@ -47,10 +47,10 @@ Singleton {
     function updateActiveWindow() { getActiveWindow.running = true; }
     
     // Targeted Update Timers
-    Timer { id: windowUpdateTimer; interval: 250; repeat: false; onTriggered: updateWindowList() }
-    Timer { id: workspaceUpdateTimer; interval: 150; repeat: false; onTriggered: updateWorkspaces() }
-    Timer { id: monitorUpdateTimer; interval: 500; repeat: false; onTriggered: updateMonitors() }
-    Timer { id: activeWinUpdateTimer; interval: 100; repeat: false; onTriggered: updateActiveWindow() }
+    Timer { id: windowUpdateTimer; interval: 350; repeat: false; onTriggered: updateWindowList() }
+    Timer { id: workspaceUpdateTimer; interval: 200; repeat: false; onTriggered: updateWorkspaces() }
+    Timer { id: monitorUpdateTimer; interval: 1000; repeat: false; onTriggered: updateMonitors() }
+    Timer { id: activeWinUpdateTimer; interval: 150; repeat: false; onTriggered: updateActiveWindow() }
 
     Process {
         id: layoutProc
