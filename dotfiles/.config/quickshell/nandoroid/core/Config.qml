@@ -264,6 +264,7 @@ Singleton {
                 property real height: 40
                 property string layoutStyle: "standard" 
                 property int centeredWidth: 1200
+                property string clockPosition: "center" 
                 property string textColorMode: "adaptive" 
                 property bool useGradient: true
                 property int backgroundStyle: 0
