@@ -38,11 +38,12 @@ Item {
     function updateTimerState() {
         if (!notificationObject || !notificationObject.timer) return;
 
-        // Combine multiple detection sources for maximum reliability
-        if (hoverHandler.hovered || dragManager.containsMouse) {
+        if (hoverHandler.hovered || dragManager.pressed) {
             notificationObject.timer.stop();
         } else {
-            notificationObject.timer.restart();
+            if (!notificationObject.timer.running) {
+                notificationObject.timer.start();
+            }
         }
     }
 

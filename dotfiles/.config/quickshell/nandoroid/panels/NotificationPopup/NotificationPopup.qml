@@ -42,9 +42,8 @@ Scope {
             id: maskItem
             anchors.horizontalCenter: parent.horizontalCenter
             width: listview.width
-            anchors.top: parent.top
-            anchors.topMargin: ((Config.options?.statusBar?.height ?? 40) * Appearance.effectiveScale) - (20 * Appearance.effectiveScale)
-            height: listview.contentHeight + (100 * Appearance.effectiveScale)
+            anchors.top: listview.top
+            height: listview.contentHeight
         }
 
         color: "transparent"
