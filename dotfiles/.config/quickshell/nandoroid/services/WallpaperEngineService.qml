@@ -355,10 +355,50 @@ print(json.dumps(wallpapers))
 
     Process {
         id: activeProcess
-        onExited: (exitCode) => { root.isPaused = false; }
+        onExited: (exitCode) => { 
+            root.isPaused = false; 
+            // Detect if process crashed or exited prematurely while we were trying to apply it
+            if (root.isApplying && exitCode !== 0) {
+                console.warn("[WallpaperEngine] Process failed to start with code:", exitCode);
+                root.handleApplyError("Process exited with error code " + exitCode);
+            }
+        }
         stderr: StdioCollector {
             onStreamFinished: {
-                if (this.text.trim() !== "") console.warn("[WallpaperEngine] Log:", this.text.trim());
+                if (this.text.trim() !== "") {
+                    console.warn("[WallpaperEngine] Log:", this.text.trim());
+                    // Some wallpapers fail because of missing files or shaders
+                    if (root.isApplying && (this.text.includes("Failed to load") || this.text.includes("error"))) {
+                        // We don't trigger error immediately here because some errors are non-fatal, 
+                        // the matugenWatchTimer will handle the actual functional failure.
+                    }
+                }
+            }
+        }
+    }
+
+    function handleApplyError(reason) {
+        if (!root.isApplying) return;
+        
+        console.error("[WallpaperEngine] Apply Error:", reason);
+        root.isApplying = false;
+        matugenWatchTimer.stop();
+        applyFinishFailsafe.stop();
+        
+        // Notify user
+        Wallpapers.sendNotification("Live Wallpaper Error", "Failed to apply live wallpaper. Falling back to a random static wallpaper.");
+        
+        // Clean up
+        root.stopInternal();
+        
+        // Reset config to static mode
+        if (Config.ready) {
+            Config.options.appearance.background.liveWallpaperPath = "";
+            // Fallback to random favorite static wallpaper
+            const success = Wallpapers.selectRandomFavorite();
+            if (!success) {
+                // If no favorites, just re-init colors for current wallpaper
+                Wallpapers.initializeMatugen();
             }
         }
     }
@@ -392,7 +432,9 @@ print(json.dumps(wallpapers))
             if (attempts > 15) { 
                 console.warn("[WallpaperEngine] Matugen watch timeout - no screenshot produced");
                 matugenWatchTimer.stop(); 
-                if (root.isApplying) { root.isApplying = false; root.updatePauseState(); }
+                if (root.isApplying) { 
+                    root.handleApplyError("Timeout waiting for wallpaper to render (15s)");
+                }
                 return; 
             }
             checkFileProc.running = true;
