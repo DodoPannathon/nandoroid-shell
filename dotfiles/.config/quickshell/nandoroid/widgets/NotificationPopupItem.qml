@@ -129,7 +129,7 @@ Item {
                 font.pixelSize: 14 * Appearance.effectiveScale
                 
                 wrapMode: root.expanded ? Text.Wrap : Text.NoWrap
-                maximumLineCount: root.expanded ? 40 : 1
+                maximumLineCount: root.expanded ? 12 : 1
                 elide: Text.ElideRight 
                 
                 visible: text !== ""
@@ -141,119 +141,136 @@ Item {
                 }
             }
             
-            // Actions (Only when expanded) - Responsive Row
-            Row {
-                id: actionsRow
+            // Actions (Only when expanded) - Flickable Row
+            StyledFlickable {
+                id: actionsFlickable
                 width: parent.width
+                height: actionsRow.implicitHeight
+                contentWidth: actionsRow.implicitWidth
                 visible: root.expanded && notificationObject
-                spacing: 8 * Appearance.effectiveScale
-                
-                readonly property int totalButtons: (notificationObject ? notificationObject.actions.length : 0) + 3
-                readonly property real buttonWidth: (width - (spacing * (totalButtons - 1))) / totalButtons
+                clip: true
+                interactive: true
 
-                NotificationActionButton {
-                    width: actionsRow.buttonWidth
-                    onClicked: {
-                        if (notificationObject) Notifications.attemptInvokeAction(notificationObject.notificationId, "default");
-                    }
-                    contentItem: Item {
-                        Row {
-                            spacing: 4 * Appearance.effectiveScale
-                            anchors.centerIn: parent
-                            MaterialSymbol {
-                                iconSize: 16 * Appearance.effectiveScale
-                                anchors.verticalCenter: parent.verticalCenter
-                                color: (notificationObject && notificationObject.urgency == NotificationUrgency.Critical) ? 
-                                    Appearance.m3colors.m3onSurfaceVariant : Appearance.m3colors.m3onSurface
-                                text: "visibility"
-                            }
-                            StyledText {
-                                text: "View"
-                                font.pixelSize: 12 * Appearance.effectiveScale
-                                anchors.verticalCenter: parent.verticalCenter
-                                visible: parent.parent.parent.width > 60 * Appearance.effectiveScale
-                                color: (notificationObject && notificationObject.urgency == NotificationUrgency.Critical) ? 
-                                    Appearance.m3colors.m3onSurfaceVariant : Appearance.m3colors.m3onSurface
-                            }
-                        }
-                    }
-                }
+                Row {
+                    id: actionsRow
+                    spacing: 8 * Appearance.effectiveScale
+                    
+                    readonly property int totalButtons: (notificationObject ? notificationObject.actions.length : 0) + 3
+                    readonly property real buttonWidth: Math.max(100 * Appearance.effectiveScale, (actionsFlickable.width - (spacing * (totalButtons - 1))) / totalButtons)
 
-                NotificationActionButton {
-                    width: actionsRow.buttonWidth
-                    buttonText: "Close"
-                    onClicked: {
-                        if (notificationObject) Notifications.discardNotification(notificationObject.notificationId);
-                    }
-                    contentItem: Item {
-                        Row {
-                            spacing: 4 * Appearance.effectiveScale
-                            anchors.centerIn: parent
-                            MaterialSymbol {
-                                iconSize: 16 * Appearance.effectiveScale
-                                anchors.verticalCenter: parent.verticalCenter
-                                color: (notificationObject && notificationObject.urgency == NotificationUrgency.Critical) ? 
-                                    Appearance.m3colors.m3onSurfaceVariant : Appearance.m3colors.m3onSurface
-                                text: "close"
-                            }
-                            StyledText {
-                                text: "Close"
-                                font.pixelSize: 12 * Appearance.effectiveScale
-                                anchors.verticalCenter: parent.verticalCenter
-                                visible: parent.parent.parent.width > 60 * Appearance.effectiveScale
-                                color: (notificationObject && notificationObject.urgency == NotificationUrgency.Critical) ? 
-                                    Appearance.m3colors.m3onSurfaceVariant : Appearance.m3colors.m3onSurface
-                            }
-                        }
-                    }
-                }
-
-                NotificationActionButton {
-                    width: actionsRow.buttonWidth
-                    onClicked: {
-                        Quickshell.clipboardText = notificationObject.body
-                        copyIcon.text = "inventory"
-                        copyIconTimer.restart()
-                    }
-
-                    Timer {
-                        id: copyIconTimer
-                        interval: 1500
-                        onTriggered: copyIcon.text = "content_copy"
-                    }
-
-                    contentItem: Item {
-                        Row {
-                            spacing: 4 * Appearance.effectiveScale
-                            anchors.centerIn: parent
-                            MaterialSymbol {
-                                id: copyIcon
-                                iconSize: 16 * Appearance.effectiveScale
-                                anchors.verticalCenter: parent.verticalCenter
-                                color: (notificationObject && notificationObject.urgency == NotificationUrgency.Critical) ? 
-                                    Appearance.m3colors.m3onSurfaceVariant : Appearance.m3colors.m3onSurface
-                                text: "content_copy"
-                            }
-                            StyledText {
-                                text: "Copy"
-                                font.pixelSize: 12 * Appearance.effectiveScale
-                                anchors.verticalCenter: parent.verticalCenter
-                                visible: parent.parent.parent.width > 60 * Appearance.effectiveScale
-                                color: (notificationObject && notificationObject.urgency == NotificationUrgency.Critical) ? 
-                                    Appearance.m3colors.m3onSurfaceVariant : Appearance.m3colors.m3onSurface
-                            }
-                        }
-                    }
-                }
-
-                Repeater {
-                    model: notificationObject ? notificationObject.actions : []
                     NotificationActionButton {
                         width: actionsRow.buttonWidth
-                        required property var modelData
-                        buttonText: modelData.text
                         onClicked: {
-                            Notifications.attemptInvokeAction(notificationObject.notificationId, modelData.identifier);
+                            if (notificationObject) Notifications.attemptInvokeAction(notificationObject.notificationId, "default");
+                        }
+                        contentItem: Item {
+                            implicitWidth: innerRowView.implicitWidth
+                            implicitHeight: innerRowView.implicitHeight
+                            Row {
+                                id: innerRowView
+                                spacing: 4 * Appearance.effectiveScale
+                                anchors.centerIn: parent
+                                MaterialSymbol {
+                                    iconSize: 16 * Appearance.effectiveScale
+                                    anchors.verticalCenter: parent.verticalCenter
+                                    color: (notificationObject && notificationObject.urgency == NotificationUrgency.Critical) ? 
+                                        Appearance.m3colors.m3onSurfaceVariant : Appearance.m3colors.m3onSurface
+                                    text: "visibility"
+                                }
+                                StyledText {
+                                    text: "View"
+                                    font.pixelSize: 12 * Appearance.effectiveScale
+                                    anchors.verticalCenter: parent.verticalCenter
+                                    visible: parent.parent.parent.width > 60 * Appearance.effectiveScale
+                                    color: (notificationObject && notificationObject.urgency == NotificationUrgency.Critical) ? 
+                                        Appearance.m3colors.m3onSurfaceVariant : Appearance.m3colors.m3onSurface
+                                }
+                            }
+                        }
+                    }
+
+                    NotificationActionButton {
+                        width: actionsRow.buttonWidth
+                        buttonText: "Close"
+                        onClicked: {
+                            if (notificationObject) Notifications.discardNotification(notificationObject.notificationId);
+                        }
+                        contentItem: Item {
+                            implicitWidth: innerRowClose.implicitWidth
+                            implicitHeight: innerRowClose.implicitHeight
+                            Row {
+                                id: innerRowClose
+                                spacing: 4 * Appearance.effectiveScale
+                                anchors.centerIn: parent
+                                MaterialSymbol {
+                                    iconSize: 16 * Appearance.effectiveScale
+                                    anchors.verticalCenter: parent.verticalCenter
+                                    color: (notificationObject && notificationObject.urgency == NotificationUrgency.Critical) ? 
+                                        Appearance.m3colors.m3onSurfaceVariant : Appearance.m3colors.m3onSurface
+                                    text: "close"
+                                }
+                                StyledText {
+                                    text: "Close"
+                                    font.pixelSize: 12 * Appearance.effectiveScale
+                                    anchors.verticalCenter: parent.verticalCenter
+                                    visible: parent.parent.parent.width > 60 * Appearance.effectiveScale
+                                    color: (notificationObject && notificationObject.urgency == NotificationUrgency.Critical) ? 
+                                        Appearance.m3colors.m3onSurfaceVariant : Appearance.m3colors.m3onSurface
+                                }
+                            }
+                        }
+                    }
+
+                    NotificationActionButton {
+                        width: actionsRow.buttonWidth
+                        onClicked: {
+                            Quickshell.clipboardText = notificationObject.body
+                            copyIcon.text = "inventory"
+                            copyIconTimer.restart()
+                        }
+
+                        Timer {
+                            id: copyIconTimer
+                            interval: 1500
+                            onTriggered: copyIcon.text = "content_copy"
+                        }
+
+                        contentItem: Item {
+                            implicitWidth: innerRowCopy.implicitWidth
+                            implicitHeight: innerRowCopy.implicitHeight
+                            Row {
+                                id: innerRowCopy
+                                spacing: 4 * Appearance.effectiveScale
+                                anchors.centerIn: parent
+                                MaterialSymbol {
+                                    id: copyIcon
+                                    iconSize: 16 * Appearance.effectiveScale
+                                    anchors.verticalCenter: parent.verticalCenter
+                                    color: (notificationObject && notificationObject.urgency == NotificationUrgency.Critical) ? 
+                                        Appearance.m3colors.m3onSurfaceVariant : Appearance.m3colors.m3onSurface
+                                    text: "content_copy"
+                                }
+                                StyledText {
+                                    text: "Copy"
+                                    font.pixelSize: 12 * Appearance.effectiveScale
+                                    anchors.verticalCenter: parent.verticalCenter
+                                    visible: parent.parent.parent.width > 60 * Appearance.effectiveScale
+                                    color: (notificationObject && notificationObject.urgency == NotificationUrgency.Critical) ? 
+                                        Appearance.m3colors.m3onSurfaceVariant : Appearance.m3colors.m3onSurface
+                                }
+                            }
+                        }
+                    }
+
+                    Repeater {
+                        model: notificationObject ? notificationObject.actions : []
+                        NotificationActionButton {
+                            width: actionsRow.buttonWidth
+                            required property var modelData
+                            buttonText: modelData.text
+                            onClicked: {
+                                Notifications.attemptInvokeAction(notificationObject.notificationId, modelData.identifier);
+                            }
                         }
                     }
                 }
