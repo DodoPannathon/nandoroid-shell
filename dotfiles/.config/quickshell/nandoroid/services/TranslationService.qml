@@ -15,7 +15,7 @@ Singleton {
 
     property string translatedText: ""
     property bool isTranslating: translateProc.running
-    property var availableLanguages: ["auto", "id", "en", "ja", "zh", "ko", "fr", "de", "es", "it", "ru", "pt"]
+    property var availableLanguages: ["auto", "id", "en", "ja", "zh", "ko", "fr", "de", "es", "it", "ru", "pt", "th"]
 
     function translate(text, source, target) {
         const cleanText = (text || "").trim();
