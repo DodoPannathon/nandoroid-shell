@@ -27,7 +27,7 @@ Singleton {
         if (translateProc.running) translateProc.terminate();
 
         const s = source || "auto";
-        const t = target || "id";
+        const t = target || "en";
 
         // Use short flags -s and -t as they are more standard across trans versions
         const cmd = `trans -brief`
